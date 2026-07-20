@@ -6,168 +6,258 @@
     <title>VoxCoach AI | High-Fidelity Communication Analytics</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        .glassmorphic-card {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .serif-heading {
+            font-family: 'Cormorant Garamond', serif;
+        }
+        .gold-glass {
+            background: rgba(13, 27, 62, 0.45);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(212, 175, 55, 0.12);
+        }
+        .gold-gradient-bg {
+            background: linear-gradient(135deg, #D4AF37 0%, #F3E5AB 50%, #AA7C11 100%);
+        }
+        .gold-border-focus:focus {
+            outline: none;
+            border-color: #D4AF37;
+            box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
         }
         .skeleton-shimmer {
-            background: linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.03) 75%);
+            background: linear-gradient(90deg, rgba(255,255,255,0.01) 25%, rgba(212,175,55,0.06) 50%, rgba(255,255,255,0.01) 75%);
             background-size: 200% 100%;
-            animation: loading-shimmer 1.6s infinite linear;
+            animation: loading-shimmer 2s infinite linear;
         }
         @keyframes loading-shimmer {
             0% { background-position: 200% 0; }
             100% { background-position: -200% 0; }
         }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(6, 11, 24, 0.5);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(212, 175, 55, 0.2);
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(212, 175, 55, 0.4);
+        }
     </style>
 </head>
-<body class="bg-slate-950 text-slate-100 font-sans min-h-screen flex flex-col justify-between tracking-wide relative">
+<body class="bg-[#030712] text-slate-100 min-h-screen flex flex-col justify-between tracking-wide relative overflow-x-hidden">
 
-    <div id="fillerPopover" class="hidden absolute p-4 rounded-xl border border-cyan-500/30 bg-slate-900 shadow-2xl shadow-cyan-500/10 max-w-xs z-50 text-xs text-slate-300 leading-relaxed font-sans">
-        <div class="font-bold text-cyan-400 mb-1">VoxCoach Pro Tip:</div>
-        <p id="popoverAlternativeText" class="mb-2"></p>
-        <span class="text-[10px] text-slate-500 font-mono block">Alternative transitional phrases optimized for the US track environment.</span>
+    <div class="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] rounded-full bg-blue-950/20 blur-[120px] pointer-events-none"></div>
+    <div class="absolute bottom-[-10%] right-[-10%] w-[50vw] h-[50vw] rounded-full bg-[#AA7C11]/5 blur-[150px] pointer-events-none"></div>
+
+    <div id="fillerPopover" class="hidden absolute p-5 rounded-xl border border-[#D4AF37]/30 bg-[#0B1329] shadow-2xl shadow-black/80 max-w-xs z-50 text-xs text-slate-200 leading-relaxed">
+        <div class="font-bold text-[#D4AF37] mb-1.5 flex items-center gap-1.5 font-mono uppercase tracking-wider text-[10px]">
+            <span class="w-1.5 h-1.5 rounded-full bg-[#D4AF37]"></span>VoxCoach Executive Tip
+        </div>
+        <p id="popoverAlternativeText" class="mb-2 text-slate-300"></p>
+        <span class="text-[10px] text-slate-500 font-mono block border-t border-white/5 pt-2 mt-2">Alternative transitional phrasing optimized for elite US communicative standards.</span>
     </div>
 
-    <header class="border-b border-white/5 bg-slate-950/80 backdrop-blur-md px-6 py-4 flex items-center justify-between sticky top-0 z-50">
-        <div class="flex items-center space-x-3">
-            <div class="h-8 w-8 rounded-lg bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center font-bold text-white shadow-lg shadow-cyan-500/20">V</div>
-            <span class="text-lg font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400">VoxCoach AI</span>
+    <header class="border-b border-white/5 bg-[#030712]/80 backdrop-blur-md px-8 py-5 flex items-center justify-between sticky top-0 z-40 transition-all duration-300">
+        <div class="flex items-center space-x-3.5">
+            <div class="h-9 w-9 rounded-lg gold-gradient-bg flex items-center justify-center font-serif text-[#030712] font-bold text-xl shadow-lg shadow-[#D4AF37]/10">V</div>
+            <div class="flex flex-col">
+                <span class="text-md font-medium tracking-wider text-white font-serif">VoxCoach <span class="text-[#D4AF37]">AI</span></span>
+                <span class="text-[9px] text-slate-500 tracking-widest uppercase font-mono">High-Fidelity Analytics</span>
+            </div>
         </div>
-        <div class="flex items-center space-x-4">
-            <span class="flex h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
-            <span class="text-xs text-slate-400 font-mono tracking-widest uppercase">US-Context Engine</span>
+        <div class="flex items-center space-x-6">
+            <div class="flex items-center space-x-2 bg-[#0D1B3E]/40 border border-white/5 px-3 py-1.5 rounded-full">
+                <span class="flex h-2 w-2 rounded-full bg-amber-400 animate-pulse"></span>
+                <span class="text-[10px] text-slate-300 font-mono tracking-wider uppercase">US-Context Engine v2.6</span>
+            </div>
+            <button id="navDashboardBtn" class="hidden text-xs text-slate-400 hover:text-[#D4AF37] transition-colors font-medium tracking-wide">Reset View</button>
         </div>
     </header>
 
-    <main class="flex-1 max-w-7xl w-full mx-auto px-4 py-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
+    <div id="landingPage" class="flex-1 max-w-6xl w-full mx-auto px-6 py-12 flex flex-col justify-center items-center text-center relative z-10 animate-fadeIn">
+        <div class="max-w-3xl mx-auto space-y-6">
+            <span class="text-xs font-mono uppercase tracking-[0.3em] text-[#D4AF37] bg-[#D4AF37]/5 px-4 py-1.5 rounded-full border border-[#D4AF37]/10">Intelligent Architectural Speech Feedback</span>
+            <h1 class="text-5xl md:text-6xl font-normal tracking-tight text-white serif-heading leading-[1.15]">
+                Master the Art of <br><span class="italic font-light text-[#F3E5AB] bg-clip-text text-transparent bg-gradient-to-r from-[#F3E5AB] via-[#D4AF37] to-[#AA7C11]">Executive Presence</span>
+            </h1>
+            <p class="text-slate-400 text-sm md:text-base max-w-xl mx-auto leading-relaxed font-light">
+                VoxCoach AI processes your verbal arguments in real-time, mapping behavioral criteria against competitive benchmarks for elite corporate screening and university environments.
+            </p>
+            <div class="pt-4">
+                <button id="signInBtn" class="gold-gradient-bg text-[#030712] font-semibold text-xs uppercase tracking-widest px-8 py-4 rounded-lg shadow-xl shadow-[#D4AF37]/10 hover:opacity-90 transform hover:-translate-y-0.5 transition-all duration-200">
+                    Enter Simulation Workspace
+                </button>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-20 w-full text-left">
+            <div class="gold-glass rounded-xl p-6 border-white/5 bg-gradient-to-b from-white/[0.02] to-transparent">
+                <div class="text-[#D4AF37] mb-3">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 100-6 3 3 0 000 6z"></path></svg>
+                </div>
+                <h3 class="text-white text-xs uppercase tracking-wider font-semibold mb-2 font-mono">Adaptive Evaluation Loops</h3>
+                <p class="text-slate-400 text-xs leading-relaxed font-light">Generates dynamic contextual inquiries modeled perfectly around target roles or academic tracks.</p>
+            </div>
+            <div class="gold-glass rounded-xl p-6 border-white/5 bg-gradient-to-b from-white/[0.02] to-transparent">
+                <div class="text-[#D4AF37] mb-3">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                </div>
+                <h3 class="text-white text-xs uppercase tracking-wider font-semibold mb-2 font-mono">Structural Diagnostics</h3>
+                <p class="text-slate-400 text-xs leading-relaxed font-light">Monitors words-per-minute pacing velocity, structural pauses, and counts verbal vulnerabilities instantly.</p>
+            </div>
+            <div class="gold-glass rounded-xl p-6 border-white/5 bg-gradient-to-b from-white/[0.02] to-transparent">
+                <div class="text-[#D4AF37] mb-3">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                </div>
+                <h3 class="text-white text-xs uppercase tracking-wider font-semibold mb-2 font-mono">STAR Methodology Mapping</h3>
+                <p class="text-slate-400 text-xs leading-relaxed font-light">Transforms dialogue history into qualitative data breakdowns mapping passive language to operational power indicators.</p>
+            </div>
+        </div>
+    </div>
+
+
+    <main id="mainWorkspace" class="hidden flex-1 max-w-7xl w-full mx-auto px-6 py-8 grid grid-cols-1 lg:grid-cols-12 gap-8 opacity-0 transition-opacity duration-500">
         
         <section class="lg:col-span-7 flex flex-col space-y-6">
-            <div class="glassmorphic-card rounded-2xl p-6 flex flex-col overflow-hidden min-h-[440px]">
+            <div class="gold-glass rounded-2xl p-6 flex flex-col overflow-hidden min-h-[520px] justify-between relative shadow-xl shadow-black/40">
                 
-                <div class="w-full grid grid-cols-1 md:grid-cols-3 gap-4 mb-4 text-left z-10">
-                    <div>
-                        <label class="block text-[10px] font-mono uppercase tracking-wider text-slate-500 mb-1">Select Active Track</label>
-                        <select id="trackSelector" class="w-full bg-slate-900 border border-white/10 rounded-lg px-3 py-2 text-xs text-slate-300 focus:outline-none focus:border-cyan-500 transition-colors cursor-pointer">
-                            <option value="General Corporate Interview">US Corporate Recruitment Track</option>
-                            <option value="General College Admissions">Elite US Admissions Track</option>
-                        </select>
+                <div>
+                    <div class="w-full grid grid-cols-1 md:grid-cols-3 gap-4 mb-5 text-left z-10 relative">
+                        <div>
+                            <label class="block text-[10px] font-mono uppercase tracking-widest text-slate-400 mb-1.5">Active Track Target</label>
+                            <select id="trackSelector" class="w-full bg-[#091022] border border-white/10 rounded-lg px-3 py-2.5 text-xs text-slate-200 gold-border-focus transition-colors cursor-pointer font-medium">
+                                <option value="General Corporate Interview">US Corporate Recruitment Track</option>
+                                <option value="General College Admissions">Elite US Admissions Track</option>
+                            </select>
+                        </div>
+                        <div class="md:col-span-2">
+                            <label id="targetContextLabel" class="block text-[10px] font-mono uppercase tracking-widest text-slate-400 mb-1.5">Target Job Description / Role</label>
+                            <input id="targetContextInput" type="text" placeholder="e.g., Senior Software Engineer at Google, or key role goals..." class="w-full bg-[#091022] border border-white/10 rounded-lg px-3 py-2.5 text-xs text-slate-200 gold-border-focus transition-colors placeholder-slate-600 font-medium">
+                        </div>
                     </div>
-                    <div class="md:col-span-2">
-                        <label id="targetContextLabel" class="block text-[10px] font-mono uppercase tracking-wider text-slate-500 mb-1">Target Job Description / Role</label>
-                        <input id="targetContextInput" type="text" placeholder="e.g., Senior Software Engineer at Google, or key role goals..." class="w-full bg-slate-900 border border-white/10 rounded-lg px-3 py-2 text-xs text-slate-300 focus:outline-none focus:border-cyan-500 transition-colors">
+
+                    <div class="w-full text-left mb-6 z-10 relative grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+                        <div class="md:col-span-3">
+                            <label class="block text-[10px] font-mono uppercase tracking-widest text-slate-400 mb-1.5">Structural Background / Experience Indicators</label>
+                            <textarea id="resumeInput" rows="2" placeholder="Paste structural background achievements, key projects, or leadership items here to contextualize AI responses..." class="w-full bg-[#091022] border border-white/10 rounded-lg px-3 py-2 text-xs text-slate-200 gold-border-focus transition-colors resize-none placeholder-slate-600 font-medium"></textarea>
+                        </div>
+                        <div>
+                            <button id="startSessionBtn" class="w-full gold-gradient-bg text-[#030712] text-xs font-bold uppercase tracking-wider py-3 px-4 rounded-lg shadow-md hover:opacity-90 transition-all duration-200">
+                                Start Simulator
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="border-t border-white/5 my-4 w-full"></div>
+
+                    <div class="my-6 relative flex justify-center">
+                        <div class="relative">
+                            <div id="avatarContainer" class="w-24 h-24 rounded-full bg-[#070e1e] border-2 border-slate-800 flex items-center justify-center shadow-2xl relative z-10 transition-all duration-300">
+                                <svg id="avatarIcon" class="w-9 h-9 text-slate-400 transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 100-6 3 3 0 000 6z"></path>
+                                </svg>
+                            </div>
+                            <div id="avatarPulse" class="absolute inset-0 rounded-full bg-[#D4AF37]/10 scale-125 hidden opacity-30 animate-ping"></div>
+                        </div>
+                    </div>
+
+                    <div class="w-full max-w-xl mx-auto z-10 text-center flex flex-col justify-center px-4">
+                        <p id="questionDisplay" class="text-slate-300 italic text-sm md:text-base leading-relaxed min-h-[64px] serif-heading font-medium tracking-wide">
+                            Configure your target application criteria and resume variables above, then click "Start Simulator" to launch the tailored contextual coach engine...
+                        </p>
+                        <div id="transcriptionFallback" class="mt-4 text-xs text-slate-400 bg-black/40 border border-white/5 rounded-xl p-3 min-h-[54px] hidden max-w-md mx-auto font-mono text-left overflow-y-auto"></div>
                     </div>
                 </div>
 
-                <div class="w-full text-left mb-6 z-10 grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
-                    <div class="md:col-span-3">
-                        <label class="block text-[10px] font-mono uppercase tracking-wider text-slate-500 mb-1">Paste Resume / Core Experiences</label>
-                        <textarea id="resumeInput" rows="2" placeholder="Paste structural background achievements, key projects, or leadership items here to contextualize AI responses..." class="w-full bg-slate-900 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-slate-300 focus:outline-none focus:border-cyan-500 transition-colors resize-none"></textarea>
+                <div class="w-full mt-6">
+                    <div class="h-12 relative w-full mb-5">
+                        <canvas id="audioSpectrum" class="w-full h-full rounded-lg bg-black/20 border border-white/5"></canvas>
+                        <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                            <span id="waveformPlaceholder" class="text-slate-600 text-[10px] font-mono uppercase tracking-[0.2em]">Audio Feed Inactive</span>
+                        </div>
                     </div>
-                    <div>
-                        <button id="startSessionBtn" class="w-full bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white text-xs font-semibold py-2.5 rounded-lg shadow-md transition-all duration-200">
-                            Start Simulator
+
+                    <div class="flex flex-wrap items-center justify-center gap-4 border-t border-white/5 pt-5">
+                        <button id="recordBtn" disabled class="bg-[#091022] border border-white/10 hover:border-[#D4AF37]/40 disabled:opacity-30 disabled:pointer-events-none text-slate-200 p-4 rounded-full transition-all duration-200 group relative shadow-md shadow-black/20" title="Toggle Voice Recording">
+                            <svg id="recordIcon" class="w-5 h-5 text-[#D4AF37] group-hover:scale-105 transition-transform" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4zm4 10.93A7.001 7.001 0 0017 8a1 1 0 10-2 0A5 5 0 015 8a1 1 0 00-2 0 7.001 7.001 0 006 6.93V17H6a1 1 0 100 2h8a1 1 0 100-2h-3v-2.07z" clip-rule="evenodd"></path>
+                            </svg>
+                        </button>
+
+                        <button id="nextQuestionBtn" disabled class="bg-[#0D1B3E] hover:bg-[#13285c] disabled:bg-[#091022] border border-[#D4AF37]/30 disabled:border-white/5 disabled:opacity-30 text-white text-[11px] font-semibold uppercase tracking-wider px-6 py-3.5 rounded-xl transition-all duration-200">
+                            Next Question
+                        </button>
+
+                        <button id="endSessionBtn" disabled class="bg-transparent hover:bg-white/5 border border-white/10 disabled:opacity-30 text-[11px] font-semibold uppercase tracking-wider px-6 py-3.5 rounded-xl text-slate-300 transition-all">
+                            Complete & Review Matrix
                         </button>
                     </div>
-                </div>
-
-                <div class="border-t border-white/5 my-2 w-full"></div>
-
-                <div class="my-6 relative flex justify-center">
-                    <div class="relative">
-                        <div id="avatarContainer" class="w-24 h-24 rounded-full bg-slate-900 border-2 border-slate-800 flex items-center justify-center shadow-inner relative z-10 transition-all duration-300">
-                            <svg id="avatarIcon" class="w-10 h-10 text-slate-500 transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 100-6 3 3 0 000 6z"></path>
-                            </svg>
-                        </div>
-                        <div id="avatarPulse" class="absolute inset-0 rounded-full bg-cyan-500/10 scale-125 hidden opacity-20"></div>
-                    </div>
-                </div>
-
-                <div class="w-full max-w-xl mx-auto z-10 text-center flex-1 flex flex-col justify-center">
-                    <p id="questionDisplay" class="text-slate-400 italic text-sm md:text-base leading-relaxed min-h-[60px]">
-                        Configure your target application criteria and resume variables above, then click "Start Simulator" to launch the tailored contextual coach engine...
-                    </p>
-                    <div id="transcriptionFallback" class="mt-4 text-xs text-slate-400 bg-black/30 border border-white/5 rounded-xl p-3 min-h-[50px] hidden max-w-md mx-auto font-mono text-left overflow-y-auto"></div>
-                </div>
-
-                <div class="w-full mt-6 h-14 relative">
-                    <canvas id="audioSpectrum" class="w-full h-full rounded-lg bg-slate-950/40 border border-white/5"></canvas>
-                    <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-                        <span id="waveformPlaceholder" class="text-slate-600 text-xs font-mono uppercase tracking-wider">Audio Input Offline</span>
-                    </div>
-                </div>
-
-                <div class="mt-6 flex flex-wrap items-center justify-center gap-4">
-                    <button id="recordBtn" disabled class="bg-slate-900 border border-white/10 hover:bg-slate-800 disabled:opacity-40 text-slate-200 p-4 rounded-full transition-all duration-200 group relative" title="Toggle Voice Recording">
-                        <svg id="recordIcon" class="w-6 h-6 text-cyan-400 group-hover:scale-105 transition-transform" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4zm4 10.93A7.001 7.001 0 0017 8a1 1 0 10-2 0A5 5 0 015 8a1 1 0 00-2 0 7.001 7.001 0 006 6.93V17H6a1 1 0 100 2h8a1 1 0 100-2h-3v-2.07z" clip-rule="evenodd"></path>
-                        </svg>
-                    </button>
-
-                    <button id="nextQuestionBtn" disabled class="bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 disabled:from-slate-900 disabled:to-slate-900 disabled:opacity-40 border disabled:border-white/5 border-cyan-500/30 text-white text-xs font-semibold px-5 py-3 rounded-xl shadow-md transition-all duration-200">
-                        Next Question
-                    </button>
-
-                    <button id="endSessionBtn" disabled class="bg-slate-900/80 hover:bg-slate-800 border border-white/10 disabled:opacity-40 text-xs font-semibold px-5 py-3 rounded-xl text-slate-300 transition-all">
-                        Complete & Review Matrix
-                    </button>
                 </div>
 
             </div>
         </section>
 
         <section class="lg:col-span-5 flex flex-col space-y-6">
-            <div class="glassmorphic-card rounded-2xl p-6 flex flex-col h-full justify-between min-h-[440px]">
+            <div class="gold-glass rounded-2xl p-6 flex flex-col h-full justify-between min-h-[520px] shadow-xl shadow-black/40">
+                
                 <div>
-                    <h3 class="text-sm font-bold text-slate-300 uppercase tracking-widest border-b border-white/5 pb-3">Session Metrics Diagnostic</h3>
+                    <h3 class="text-xs font-bold text-slate-300 uppercase tracking-widest border-b border-white/5 pb-3.5 flex items-center justify-between font-mono">
+                        <span>Metrics Diagnostics</span>
+                        <span class="text-[#D4AF37] text-[10px] font-normal lowercase tracking-normal">live analysis loop</span>
+                    </h3>
                     
-                    <div class="mt-6 space-y-6">
+                    <div class="mt-5 space-y-5">
                         <div>
-                            <div class="flex justify-between text-xs font-mono mb-2">
-                                <span class="text-slate-400">Pace (Words Per Minute)</span>
-                                <span id="wpmValue" class="text-cyan-400 font-bold">0 WPM</span>
+                            <div class="flex justify-between text-[11px] font-mono mb-2">
+                                <span class="text-slate-400">Pacing (Words Per Minute)</span>
+                                <span id="wpmValue" class="text-[#D4AF37] font-bold">0 WPM</span>
                             </div>
-                            <div class="w-full bg-slate-900 rounded-full h-2 overflow-hidden border border-white/5 relative">
-                                <div id="wpmGauge" class="bg-gradient-to-r from-blue-500 to-cyan-400 h-full w-0 transition-all duration-500"></div>
+                            <div class="w-full bg-[#050B14] rounded-full h-2 overflow-hidden border border-white/5 relative">
+                                <div id="wpmGauge" class="gold-gradient-bg h-full w-0 transition-all duration-500"></div>
                             </div>
-                            <div class="flex justify-between text-[10px] text-slate-600 font-mono mt-1">
-                                <span>Too Slow</span>
-                                <span class="text-emerald-500/60 font-semibold">Optimal (110-150)</span>
-                                <span>Too Fast</span>
+                            <div class="flex justify-between text-[9px] text-slate-500 font-mono mt-1.5 tracking-wider uppercase">
+                                <span>Deliberate</span>
+                                <span class="text-amber-300/70 font-semibold">Optimal Range (110-150)</span>
+                                <span>Accelerated</span>
                             </div>
                         </div>
 
                         <div class="grid grid-cols-2 gap-4">
-                            <div class="bg-slate-900/60 border border-white/5 rounded-xl p-3.5 text-center">
-                                <span class="block text-[10px] font-mono uppercase tracking-wider text-slate-500">Fluency Delays (>3s)</span>
-                                <span id="pauseCount" class="text-lg font-bold text-amber-400 font-mono mt-1 block">0</span>
+                            <div class="bg-[#050B14]/70 border border-white/5 rounded-xl p-4 text-center">
+                                <span class="block text-[10px] font-mono uppercase tracking-widest text-slate-400">Fluency Stalls (>3s)</span>
+                                <span id="pauseCount" class="text-2xl font-normal text-amber-200 font-serif mt-1 block">0</span>
                             </div>
-                            <div class="bg-slate-900/60 border border-white/5 rounded-xl p-3.5 text-center">
-                                <span class="block text-[10px] font-mono uppercase tracking-wider text-slate-500">Filler Word Hits</span>
-                                <span id="fillerCount" class="text-lg font-bold text-rose-500 font-mono mt-1 block">0</span>
+                            <div class="bg-[#050B14]/70 border border-white/5 rounded-xl p-4 text-center">
+                                <span class="block text-[10px] font-mono uppercase tracking-widest text-slate-400">Vocal Filler Hits</span>
+                                <span id="fillerCount" class="text-2xl font-normal text-amber-400 font-serif mt-1 block">0</span>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <div class="mt-4 pt-4 border-t border-white/5">
-                    <span class="block text-[10px] font-mono uppercase tracking-wider text-slate-500 mb-2">Interactive Highlights Transcript Console</span>
-                    <div id="interactiveTranscriptDisplay" class="bg-slate-950/40 border border-white/5 rounded-xl p-3 text-xs leading-relaxed max-h-[100px] overflow-y-auto text-slate-400 font-mono">
+                    <span class="block text-[10px] font-mono uppercase tracking-widest text-slate-400 mb-2.5">Interactive Highlights Transcript Console</span>
+                    <div id="interactiveTranscriptDisplay" class="bg-[#050B14]/60 border border-white/5 rounded-xl p-3.5 text-xs leading-relaxed max-h-[110px] overflow-y-auto text-slate-400 font-mono tracking-wide">
                         No answers processed yet. Utter phrases like "um", "uh", or "like" during tracking to inspect highlighted transitions...
                     </div>
                 </div>
 
                 <div class="mt-4 pt-4 border-t border-white/5 flex-1 flex flex-col justify-end">
-                    <span class="block text-[10px] font-mono uppercase tracking-wider text-slate-500 mb-2">Comprehensive Evaluation Matrix Output</span>
-                    <div id="critiqueOutput" class="bg-slate-950/60 border border-white/5 rounded-xl p-4 min-h-[120px] max-h-[160px] overflow-y-auto text-xs text-slate-400 leading-relaxed font-mono">
-                        <div id="analysisDefaultText">Awaiting submission context data metrics validation loop...</div>
-                        <div id="analysisSkeleton" class="hidden space-y-2.5 w-full">
-                            <div class="h-3 skeleton-shimmer rounded w-11/12"></div>
-                            <div class="h-3 skeleton-shimmer rounded w-full"></div>
-                            <div class="h-3 skeleton-shimmer rounded w-4/5"></div>
+                    <span class="block text-[10px] font-mono uppercase tracking-widest text-slate-400 mb-2.5">Comprehensive Evaluation Matrix Output</span>
+                    <div id="critiqueOutput" class="bg-[#050B14]/90 border border-white/5 rounded-xl p-4 min-h-[140px] max-h-[170px] overflow-y-auto text-xs text-slate-300 leading-relaxed tracking-wide">
+                        <div id="analysisDefaultText" class="font-mono text-slate-500 text-[11px]">Awaiting submission context data metrics validation loop...</div>
+                        <div id="analysisSkeleton" class="hidden space-y-3 w-full">
+                            <div class="h-2.5 skeleton-shimmer rounded w-11/12"></div>
+                            <div class="h-2.5 skeleton-shimmer rounded w-full"></div>
+                            <div class="h-2.5 skeleton-shimmer rounded w-4/5"></div>
                         </div>
                     </div>
                 </div>
@@ -177,11 +267,37 @@
 
     </main>
 
-    <footer class="border-t border-white/5 py-4 text-center text-[10px] text-slate-600 font-mono">
-        &copy; 2026 VoxCoach AI. Structured Communication Systems Engineering Prototype.
+    <footer class="border-t border-white/5 py-5 text-center text-[10px] text-slate-600 font-mono tracking-widest uppercase">
+        &copy; 2026 VoxCoach AI. Structured Communication Systems Engineering Prototype. All Rights Reserved.
     </footer>
 
     <script>
+        // Transition Views Logic (Landing Page -> Workspace)
+        const signInBtn = document.getElementById('signInBtn');
+        const landingPage = document.getElementById('landingPage');
+        const mainWorkspace = document.getElementById('mainWorkspace');
+        const navDashboardBtn = document.getElementById('navDashboardBtn');
+
+        signInBtn.addEventListener('click', () => {
+            landingPage.classList.add('hidden');
+            mainWorkspace.classList.remove('hidden');
+            setTimeout(() => {
+                mainWorkspace.classList.remove('opacity-0');
+                mainWorkspace.classList.add('opacity-100');
+            }, 50);
+            navDashboardBtn.classList.remove('hidden');
+        });
+
+        navDashboardBtn.addEventListener('click', () => {
+            mainWorkspace.classList.remove('opacity-100');
+            mainWorkspace.classList.add('opacity-0');
+            setTimeout(() => {
+                mainWorkspace.classList.add('hidden');
+                landingPage.classList.remove('hidden');
+            }, 500);
+            navDashboardBtn.classList.add('hidden');
+        });
+
         // Execution State Repositories
         let sessionHistory = [];
         let currentTrack = "";
@@ -255,7 +371,7 @@
                 const standardized = token.toLowerCase().trim();
                 if (transitionalAlternatives[standardized]) {
                     const span = document.createElement('span');
-                    span.className = "bg-rose-950 text-rose-400 font-bold px-1 rounded border border-rose-800/60 cursor-pointer hover:bg-rose-900 transition-colors inline-block relative mx-0.5";
+                    span.className = "bg-amber-950/80 text-amber-300 font-bold px-1.5 py-0.5 rounded border border-amber-500/40 cursor-pointer hover:bg-amber-900/60 transition-colors inline-block relative mx-0.5 font-mono text-[11px]";
                     span.innerText = token;
                     
                     // Bind event listener to render popover
@@ -327,7 +443,7 @@
                     document.getElementById('transcriptionFallback').innerText = "";
                     document.getElementById('transcriptionFallback').classList.add('hidden');
                     document.getElementById('interactiveTranscriptDisplay').innerText = "No answers processed yet. Utter phrases like \"um\", \"uh\", or \"like\" during tracking to inspect highlighted transitions...";
-                    document.getElementById('critiqueOutput').innerHTML = '<div id="analysisDefaultText">Awaiting response collection window loop...</div>';
+                    document.getElementById('critiqueOutput').innerHTML = '<div id="analysisDefaultText" class="font-mono text-slate-500 text-[11px]">Awaiting response collection window loop...</div>';
                     
                     // Activate operational controls
                     document.getElementById('recordBtn').removeAttribute('disabled');
@@ -419,10 +535,10 @@
 
             const outputBox = document.getElementById('critiqueOutput');
             outputBox.innerHTML = `
-                <div id="analysisSkeleton" class="space-y-2.5 w-full">
-                    <div class="h-3 skeleton-shimmer rounded w-11/12"></div>
-                    <div class="h-3 skeleton-shimmer rounded w-full"></div>
-                    <div class="h-3 skeleton-shimmer rounded w-4/5"></div>
+                <div id="analysisSkeleton" class="space-y-3 w-full">
+                    <div class="h-2.5 skeleton-shimmer rounded w-11/12"></div>
+                    <div class="h-2.5 skeleton-shimmer rounded w-full"></div>
+                    <div class="h-2.5 skeleton-shimmer rounded w-4/5"></div>
                 </div>
             `;
 
@@ -439,12 +555,12 @@
                 const data = await res.json();
                 
                 if (data.success) {
-                    outputBox.innerHTML = `<div class="whitespace-pre-line text-slate-300 font-sans">${data.analysis}</div>`;
+                    outputBox.innerHTML = `<div class="whitespace-pre-line text-slate-200 font-sans leading-relaxed text-xs">${data.analysis}</div>`;
                 } else {
-                    outputBox.innerHTML = `<div class="text-rose-400 font-mono">Error generating analysis: ${data.error}</div>`;
+                    outputBox.innerHTML = `<div class="text-amber-500 font-mono text-[11px]">Error generating analysis: ${data.error}</div>`;
                 }
             } catch (err) {
-                outputBox.innerHTML = `<div class="text-rose-400 font-mono">Network error connection drop during diagnostic computation.</div>`;
+                outputBox.innerHTML = `<div class="text-amber-500 font-mono text-[11px]">Network error connection drop during diagnostic computation.</div>`;
             }
         });
 
@@ -457,14 +573,14 @@
             document.getElementById('transcriptionFallback').classList.remove('hidden');
             document.getElementById('transcriptionFallback').innerText = "Listening to vocal input stream...";
             
-            // Visual feedback updates
+            // Visual feedback updates Custom Gold Mapped
             document.getElementById('avatarContainer').classList.remove('border-slate-800');
-            document.getElementById('avatarContainer').classList.add('border-cyan-500', 'shadow-cyan-500/25');
-            document.getElementById('avatarIcon').classList.remove('text-slate-500');
-            document.getElementById('avatarIcon').classList.add('text-cyan-400');
+            document.getElementById('avatarContainer').classList.add('border-[#D4AF37]', 'shadow-[#D4AF37]/25');
+            document.getElementById('avatarIcon').classList.remove('text-slate-400');
+            document.getElementById('avatarIcon').classList.add('text-[#D4AF37]');
             document.getElementById('avatarPulse').classList.remove('hidden');
-            document.getElementById('recordBtn').classList.remove('bg-slate-900');
-            document.getElementById('recordBtn').classList.add('bg-cyan-950', 'border-cyan-500/50');
+            document.getElementById('recordBtn').classList.remove('bg-[#091022]');
+            document.getElementById('recordBtn').classList.add('bg-amber-950/40', 'border-[#D4AF37]/50');
             
             try {
                 mediaStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
@@ -503,18 +619,18 @@
                 animationFrameId = requestAnimationFrame(mixSpectrumFrames);
                 
                 audioAnalyser.getByteFrequencyData(dataArray);
-                canvasCtx.fillStyle = 'rgba(2, 6, 23, 0.3)';
+                canvasCtx.fillStyle = 'rgba(3, 7, 18, 0.4)';
                 canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
                 
-                const barWidth = (canvas.width / bufferLength) * 1.5;
+                const barWidth = (canvas.width / bufferLength) * 1.6;
                 let barHeight;
                 let x = 0;
                 
                 for (let i = 0; i < bufferLength; i++) {
-                    barHeight = dataArray[i] / 2.5;
-                    canvasCtx.fillStyle = `rgba(34, 211, 238, ${0.4 + (barHeight / canvas.height)})`;
+                    barHeight = dataArray[i] / 2.2;
+                    canvasCtx.fillStyle = `rgba(212, 175, 55, ${0.3 + (barHeight / canvas.height)})`;
                     canvasCtx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
-                    x += barWidth + 4;
+                    x += barWidth + 3;
                 }
             }
         }
@@ -575,12 +691,12 @@
             };
 
             speechEngine.onend = () => {
-                document.getElementById('avatarContainer').className = "w-24 h-24 rounded-full bg-slate-900 border-2 border-slate-800 flex items-center justify-center shadow-inner relative z-10 transition-all duration-300";
-                document.getElementById('avatarIcon').className = "w-10 h-10 text-slate-500 transition-colors duration-300";
+                document.getElementById('avatarContainer').className = "w-24 h-24 rounded-full bg-[#070e1e] border-2 border-slate-800 flex items-center justify-center shadow-2xl relative z-10 transition-all duration-300";
+                document.getElementById('avatarIcon').className = "w-9 h-9 text-slate-400 transition-colors duration-300";
                 document.getElementById('avatarPulse').classList.add('hidden');
                 document.getElementById('waveformPlaceholder').classList.remove('hidden');
-                document.getElementById('waveformPlaceholder').innerText = "Audio Input Offline";
-                document.getElementById('recordBtn').className = "bg-slate-900 border border-white/10 hover:bg-slate-800 disabled:opacity-40 text-slate-200 p-4 rounded-full transition-all duration-200 group relative";
+                document.getElementById('waveformPlaceholder').innerText = "Audio Feed Inactive";
+                document.getElementById('recordBtn').className = "bg-[#091022] border border-white/10 hover:border-[#D4AF37]/40 disabled:opacity-30 disabled:pointer-events-none text-slate-200 p-4 rounded-full transition-all duration-200 group relative shadow-md shadow-black/20";
                 
                 clearTimeout(pauseTrackingTimeout);
                 
@@ -602,4 +718,3 @@
     </script>
 </body>
 </html>
-
