@@ -3,6 +3,7 @@ import random
 from flask import Flask, render_template, request, jsonify
 from dotenv import load_dotenv
 from groq import Groq
+from supabase import create_client, Client
 
 # Pull local tracking keys and configurations
 load_dotenv()
@@ -12,6 +13,11 @@ app = Flask(__name__, template_folder='../templates')
 # Initialize Groq Engine with valid, open-weight production models
 GROQ_API_KEY = os.environ.get("GROQ_API_KEY")
 groq_client = Groq(api_key=GROQ_API_KEY) if GROQ_API_KEY else None
+
+# Initialize Supabase Client for user management and authentication
+SUPABASE_URL = os.environ.get("SUPABASE_URL", "")
+SUPABASE_KEY = os.environ.get("SUPABASE_KEY", "")
+supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY) if SUPABASE_URL and SUPABASE_KEY else None
 
 # Curated datasets for seamless offline/invalid-key testing in the US landscape
 FALLBACK_CORPORATE_QUESTIONS = [
@@ -37,8 +43,85 @@ def health_check():
     return jsonify({
         "status": "operational",
         "environment": "US-Standard-2026",
-        "groq_connected": groq_client is not None
+        "groq_connected": groq_client is not None,
+        "supabase_connected": supabase is not None
     }), 200
+
+@app.route('/api/auth/signup', methods=['POST'])
+def auth_signup():
+    """Handles email/password account creation using Supabase Auth."""
+    data = request.get_json() or {}
+    email = data.get('email', '').strip()
+    password = data.get('password', '').strip()
+
+    if not email or not password:
+        return jsonify({"success": False, "error": "Email and password are required."}), 400
+
+    if not supabase:
+        return jsonify({"success": False, "error": "Supabase client is not configured. Check SUPABASE_URL and SUPABASE_KEY in .env."}), 500
+
+    try:
+        response = supabase.auth.sign_up({"email": email, "password": password})
+        if response.user:
+            return jsonify({
+                "success": True,
+                "user": {
+                    "id": response.user.id,
+                    "email": response.user.email
+                },
+                "session": response.session.access_token if response.session else None
+            }), 200
+        else:
+            return jsonify({"success": False, "error": "User registration failed."}), 400
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 400
+
+@app.route('/api/auth/signin', methods=['POST'])
+def auth_signin():
+    """Handles email/password authentication using Supabase Auth."""
+    data = request.get_json() or {}
+    email = data.get('email', '').strip()
+    password = data.get('password', '').strip()
+
+    if not email or not password:
+        return jsonify({"success": False, "error": "Email and password are required."}), 400
+
+    if not supabase:
+        return jsonify({"success": False, "error": "Supabase client is not configured. Check SUPABASE_URL and SUPABASE_KEY in .env."}), 500
+
+    try:
+        response = supabase.auth.sign_in_with_password({"email": email, "password": password})
+        if response.user:
+            return jsonify({
+                "success": True,
+                "user": {
+                    "id": response.user.id,
+                    "email": response.user.email
+                },
+                "session": response.session.access_token if response.session else None
+            }), 200
+        else:
+            return jsonify({"success": False, "error": "Invalid email or password."}), 401
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 400
+
+@app.route('/api/auth/google', methods=['POST'])
+def auth_google():
+    """Generates a Google OAuth authentication URL via Supabase and Google Cloud Consult."""
+    if not supabase:
+        return jsonify({"success": False, "error": "Supabase client is not configured. Check SUPABASE_URL and SUPABASE_KEY in .env."}), 500
+
+    try:
+        redirect_uri = request.host_url.rstrip('/')
+        res = supabase.auth.sign_in_with_oauth({
+            "provider": "google",
+            "options": {
+                "redirect_to": redirect_uri
+            }
+        })
+        return jsonify({"success": True, "url": res.url}), 200
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 400
 
 @app.route('/api/session/start', methods=['POST'])
 def start_session():
@@ -224,4 +307,3 @@ def analyze_session():
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
-

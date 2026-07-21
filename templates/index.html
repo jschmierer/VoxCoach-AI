@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VoxCoach AI | High-Fidelity Communication Analytics</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
         
@@ -63,6 +64,55 @@
         <span class="text-[10px] text-slate-400 block border-t border-slate-700/50 pt-2 mt-2">Alternative transitional phrasing optimized for elite US communicative standards.</span>
     </div>
 
+    <div id="authModal" class="fixed inset-0 bg-[#070D1F]/80 backdrop-blur-md z-50 flex items-center justify-center hidden transition-opacity duration-300">
+        <div class="gold-glass border border-amber-500/30 rounded-2xl p-8 max-w-md w-full mx-4 shadow-2xl relative">
+            <button id="closeAuthModalBtn" class="absolute top-4 right-4 text-slate-400 hover:text-white text-lg font-bold transition-colors">&times;</button>
+            
+            <div class="text-center mb-6">
+                <h2 id="authModalTitle" class="text-2xl font-extrabold text-white">Welcome Back</h2>
+                <p id="authModalSubtitle" class="text-xs text-slate-400 mt-1">Sign in to access your interview workspace</p>
+            </div>
+
+            <div class="flex border-b border-slate-800 mb-6">
+                <button id="tabSigninBtn" class="flex-1 pb-3 text-xs font-bold uppercase tracking-wider text-[#D4AF37] border-b-2 border-[#D4AF37] transition-all">Sign In</button>
+                <button id="tabSignupBtn" class="flex-1 pb-3 text-xs font-bold uppercase tracking-wider text-slate-400 border-b-2 border-transparent hover:text-slate-200 transition-all">Sign Up</button>
+            </div>
+
+            <div id="authErrorMsg" class="hidden text-xs bg-red-950/60 border border-red-500/40 text-red-200 p-3 rounded-lg mb-4 text-center"></div>
+            <div id="authSuccessMsg" class="hidden text-xs bg-emerald-950/60 border border-emerald-500/40 text-emerald-200 p-3 rounded-lg mb-4 text-center"></div>
+
+            <button id="googleSignInBtn" class="w-full bg-[#101A36] hover:bg-[#16224F] border border-slate-700 text-white font-semibold text-xs py-3 px-4 rounded-xl flex items-center justify-center gap-3 transition-colors mb-4 shadow-sm">
+                <svg class="w-4 h-4" viewBox="0 0 24 24">
+                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+                </svg>
+                Continue with Google
+            </button>
+
+            <div class="relative flex py-2 items-center mb-4">
+                <div class="flex-grow border-t border-slate-800"></div>
+                <span class="flex-shrink mx-3 text-[10px] text-slate-500 uppercase font-bold tracking-wider">Or email</span>
+                <div class="flex-grow border-t border-slate-800"></div>
+            </div>
+
+            <form id="authForm" class="space-y-4">
+                <div>
+                    <label class="block text-[10px] font-bold uppercase tracking-widest text-slate-300 mb-1">Email / Username</label>
+                    <input id="authEmail" type="email" required placeholder="name@domain.com" class="w-full bg-[#101A36] border border-slate-700 rounded-lg px-3.5 py-2.5 text-xs text-white gold-border-focus transition-colors placeholder-slate-500 font-medium shadow-sm">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold uppercase tracking-widest text-slate-300 mb-1">Password</label>
+                    <input id="authPassword" type="password" required placeholder="••••••••" class="w-full bg-[#101A36] border border-slate-700 rounded-lg px-3.5 py-2.5 text-xs text-white gold-border-focus transition-colors placeholder-slate-500 font-medium shadow-sm">
+                </div>
+                <button id="authSubmitBtn" type="submit" class="w-full gold-gradient-bg text-[#070D1F] font-bold text-xs uppercase tracking-wider py-3 rounded-xl shadow-md hover:opacity-95 transition-all mt-2">
+                    Sign In
+                </button>
+            </form>
+        </div>
+    </div>
+
     <header class="border-b border-slate-800/80 bg-[#070D1F]/90 backdrop-blur-md px-8 py-5 flex items-center justify-between sticky top-0 z-40 transition-all duration-300 shadow-lg">
         <div class="flex items-center space-x-3.5">
             <div class="h-9 w-9 rounded-lg gold-gradient-bg flex items-center justify-center text-[#070D1F] font-black text-xl shadow-md shadow-[#D4AF37]/20">V</div>
@@ -71,11 +121,19 @@
                 <span class="text-[9px] text-slate-400 tracking-widest uppercase font-semibold">High-Fidelity Analytics</span>
             </div>
         </div>
-        <div class="flex items-center space-x-6">
+        <div class="flex items-center space-x-4">
             <div class="flex items-center space-x-2 bg-[#101A36] border border-slate-700 px-3 py-1.5 rounded-full shadow-inner">
                 <span class="flex h-2 w-2 rounded-full bg-amber-500 animate-pulse"></span>
                 <span class="text-[10px] text-slate-300 font-bold tracking-wider uppercase">US-Context Engine v2.6</span>
             </div>
+
+            <div id="userProfileBadge" class="hidden items-center space-x-2.5 bg-[#101A36] border border-slate-700 px-3 py-1 rounded-full shadow-inner">
+                <div id="userAvatarChar" class="w-5 h-5 rounded-full gold-gradient-bg flex items-center justify-center text-[#070D1F] text-[10px] font-bold">U</div>
+                <span id="userEmailDisplay" class="text-xs text-slate-200 font-medium max-w-[120px] truncate"></span>
+                <button id="signOutBtn" class="text-[10px] text-slate-400 hover:text-amber-400 font-bold uppercase transition-colors">Sign Out</button>
+            </div>
+
+            <button id="navAuthBtn" class="text-xs text-[#D4AF37] hover:underline font-bold tracking-wide">Sign In / Sign Up</button>
             <button id="navDashboardBtn" class="hidden text-xs text-slate-400 hover:text-[#D4AF37] transition-colors font-bold tracking-wide">Reset View</button>
         </div>
     </header>
@@ -269,13 +327,84 @@
     </footer>
 
     <script>
-        // Transition Views Logic (Landing Page -> Workspace)
+        // Session and Auth State Management
+        let currentUser = null;
+        let authMode = 'signin'; // 'signin' or 'signup'
+
         const signInBtn = document.getElementById('signInBtn');
         const landingPage = document.getElementById('landingPage');
         const mainWorkspace = document.getElementById('mainWorkspace');
         const navDashboardBtn = document.getElementById('navDashboardBtn');
+        const navAuthBtn = document.getElementById('navAuthBtn');
 
-        signInBtn.addEventListener('click', () => {
+        const authModal = document.getElementById('authModal');
+        const closeAuthModalBtn = document.getElementById('closeAuthModalBtn');
+        const tabSigninBtn = document.getElementById('tabSigninBtn');
+        const tabSignupBtn = document.getElementById('tabSignupBtn');
+        const authModalTitle = document.getElementById('authModalTitle');
+        const authModalSubtitle = document.getElementById('authModalSubtitle');
+        const authSubmitBtn = document.getElementById('authSubmitBtn');
+        const authForm = document.getElementById('authForm');
+        const authErrorMsg = document.getElementById('authErrorMsg');
+        const authSuccessMsg = document.getElementById('authSuccessMsg');
+        const googleSignInBtn = document.getElementById('googleSignInBtn');
+
+        const userProfileBadge = document.getElementById('userProfileBadge');
+        const userEmailDisplay = document.getElementById('userEmailDisplay');
+        const userAvatarChar = document.getElementById('userAvatarChar');
+        const signOutBtn = document.getElementById('signOutBtn');
+
+        // Check stored user session and OAuth callback
+        function initAuth() {
+            const savedUser = localStorage.getItem('voxcoach_user');
+            if (savedUser) {
+                try {
+                    currentUser = JSON.parse(savedUser);
+                    updateAuthUI();
+                } catch (e) {
+                    localStorage.removeItem('voxcoach_user');
+                }
+            }
+
+            // Handle Google OAuth callback hash parameters
+            const hash = window.location.hash;
+            if (hash && hash.includes('access_token')) {
+                const params = new URLSearchParams(hash.substring(1));
+                const accessToken = params.get('access_token');
+                if (accessToken) {
+                    currentUser = { email: 'authenticated_google_user', token: accessToken };
+                    localStorage.setItem('voxcoach_user', JSON.stringify(currentUser));
+                    updateAuthUI();
+                    window.location.hash = '';
+                }
+            }
+        }
+
+        function updateAuthUI() {
+            if (currentUser && currentUser.email) {
+                userProfileBadge.classList.remove('hidden');
+                userProfileBadge.classList.add('flex');
+                userEmailDisplay.innerText = currentUser.email;
+                userAvatarChar.innerText = currentUser.email.charAt(0).toUpperCase();
+                navAuthBtn.classList.add('hidden');
+            } else {
+                userProfileBadge.classList.add('hidden');
+                userProfileBadge.classList.remove('flex');
+                navAuthBtn.classList.remove('hidden');
+            }
+        }
+
+        function openAuthModal() {
+            authErrorMsg.classList.add('hidden');
+            authSuccessMsg.classList.add('hidden');
+            authModal.classList.remove('hidden');
+        }
+
+        function closeAuthModal() {
+            authModal.classList.add('hidden');
+        }
+
+        function showWorkspace() {
             landingPage.classList.add('hidden');
             mainWorkspace.classList.remove('hidden');
             setTimeout(() => {
@@ -283,6 +412,108 @@
                 mainWorkspace.classList.add('opacity-100');
             }, 50);
             navDashboardBtn.classList.remove('hidden');
+        }
+
+        // Event Listeners for Authentication UI
+        signInBtn.addEventListener('click', () => {
+            if (currentUser) {
+                showWorkspace();
+            } else {
+                openAuthModal();
+            }
+        });
+
+        navAuthBtn.addEventListener('click', openAuthModal);
+        closeAuthModalBtn.addEventListener('click', closeAuthModal);
+
+        tabSigninBtn.addEventListener('click', () => {
+            authMode = 'signin';
+            tabSigninBtn.className = "flex-1 pb-3 text-xs font-bold uppercase tracking-wider text-[#D4AF37] border-b-2 border-[#D4AF37] transition-all";
+            tabSignupBtn.className = "flex-1 pb-3 text-xs font-bold uppercase tracking-wider text-slate-400 border-b-2 border-transparent hover:text-slate-200 transition-all";
+            authModalTitle.innerText = "Welcome Back";
+            authModalSubtitle.innerText = "Sign in to access your interview workspace";
+            authSubmitBtn.innerText = "Sign In";
+            authErrorMsg.classList.add('hidden');
+            authSuccessMsg.classList.add('hidden');
+        });
+
+        tabSignupBtn.addEventListener('click', () => {
+            authMode = 'signup';
+            tabSignupBtn.className = "flex-1 pb-3 text-xs font-bold uppercase tracking-wider text-[#D4AF37] border-b-2 border-[#D4AF37] transition-all";
+            tabSigninBtn.className = "flex-1 pb-3 text-xs font-bold uppercase tracking-wider text-slate-400 border-b-2 border-transparent hover:text-slate-200 transition-all";
+            authModalTitle.innerText = "Create Account";
+            authModalSubtitle.innerText = "Sign up to track your communication analytics";
+            authSubmitBtn.innerText = "Create Account";
+            authErrorMsg.classList.add('hidden');
+            authSuccessMsg.classList.add('hidden');
+        });
+
+        authForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('authEmail').value;
+            const password = document.getElementById('authPassword').value;
+
+            authErrorMsg.classList.add('hidden');
+            authSuccessMsg.classList.add('hidden');
+            authSubmitBtn.setAttribute('disabled', 'true');
+            authSubmitBtn.innerText = "Processing...";
+
+            const endpoint = authMode === 'signup' ? '/api/auth/signup' : '/api/auth/signin';
+
+            try {
+                const res = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                    currentUser = data.user;
+                    localStorage.setItem('voxcoach_user', JSON.stringify(currentUser));
+                    updateAuthUI();
+                    closeAuthModal();
+                    showWorkspace();
+                } else {
+                    authErrorMsg.innerText = data.error || "Authentication failed.";
+                    authErrorMsg.classList.remove('hidden');
+                }
+            } catch (err) {
+                authErrorMsg.innerText = "Network connection drop encountered.";
+                authErrorMsg.classList.remove('hidden');
+            } finally {
+                authSubmitBtn.removeAttribute('disabled');
+                authSubmitBtn.innerText = authMode === 'signup' ? "Create Account" : "Sign In";
+            }
+        });
+
+        googleSignInBtn.addEventListener('click', async () => {
+            try {
+                const res = await fetch('/api/auth/google', { method: 'POST' });
+                const data = await res.json();
+                if (data.success && data.url) {
+                    window.location.href = data.url;
+                } else {
+                    authErrorMsg.innerText = data.error || "Failed to launch Google Sign-In loop.";
+                    authErrorMsg.classList.remove('hidden');
+                }
+            } catch (err) {
+                authErrorMsg.innerText = "Server communication error during Google Sign-In.";
+                authErrorMsg.classList.remove('hidden');
+            }
+        });
+
+        signOutBtn.addEventListener('click', () => {
+            currentUser = null;
+            localStorage.removeItem('voxcoach_user');
+            updateAuthUI();
+            mainWorkspace.classList.remove('opacity-100');
+            mainWorkspace.classList.add('opacity-0');
+            setTimeout(() => {
+                mainWorkspace.classList.add('hidden');
+                landingPage.classList.remove('hidden');
+            }, 500);
+            navDashboardBtn.classList.add('hidden');
         });
 
         navDashboardBtn.addEventListener('click', () => {
@@ -294,6 +525,9 @@
             }, 500);
             navDashboardBtn.classList.add('hidden');
         });
+
+        // Initialize Authentication on load
+        initAuth();
 
         // Execution State Repositories
         let sessionHistory = [];
@@ -599,9 +833,7 @@
             const canvasCtx = canvas.getContext('2d');
             document.getElementById('waveformPlaceholder').classList.add('hidden');
             
-            mixSpectrumFrames();
-            
-             Zion: function mixSpectrumFrames() {
+            function mixSpectrumFrames() {
                 if (!isRecording) return;
                 animationFrameId = requestAnimationFrame(mixSpectrumFrames);
                 
@@ -620,6 +852,8 @@
                     x += barWidth + 3;
                 }
             }
+
+            mixSpectrumFrames();
         }
 
         // Live Fluency Tracker Delay Interval Checker
