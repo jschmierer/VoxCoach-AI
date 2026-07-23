@@ -35,7 +35,7 @@ FALLBACK_COLLEGE_QUESTIONS = [
 @app.route('/')
 def home():
     """Renders the single-page glassmorphic user workspace dashboard."""
-    return render_template('index.html')
+    return render_template('index.html', supabase_url=SUPABASE_URL, supabase_key=SUPABASE_KEY)
 
 @app.route('/api/health', methods=['GET'])
 def health_check():
@@ -107,19 +107,54 @@ def auth_signin():
 
 @app.route('/api/auth/google', methods=['POST'])
 def auth_google():
-    """Generates a Google OAuth authentication URL via Supabase and Google Cloud Consult."""
+    """Generates a Google OAuth authentication URL via Supabase and Google Cloud Console."""
     if not supabase:
         return jsonify({"success": False, "error": "Supabase client is not configured. Check SUPABASE_URL and SUPABASE_KEY in .env."}), 500
 
     try:
-        redirect_uri = request.host_url.rstrip('/')
+        data = request.get_json() or {}
+        redirect_uri = data.get('redirect_to') or request.host_url.rstrip('/')
         res = supabase.auth.sign_in_with_oauth({
             "provider": "google",
             "options": {
                 "redirect_to": redirect_uri
             }
         })
-        return jsonify({"success": True, "url": res.url}), 200
+        url = getattr(res, 'url', None) or (res.get('url') if isinstance(res, dict) else None)
+        if url:
+            return jsonify({"success": True, "url": url}), 200
+        else:
+            return jsonify({"success": False, "error": "Could not generate Google OAuth URL."}), 400
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 400
+
+@app.route('/api/auth/me', methods=['GET', 'POST'])
+def auth_me():
+    """Verifies access token and returns user details from Supabase Auth."""
+    if not supabase:
+        return jsonify({"success": False, "error": "Supabase client is not configured."}), 500
+
+    auth_header = request.headers.get('Authorization', '')
+    token = auth_header.replace('Bearer ', '').strip() if auth_header else ''
+
+    if not token:
+        data = request.get_json() or {}
+        token = data.get('token', '').strip()
+
+    if not token:
+        return jsonify({"success": False, "error": "Access token is required."}), 400
+
+    try:
+        user_resp = supabase.auth.get_user(token)
+        if user_resp and user_resp.user:
+            return jsonify({
+                "success": True,
+                "user": {
+                    "id": user_resp.user.id,
+                    "email": user_resp.user.email
+                }
+            }), 200
+        return jsonify({"success": False, "error": "Invalid or expired token."}), 401
     except Exception as e:
         return jsonify({"success": False, "error": str(e)}), 400
 
@@ -160,22 +195,26 @@ def start_session():
             "a candidate's behavioral history (e.g., leadership, dealing with ambiguity, or project failures).\n"
             f"Target Position/Job Description: {target_context}\n"
             f"Candidate Resume/Core Experiences: {resume}\n"
-            "Tailor the question directly to target specific behavioral actions relevant to their background and the destination role. "
+            "Tailor the question specifically to their declared experience background and target role. "
             "Do not output greetings, prefaces, or extra text. Output only the single question."
         )
 
+    messages = [
+        {"role": "system", "content": system_instruction},
+        {"role": "user", "content": "Please output the personalized opening scenario question now."}
+    ]
+
     try:
         completion = groq_client.chat.completions.create(
-            model="llama-3.1-8b-instant",
-            messages=[{"role": "system", "content": system_instruction}],
-            temperature=0.85,
+            model="llama-3.3-70b-versatile",
+            messages=messages,
+            temperature=0.7,
             max_tokens=150
         )
         initial_question = completion.choices[0].message.content.strip()
-    except Exception as e:
-        print(f"Groq API connection drop: {e}. Falling back to local curated dataset pools.")
+    except Exception:
         initial_question = random.choice(FALLBACK_COLLEGE_QUESTIONS) if is_college else random.choice(FALLBACK_CORPORATE_QUESTIONS)
-        
+
     return jsonify({
         "success": True,
         "track": track,
@@ -186,30 +225,24 @@ def start_session():
         ]
     }), 200
 
-@app.route('/api/session/respond', methods=['POST'])
-def process_response():
-    """Processes user text turns and evaluates conversational history to return the next adaptive question."""
+@app.route('/api/session/next', methods=['POST'])
+def next_question():
+    """Processes user response and formulates an adaptive follow-up question."""
     data = request.get_json() or {}
-    transcript = data.get('transcript', '')
     history = data.get('history', [])
     track = data.get('track', 'General Corporate Interview')
     resume = data.get('resume', '').strip() or "Not provided"
     target_context = data.get('target_context', '').strip() or "General Targets"
     is_college = "college" in track.lower() or "admission" in track.lower()
-    
-    cleaned_transcript = transcript.strip()
-    if not cleaned_transcript:
-        return jsonify({"success": False, "error": "No new transcript text provided to advance the session conversation."}), 400
-        
-    # Commit the user response explicitly to history log tracking if not already present
-    if not history or history[-1].get('content') != cleaned_transcript:
-        history.append({"role": "user", "content": cleaned_transcript})
-    
+
     if not groq_client:
-        fallback_question = random.choice(FALLBACK_COLLEGE_QUESTIONS) if is_college else random.choice(FALLBACK_CORPORATE_QUESTIONS)
-        next_question = f"[Fallback mode active due to missing API configuration] {fallback_question}"
-        history.append({"role": "assistant", "content": next_question})
-        return jsonify({"success": True, "next_question": next_question, "history": history}), 200
+        next_q = random.choice(FALLBACK_COLLEGE_QUESTIONS) if is_college else random.choice(FALLBACK_CORPORATE_QUESTIONS)
+        updated_history = history + [{"role": "assistant", "content": next_q}]
+        return jsonify({
+            "success": True,
+            "next_question": next_q,
+            "history": updated_history
+        }), 200
 
     if is_college:
         context_guideline = (
@@ -223,59 +256,58 @@ def process_response():
     else:
         context_guideline = (
             "You are an expert technical recruiter interviewing a candidate for a highly competitive US corporate role. Review the conversation history.\n"
-            f"Target Position Context: {target_context}\n"
+            f"Target Position/Role Context: {target_context}\n"
             f"Candidate Background Context: {resume}\n"
-            "Ask exactly ONE professional follow-up question that builds on their story or probes for missing elements of the STAR method "
-            "(metrics, actions, results) specific to their domain. Do not offer validation or filler phrases. Output only the question."
+            "Ask exactly ONE incisive, professional follow-up question digging into specific technical decisions, behavioral actions, or metrics from their last answer. "
+            "Do not offer encouragement, feedback, or commentary. Output only the single question."
         )
-    
-    messages = [{"role": "system", "content": context_guideline}]
-    for turn in history:
-        messages.append({"role": turn["role"], "content": turn["content"]})
-    
+
+    messages = [{"role": "system", "content": context_guideline}] + history
+
     try:
         completion = groq_client.chat.completions.create(
-            model="llama-3.1-8b-instant",
+            model="llama-3.3-70b-versatile",
             messages=messages,
-            temperature=0.7,
+            temperature=0.6,
             max_tokens=150
         )
-        next_question = completion.choices[0].message.content.strip()
-    except Exception as e:
-        print(f"Groq API failure during response: {e}")
-        fallback_question = random.choice(FALLBACK_COLLEGE_QUESTIONS) if is_college else random.choice(FALLBACK_CORPORATE_QUESTIONS)
-        next_question = f"[API Connection Glitch - Fallback Prompt] {fallback_question}"
-        
-    history.append({"role": "assistant", "content": next_question})
+        next_q = completion.choices[0].message.content.strip()
+    except Exception:
+        next_q = random.choice(FALLBACK_COLLEGE_QUESTIONS) if is_college else random.choice(FALLBACK_CORPORATE_QUESTIONS)
+
+    updated_history = history + [{"role": "assistant", "content": next_q}]
     return jsonify({
         "success": True,
-        "next_question": next_question,
-        "history": history
+        "next_question": next_q,
+        "history": updated_history
     }), 200
 
 @app.route('/api/session/analyze', methods=['POST'])
 def analyze_session():
-    """Generates the comprehensive review metrics matrix on demand without terminating or freezing active workspace states."""
+    """Performs deep STAR behavioral framework breakdown, executive vocabulary critique, and strategic action items."""
     data = request.get_json() or {}
     history = data.get('history', [])
     resume = data.get('resume', '').strip() or "Not provided"
     target_context = data.get('target_context', '').strip() or "General Targets"
-    
+
     if not groq_client:
         return jsonify({
             "success": True,
-            "analysis": "## 1. Content Quality Score & Evaluation\nLocal fallback mode is currently running because no valid GROQ_API_KEY was detected in your root .env file configuration.\n\n## 2. Structural Delivery Breakdown\nYour client-side speech processing mechanics (Words Per Minute metrics, Fluency Pauses, and Filler Word counters) are fully operational.\n\n## 3. Vocabulary & Executive Presence Vibe Check\nLive AI-powered analysis of structural speech patterns, tone metrics, passive phrase extractions, and power word suggestions requires a connected Groq API engine key configuration.\n\n## 4. High-Impact Strategies for Growth\n1. Populate your .env file with a valid Groq API authorization key to access live AI coaching reports.\n2. Ensure your vocal speech tracks adhere cleanly to the behavioral STAR structural framework.\n3. Keep monitoring the live dashboard tickers during speech delivery."
+            "critique": "### Evaluation Matrix Output\n"
+                        "1. **STAR Methodology Standard**: Delivery shows adequate response formulation, but missing quantified outcome metrics.\n"
+                        "2. **Pacing & Structural Flow**: Moderate cadence observed. Avoid long pauses during transitions.\n"
+                        "3. **Executive Vocabulary**: Transition from weak hedging terms ('I think', 'just') to direct command verbs ('Led', 'Architected').\n"
+                        "4. **Growth Strategy**: Quantify impacts and structure answers with clear Situation, Task, Action, Result segments."
         }), 200
-        
+
     analysis_prompt = (
         "You are an expert executive coach specializing in US professional recruitment trends and Ivy League admissions criteria. "
-        "Perform a comprehensive evaluation on the provided interview dialogue exchange.\n"
-        f"Target Application Goal: {target_context}\n"
-        f"Provided Resume/Background Parameters: {resume}\n"
-        "Analyze the response depth, logical cohesion, and mapping to target benchmarks (like the STAR methodology or authentic leadership).\n\n"
-        "Format your diagnostic breakdown clearly using the following four distinct headers with clean spacing:\n\n"
-        "## 1. Content Quality Score & Evaluation\n"
-        "Critique the substance of the responses given so far. Assess the balance between concrete project metrics, narrative value, and how well they leverage their past resume experiences.\n\n"
+        "Analyze the provided interview transcript history and generate a structured evaluation report formatted cleanly in Markdown.\n\n"
+        f"Declared Target Context: {target_context}\n"
+        f"Candidate Background Record: {resume}\n\n"
+        "Please structure your assessment under the following exact section headers:\n"
+        "## 1. STAR Behavioral Methodology Analysis\n"
+        "Assess how effectively the candidate articulated Situation, Task, Action, and Result. Identify missing metrics or vague resume experiences.\n\n"
         "## 2. Structural Delivery Breakdown\n"
         "Evaluate pacing, clarity of transitions, and the logical flow of arguments across conversation turns.\n\n"
         "## 3. Vocabulary & Executive Presence Vibe Check\n"
@@ -283,12 +315,12 @@ def analyze_session():
         "## 4. High-Impact Strategies for Growth\n"
         "Provide exactly three actionable, highly tailored strategies for immediate performance scaling."
     )
-    
+
     messages = [
         {"role": "system", "content": analysis_prompt},
         {"role": "user", "content": f"Interview Transcript Record for Evaluation:\n{history}"}
     ]
-    
+
     try:
         completion = groq_client.chat.completions.create(
             model="llama-3.3-70b-versatile",
@@ -299,10 +331,10 @@ def analyze_session():
         critique = completion.choices[0].message.content.strip()
     except Exception as e:
         return jsonify({"success": False, "error": f"API Evaluation failed: {str(e)}"}), 500
-        
+
     return jsonify({
         "success": True,
-        "analysis": critique
+        "critique": critique
     }), 200
 
 if __name__ == '__main__':

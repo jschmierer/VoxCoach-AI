@@ -228,11 +228,11 @@
                         <p id="questionDisplay" class="text-white italic text-sm md:text-base leading-relaxed min-h-[64px] font-medium tracking-wide">
                             Configure your target application criteria and resume variables above, then click "Start Simulator" to launch the tailored contextual coach engine...
                         </p>
-                        <div id="transcriptionFallback" class="mt-4 text-xs text-slate-300 bg-[#101A36] border border-slate-700 rounded-xl p-3 min-h-[54px] hidden max-w-md mx-auto text-left overflow-y-auto shadow-inner"></div>
+                        <div id="transcriptionFallback" class="mt-4 text-xs text-slate-300 bg-[#101A36] border border-slate-700 rounded-xl p-3 min-h-[54px] hidden max-w-md mx-auto text-left overflow-y-auto"></div>
                     </div>
                 </div>
 
-                <div class="w-full mt-6">
+                <div class="mt-6 z-10 relative border-t border-slate-800/80 pt-6">
                     <div class="h-12 relative w-full mb-5">
                         <canvas id="audioSpectrum" class="w-full h-full rounded-lg bg-[#0a122c] border border-slate-800 shadow-inner"></canvas>
                         <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
@@ -243,65 +243,53 @@
                     <div class="flex flex-wrap items-center justify-center gap-4 border-t border-slate-800 pt-5">
                         <button id="recordBtn" disabled class="bg-[#101A36] border border-slate-700 hover:border-[#D4AF37]/40 disabled:opacity-30 disabled:pointer-events-none text-slate-200 p-4 rounded-full transition-all duration-200 group relative shadow-sm" title="Toggle Voice Recording">
                             <svg id="recordIcon" class="w-5 h-5 text-[#D4AF37] group-hover:scale-105 transition-transform" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4zm4 10.93A7.001 7.001 0 0017 8a1 1 0 10-2 0A5 5 0 015 8a1 1 0 00-2 0 7.001 7.001 0 006 6.93V17H6a1 1 0 100 2h8a1 1 0 100-2h-3v-2.07z" clip-rule="evenodd"></path>
+                                <path fill-rule="evenodd" d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4zm4 10.93A7.001 7.001 0 0017 8a1 1 0 10-2 0 A5 5 0 015 8a1 1 0 00-2 0 7.001 7.001 0 006 6.93V17H6a1 1 0 100 2h8a1 1 0 100-2h-3v-2.07z" clip-rule="evenodd"></path>
                             </svg>
                         </button>
-
-                        <button id="nextQuestionBtn" disabled class="bg-white hover:bg-slate-100 disabled:bg-slate-800 border border-slate-700 disabled:border-slate-800 disabled:opacity-30 text-[#070D1F] text-[11px] font-bold uppercase tracking-wider px-6 py-3.5 rounded-xl transition-all duration-200 shadow-sm">
-                            Next Question
+                        <button id="nextQuestionBtn" disabled class="bg-[#101A36] border border-slate-700 hover:border-[#D4AF37]/40 disabled:opacity-30 disabled:pointer-events-none text-slate-200 text-xs font-bold uppercase tracking-wider py-3.5 px-6 rounded-xl transition-all duration-200 shadow-sm">
+                            Next Scenario Turn
                         </button>
-
-                        <button id="endSessionBtn" disabled class="bg-transparent hover:bg-white/5 border border-slate-700 disabled:opacity-30 text-[11px] font-bold uppercase tracking-wider px-6 py-3.5 rounded-xl text-slate-300 transition-all shadow-sm">
-                            Complete & Review Matrix
+                        <button id="endSessionBtn" class="bg-red-950/40 border border-red-500/30 hover:border-red-500/60 text-red-200 text-xs font-bold uppercase tracking-wider py-3.5 px-6 rounded-xl transition-all duration-200 shadow-sm">
+                            Generate Full STAR Analysis
                         </button>
                     </div>
                 </div>
-
             </div>
         </section>
 
         <section class="lg:col-span-5 flex flex-col space-y-6">
-            <div class="gold-glass rounded-2xl p-6 flex flex-col h-full justify-between min-h-[520px] shadow-2xl">
-                
-                <div>
-                    <h3 class="text-xs font-bold text-white uppercase tracking-widest border-b border-slate-800 pb-3.5 flex items-center justify-between">
-                        <span>Metrics Diagnostics</span>
-                        <span class="text-[#D4AF37] text-[10px] font-semibold lowercase tracking-normal">live analysis loop</span>
-                    </h3>
-                    
-                    <div class="mt-5 space-y-5">
-                        <div>
-                            <div class="flex justify-between text-[11px] font-semibold mb-2">
-                                <span class="text-slate-300">Pacing (Words Per Minute)</span>
-                                <span id="wpmValue" class="text-[#D4AF37] font-bold">0 WPM</span>
-                            </div>
-                            <div class="w-full bg-[#0a122c] rounded-full h-2 overflow-hidden border border-slate-800 relative shadow-inner">
-                                <div id="wpmGauge" class="gold-gradient-bg h-full w-0 transition-all duration-500"></div>
-                            </div>
-                            <div class="flex justify-between text-[9px] text-slate-400 font-bold mt-1.5 tracking-wider uppercase">
-                                <span>Deliberate</span>
-                                <span class="text-amber-400 font-bold">Optimal Range (110-150)</span>
-                                <span>Accelerated</span>
-                            </div>
-                        </div>
-
-                        <div class="grid grid-cols-2 gap-4">
-                            <div class="bg-[#101A36] border border-slate-700 rounded-xl p-4 text-center shadow-sm">
-                                <span class="block text-[10px] font-bold uppercase tracking-widest text-slate-300">Fluency Stalls (>3s)</span>
-                                <span id="pauseCount" class="text-2xl font-bold text-white mt-1 block">0</span>
-                            </div>
-                            <div class="bg-[#101A36] border border-slate-700 rounded-xl p-4 text-center shadow-sm">
-                                <span class="block text-[10px] font-bold uppercase tracking-widest text-slate-300">Vocal Filler Hits</span>
-                                <span id="fillerCount" class="text-2xl font-bold text-white mt-1 block">0</span>
-                            </div>
-                        </div>
+            
+            <div class="grid grid-cols-3 gap-4">
+                <div class="gold-glass rounded-2xl p-4 text-center">
+                    <span class="block text-[9px] font-bold uppercase tracking-widest text-slate-400 mb-1">Cadence / Pace</span>
+                    <span id="wpmValue" class="text-xl font-extrabold text-[#F3E5AB]">0 WPM</span>
+                    <div class="w-full bg-slate-800 rounded-full h-1.5 mt-2 overflow-hidden">
+                        <div id="wpmGauge" class="gold-gradient-bg h-1.5 rounded-full transition-all duration-300 w-0"></div>
                     </div>
                 </div>
 
-                <div class="mt-4 pt-4 border-t border-slate-800">
-                    <span class="block text-[10px] font-bold uppercase tracking-widest text-slate-300 mb-2.5">Interactive Highlights Transcript Console</span>
-                    <div id="interactiveTranscriptDisplay" class="bg-[#101A36] border border-slate-700 rounded-xl p-3.5 text-xs leading-relaxed max-h-[110px] overflow-y-auto text-slate-300 tracking-wide shadow-inner">
-                        No answers processed yet. Utter phrases like "um", "uh", or "like" during tracking to inspect highlighted transitions...
+                <div class="gold-glass rounded-2xl p-4 text-center">
+                    <span class="block text-[9px] font-bold uppercase tracking-widest text-slate-400 mb-1">Vocal Fillers</span>
+                    <span id="fillerCount" class="text-xl font-extrabold text-[#F3E5AB]">0</span>
+                    <span class="block text-[8px] text-slate-500 mt-1 uppercase font-semibold">Tracked Hits</span>
+                </div>
+
+                <div class="gold-glass rounded-2xl p-4 text-center">
+                    <span class="block text-[9px] font-bold uppercase tracking-widest text-slate-400 mb-1">Structural Pauses</span>
+                    <span id="pauseCount" class="text-xl font-extrabold text-[#F3E5AB]">0</span>
+                    <span class="block text-[8px] text-slate-500 mt-1 uppercase font-semibold">&gt; 2.5s Delays</span>
+                </div>
+            </div>
+
+            <div class="gold-glass rounded-2xl p-6 flex-1 flex flex-col justify-between shadow-2xl">
+                <div class="flex-1 flex flex-col">
+                    <div class="flex items-center justify-between mb-3 border-b border-slate-800/80 pb-3">
+                        <span class="text-[10px] font-bold uppercase tracking-widest text-slate-300">Live Transcript Stream</span>
+                        <span class="text-[9px] text-[#D4AF37] font-semibold uppercase tracking-wider">Interactive Feedback Enabled</span>
+                    </div>
+
+                    <div id="interactiveTranscriptDisplay" class="bg-[#101A36] border border-slate-700/80 rounded-xl p-4 flex-1 min-h-[160px] max-h-[220px] overflow-y-auto text-xs leading-relaxed text-slate-300 font-normal">
+                        No answers recorded yet. Click the record button and respond to the question. Hover over marked vocal fillers like "um" or "like" during tracking to inspect highlighted transitions...
                     </div>
                 </div>
 
@@ -316,147 +304,227 @@
                         </div>
                     </div>
                 </div>
-
             </div>
         </section>
-
     </main>
 
-    <footer class="border-t border-slate-800 py-6 text-center text-[10px] text-slate-400 font-medium tracking-widest uppercase bg-[#070D1F]">
-        &copy; 2026 VoxCoach AI. Structured Communication Systems Engineering Prototype. All Rights Reserved.
+    <footer class="border-t border-slate-800 py-6 text-center text-[10px] text-slate-400 font-medium tracking-widest uppercase">
+        VoxCoach AI Architecture &copy; 2026. High-Fidelity Communication Engine.
     </footer>
 
     <script>
-        // Session and Auth State Management
-        let currentUser = null;
-        let authMode = 'signin'; // 'signin' or 'signup'
+        // Initialize Supabase Client with credentials from Flask template rendering
+        const SUPABASE_URL = "{{ supabase_url|default('https://rmydbdccwnsqvwgwraxj.supabase.co') }}";
+        const SUPABASE_KEY = "{{ supabase_key|default('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJteWRiZGNjd25zcXZ3Z3dyYXhqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ2NDQwMDgsImV4cCI6MjEwMDIyMDAwOH0.LSyOUNBjetuemKnGCE_sXYe2Y56BLJpPzasc8GLd2x0') }}";
 
-        const signInBtn = document.getElementById('signInBtn');
-        const landingPage = document.getElementById('landingPage');
-        const mainWorkspace = document.getElementById('mainWorkspace');
-        const navDashboardBtn = document.getElementById('navDashboardBtn');
-        const navAuthBtn = document.getElementById('navAuthBtn');
+        let supabaseClient = null;
+        if (window.supabase && SUPABASE_URL && SUPABASE_KEY && !SUPABASE_URL.startsWith("{% raw %}{{% endraw %}")) {
+            try {
+                supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+            } catch(e) {
+                console.error("Supabase client initialization error:", e);
+            }
+        }
 
+        // Global State Registers
+        let sessionHistory = [];
+        let currentTrack = "General Corporate Interview";
+        let currentResume = "";
+        let currentTargetContext = "";
+        let isRecording = false;
+        let finalTranscript = "";
+        
+        let speechStartTime = 0;
+        let totalWordsCount = 0;
+        let detectedFillerHits = 0;
+        let detectedFluencyDelays = 0;
+        let pauseTrackingTimeout = null;
+
+        // Auth UI Modal State Variables
+        let authMode = 'signin';
         const authModal = document.getElementById('authModal');
+        const navAuthBtn = document.getElementById('navAuthBtn');
         const closeAuthModalBtn = document.getElementById('closeAuthModalBtn');
         const tabSigninBtn = document.getElementById('tabSigninBtn');
         const tabSignupBtn = document.getElementById('tabSignupBtn');
-        const authModalTitle = document.getElementById('authModalTitle');
-        const authModalSubtitle = document.getElementById('authModalSubtitle');
-        const authSubmitBtn = document.getElementById('authSubmitBtn');
         const authForm = document.getElementById('authForm');
+        const authEmail = document.getElementById('authEmail');
+        const authPassword = document.getElementById('authPassword');
+        const authSubmitBtn = document.getElementById('authSubmitBtn');
         const authErrorMsg = document.getElementById('authErrorMsg');
         const authSuccessMsg = document.getElementById('authSuccessMsg');
         const googleSignInBtn = document.getElementById('googleSignInBtn');
 
         const userProfileBadge = document.getElementById('userProfileBadge');
-        const userEmailDisplay = document.getElementById('userEmailDisplay');
         const userAvatarChar = document.getElementById('userAvatarChar');
+        const userEmailDisplay = document.getElementById('userEmailDisplay');
         const signOutBtn = document.getElementById('signOutBtn');
 
-        // Check stored user session and OAuth callback
-        function initAuth() {
+        const landingPage = document.getElementById('landingPage');
+        const mainWorkspace = document.getElementById('mainWorkspace');
+        const navDashboardBtn = document.getElementById('navDashboardBtn');
+        const signInBtn = document.getElementById('signInBtn');
+
+        function showAuthError(msg) {
+            authErrorMsg.innerText = msg;
+            authErrorMsg.classList.remove('hidden');
+            authSuccessMsg.classList.add('hidden');
+        }
+
+        function showAuthSuccess(msg) {
+            authSuccessMsg.innerText = msg;
+            authSuccessMsg.classList.remove('hidden');
+            authErrorMsg.classList.add('hidden');
+        }
+
+        function clearAuthMsgs() {
+            authErrorMsg.classList.add('hidden');
+            authSuccessMsg.classList.add('hidden');
+            authErrorMsg.innerText = '';
+            authSuccessMsg.innerText = '';
+        }
+
+        function updateUIForLoggedInUser(user) {
+            if (!user || !user.email) return;
+            userEmailDisplay.innerText = user.email;
+            userAvatarChar.innerText = user.email.charAt(0).toUpperCase();
+            userProfileBadge.classList.remove('hidden');
+            userProfileBadge.classList.add('flex');
+            navAuthBtn.classList.add('hidden');
+            authModal.classList.add('hidden');
+        }
+
+        function updateUIForLoggedOutUser() {
+            userProfileBadge.classList.add('hidden');
+            userProfileBadge.classList.remove('flex');
+            navAuthBtn.classList.remove('hidden');
+            
+            mainWorkspace.classList.add('hidden');
+            mainWorkspace.classList.remove('opacity-100');
+            mainWorkspace.classList.add('opacity-0');
+            landingPage.classList.remove('hidden');
+            navDashboardBtn.classList.add('hidden');
+        }
+
+        // Initialize Auth Session and Google OAuth Redirect Callback Handler
+        async function initAuth() {
+            if (supabaseClient) {
+                // Listen to OAuth state changes (triggers when returning from Google Sign-In)
+                supabaseClient.auth.onAuthStateChange((event, session) => {
+                    if (session && session.user) {
+                        const userData = {
+                            id: session.user.id,
+                            email: session.user.email,
+                            token: session.access_token
+                        };
+                        localStorage.setItem('voxcoach_user', JSON.stringify(userData));
+                        updateUIForLoggedInUser(userData);
+
+                        if (window.location.hash || window.location.search.includes('code=')) {
+                            window.history.replaceState(null, '', window.location.pathname);
+                        }
+                    }
+                });
+
+                try {
+                    const { data: { session } } = await supabaseClient.auth.getSession();
+                    if (session && session.user) {
+                        const userData = {
+                            id: session.user.id,
+                            email: session.user.email,
+                            token: session.access_token
+                        };
+                        localStorage.setItem('voxcoach_user', JSON.stringify(userData));
+                        updateUIForLoggedInUser(userData);
+                        return;
+                    }
+                } catch (e) {
+                    console.error("Error retrieving Supabase session:", e);
+                }
+            }
+
+            // Fallback: Check direct URL hash parameters if access_token was returned
+            if (window.location.hash && window.location.hash.includes('access_token=')) {
+                try {
+                    const hashParams = new URLSearchParams(window.location.hash.substring(1));
+                    const accessToken = hashParams.get('access_token');
+                    if (accessToken) {
+                        const res = await fetch('/api/auth/me', {
+                            headers: { 'Authorization': `Bearer ${accessToken}` }
+                        });
+                        const data = await res.json();
+                        if (data.success && data.user) {
+                            const userData = {
+                                id: data.user.id,
+                                email: data.user.email,
+                                token: accessToken
+                            };
+                            localStorage.setItem('voxcoach_user', JSON.stringify(userData));
+                            updateUIForLoggedInUser(userData);
+                            window.history.replaceState(null, '', window.location.pathname);
+                            return;
+                        }
+                    }
+                } catch (err) {
+                    console.error("Failed to parse token from URL hash:", err);
+                }
+            }
+
+            // Fallback: Check local storage
             const savedUser = localStorage.getItem('voxcoach_user');
             if (savedUser) {
                 try {
-                    currentUser = JSON.parse(savedUser);
-                    updateAuthUI();
+                    const user = JSON.parse(savedUser);
+                    updateUIForLoggedInUser(user);
                 } catch (e) {
                     localStorage.removeItem('voxcoach_user');
                 }
             }
+        }
 
-            // Handle Google OAuth callback hash parameters
-            const hash = window.location.hash;
-            if (hash && hash.includes('access_token')) {
-                const params = new URLSearchParams(hash.substring(1));
-                const accessToken = params.get('access_token');
-                if (accessToken) {
-                    currentUser = { email: 'authenticated_google_user', token: accessToken };
-                    localStorage.setItem('voxcoach_user', JSON.stringify(currentUser));
-                    updateAuthUI();
-                    window.location.hash = '';
+        // Google Sign-In Action Event Listener
+        googleSignInBtn.addEventListener('click', async () => {
+            clearAuthMsgs();
+            const redirectUrl = window.location.origin + window.location.pathname;
+            try {
+                if (supabaseClient) {
+                    const { data, error } = await supabaseClient.auth.signInWithOAuth({
+                        provider: 'google',
+                        options: {
+                            redirectTo: redirectUrl
+                        }
+                    });
+                    if (error) throw error;
+                } else {
+                    const res = await fetch('/api/auth/google', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ redirect_to: redirectUrl })
+                    });
+                    const data = await res.json();
+                    if (data.success && data.url) {
+                        window.location.href = data.url;
+                    } else {
+                        showAuthError(data.error || "Failed to initiate Google Sign-In.");
+                    }
                 }
-            }
-        }
-
-        function updateAuthUI() {
-            if (currentUser && currentUser.email) {
-                userProfileBadge.classList.remove('hidden');
-                userProfileBadge.classList.add('flex');
-                userEmailDisplay.innerText = currentUser.email;
-                userAvatarChar.innerText = currentUser.email.charAt(0).toUpperCase();
-                navAuthBtn.classList.add('hidden');
-            } else {
-                userProfileBadge.classList.add('hidden');
-                userProfileBadge.classList.remove('flex');
-                navAuthBtn.classList.remove('hidden');
-            }
-        }
-
-        function openAuthModal() {
-            authErrorMsg.classList.add('hidden');
-            authSuccessMsg.classList.add('hidden');
-            authModal.classList.remove('hidden');
-        }
-
-        function closeAuthModal() {
-            authModal.classList.add('hidden');
-        }
-
-        function showWorkspace() {
-            landingPage.classList.add('hidden');
-            mainWorkspace.classList.remove('hidden');
-            setTimeout(() => {
-                mainWorkspace.classList.remove('opacity-0');
-                mainWorkspace.classList.add('opacity-100');
-            }, 50);
-            navDashboardBtn.classList.remove('hidden');
-        }
-
-        // Event Listeners for Authentication UI
-        signInBtn.addEventListener('click', () => {
-            if (currentUser) {
-                showWorkspace();
-            } else {
-                openAuthModal();
+            } catch (err) {
+                showAuthError(err.message || "Google Sign-In failed.");
             }
         });
 
-        navAuthBtn.addEventListener('click', openAuthModal);
-        closeAuthModalBtn.addEventListener('click', closeAuthModal);
-
-        tabSigninBtn.addEventListener('click', () => {
-            authMode = 'signin';
-            tabSigninBtn.className = "flex-1 pb-3 text-xs font-bold uppercase tracking-wider text-[#D4AF37] border-b-2 border-[#D4AF37] transition-all";
-            tabSignupBtn.className = "flex-1 pb-3 text-xs font-bold uppercase tracking-wider text-slate-400 border-b-2 border-transparent hover:text-slate-200 transition-all";
-            authModalTitle.innerText = "Welcome Back";
-            authModalSubtitle.innerText = "Sign in to access your interview workspace";
-            authSubmitBtn.innerText = "Sign In";
-            authErrorMsg.classList.add('hidden');
-            authSuccessMsg.classList.add('hidden');
-        });
-
-        tabSignupBtn.addEventListener('click', () => {
-            authMode = 'signup';
-            tabSignupBtn.className = "flex-1 pb-3 text-xs font-bold uppercase tracking-wider text-[#D4AF37] border-b-2 border-[#D4AF37] transition-all";
-            tabSigninBtn.className = "flex-1 pb-3 text-xs font-bold uppercase tracking-wider text-slate-400 border-b-2 border-transparent hover:text-slate-200 transition-all";
-            authModalTitle.innerText = "Create Account";
-            authModalSubtitle.innerText = "Sign up to track your communication analytics";
-            authSubmitBtn.innerText = "Create Account";
-            authErrorMsg.classList.add('hidden');
-            authSuccessMsg.classList.add('hidden');
-        });
-
+        // Email / Password Authentication Event Listener
         authForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            const email = document.getElementById('authEmail').value;
-            const password = document.getElementById('authPassword').value;
+            clearAuthMsgs();
 
-            authErrorMsg.classList.add('hidden');
-            authSuccessMsg.classList.add('hidden');
-            authSubmitBtn.setAttribute('disabled', 'true');
-            authSubmitBtn.innerText = "Processing...";
+            const email = authEmail.value.trim();
+            const password = authPassword.value.trim();
+
+            if (!email || !password) {
+                showAuthError("Please fill in all fields.");
+                return;
+            }
 
             const endpoint = authMode === 'signup' ? '/api/auth/signup' : '/api/auth/signin';
 
@@ -468,81 +536,89 @@
                 });
                 const data = await res.json();
 
-                if (data.success) {
-                    currentUser = data.user;
-                    localStorage.setItem('voxcoach_user', JSON.stringify(currentUser));
-                    updateAuthUI();
-                    closeAuthModal();
-                    showWorkspace();
+                if (data.success && data.user) {
+                    const userData = {
+                        id: data.user.id,
+                        email: data.user.email,
+                        token: data.session || ''
+                    };
+                    localStorage.setItem('voxcoach_user', JSON.stringify(userData));
+                    updateUIForLoggedInUser(userData);
+                    showAuthSuccess(authMode === 'signup' ? "Account created successfully!" : "Signed in successfully!");
+                    setTimeout(() => {
+                        authModal.classList.add('hidden');
+                        clearAuthMsgs();
+                    }, 1000);
                 } else {
-                    authErrorMsg.innerText = data.error || "Authentication failed.";
-                    authErrorMsg.classList.remove('hidden');
+                    showAuthError(data.error || "Authentication failed.");
                 }
             } catch (err) {
-                authErrorMsg.innerText = "Network connection drop encountered.";
-                authErrorMsg.classList.remove('hidden');
-            } finally {
-                authSubmitBtn.removeAttribute('disabled');
-                authSubmitBtn.innerText = authMode === 'signup' ? "Create Account" : "Sign In";
+                showAuthError("Network error. Please try again.");
             }
         });
 
-        googleSignInBtn.addEventListener('click', async () => {
-            try {
-                const res = await fetch('/api/auth/google', { method: 'POST' });
-                const data = await res.json();
-                if (data.success && data.url) {
-                    window.location.href = data.url;
-                } else {
-                    authErrorMsg.innerText = data.error || "Failed to launch Google Sign-In loop.";
-                    authErrorMsg.classList.remove('hidden');
-                }
-            } catch (err) {
-                authErrorMsg.innerText = "Server communication error during Google Sign-In.";
-                authErrorMsg.classList.remove('hidden');
-            }
+        // Modal Control Listeners
+        navAuthBtn.addEventListener('click', () => {
+            clearAuthMsgs();
+            authModal.classList.remove('hidden');
         });
 
-        signOutBtn.addEventListener('click', () => {
-            currentUser = null;
+        closeAuthModalBtn.addEventListener('click', () => {
+            authModal.classList.add('hidden');
+        });
+
+        tabSigninBtn.addEventListener('click', () => {
+            authMode = 'signin';
+            tabSigninBtn.className = "flex-1 pb-3 text-xs font-bold uppercase tracking-wider text-[#D4AF37] border-b-2 border-[#D4AF37] transition-all";
+            tabSignupBtn.className = "flex-1 pb-3 text-xs font-bold uppercase tracking-wider text-slate-400 border-b-2 border-transparent hover:text-slate-200 transition-all";
+            authModalTitle.innerText = "Welcome Back";
+            authModalSubtitle.innerText = "Sign in to access your interview workspace";
+            authSubmitBtn.innerText = "Sign In";
+            clearAuthMsgs();
+        });
+
+        tabSignupBtn.addEventListener('click', () => {
+            authMode = 'signup';
+            tabSignupBtn.className = "flex-1 pb-3 text-xs font-bold uppercase tracking-wider text-[#D4AF37] border-b-2 border-[#D4AF37] transition-all";
+            tabSigninBtn.className = "flex-1 pb-3 text-xs font-bold uppercase tracking-wider text-slate-400 border-b-2 border-transparent hover:text-slate-200 transition-all";
+            authModalTitle.innerText = "Create Account";
+            authModalSubtitle.innerText = "Sign up to track your communication analytics";
+            authSubmitBtn.innerText = "Sign Up";
+            clearAuthMsgs();
+        });
+
+        signOutBtn.addEventListener('click', async () => {
             localStorage.removeItem('voxcoach_user');
-            updateAuthUI();
-            mainWorkspace.classList.remove('opacity-100');
-            mainWorkspace.classList.add('opacity-0');
-            setTimeout(() => {
-                mainWorkspace.classList.add('hidden');
-                landingPage.classList.remove('hidden');
-            }, 500);
-            navDashboardBtn.classList.add('hidden');
+            if (supabaseClient) {
+                try { await supabaseClient.auth.signOut(); } catch(e){}
+            }
+            updateUIForLoggedOutUser();
+        });
+
+        // Workspace Launch Listeners
+        signInBtn.addEventListener('click', () => {
+            const savedUser = localStorage.getItem('voxcoach_user');
+            if (!savedUser) {
+                clearAuthMsgs();
+                authModal.classList.remove('hidden');
+            } else {
+                landingPage.classList.add('hidden');
+                mainWorkspace.classList.remove('hidden');
+                setTimeout(() => {
+                    mainWorkspace.classList.remove('opacity-0');
+                    mainWorkspace.classList.add('opacity-100');
+                }, 50);
+                navDashboardBtn.classList.remove('hidden');
+            }
         });
 
         navDashboardBtn.addEventListener('click', () => {
+            mainWorkspace.classList.add('hidden');
             mainWorkspace.classList.remove('opacity-100');
             mainWorkspace.classList.add('opacity-0');
-            setTimeout(() => {
-                mainWorkspace.classList.add('hidden');
-                landingPage.classList.remove('hidden');
-            }, 500);
+            landingPage.classList.remove('hidden');
             navDashboardBtn.classList.add('hidden');
         });
-
-        // Initialize Authentication on load
-        initAuth();
-
-        // Execution State Repositories
-        let sessionHistory = [];
-        let currentTrack = "";
-        let currentResume = "";
-        let currentTargetContext = "";
-        let isRecording = false;
-        let finalTranscript = "";
-        
-        // Native Performance Metrics Tracking Hooks
-        let speechStartTime = null;
-        let pauseTrackingTimeout = null;
-        let totalWordsCount = 0;
-        let detectedFillerHits = 0;
-        let detectedFluencyDelays = 0;
 
         // Web Audio Context Subsystem Elements
         let audioCtx = null;
@@ -581,50 +657,25 @@
 
         // US Context Alternative Transition Vocabulary Configurations
         const transitionalAlternatives = {
-            "um": "Instead of executing a vocal stall like 'um', practice using stabilizing structural bridges: 'Certainly,' 'Consequently,' or pause silently for 1 second to gather focus.",
-            "uh": "Replacing 'uh' with active professional connectors preserves vocal command. Leverage transitional hooks such as: 'Importantly,' 'Specifically,' or 'Moving forward.'",
-            "like": "Using 'like' as a loose narrative filler dilutes data authority. Replace with analytical metrics indicators: 'For instance,' 'Namely,' or 'Particularly.'"
+            "um": "Instead of executing a vocal stall like 'um', practice using stabilizing structural bridges: 'Certainly,' 'Consequently,' or 'To break this down...'",
+            "uh": "To remove vocal hesitations like 'uh', embrace deliberate structural pauses to frame your upcoming thoughts.",
+            "like": "Instead of casual conversational indicators like 'like', use precise analytical metrics: 'specifically,' 'for instance,' or 'namely.'",
+            "you know": "Avoid relying on passive validation phrases like 'you know'. Affirm your points directly: 'As evidenced by our results...'",
+            "sort of": "Eliminate vague hedging like 'sort of'. Assert your achievements clearly: 'essentially,' 'primarily,' or 'distinctly.'",
+            "basically": "Replace informal summarizers like 'basically' with authoritative phrasing: 'fundamentally,' or 'at its core.'"
         };
 
-        // Render Highlighted Transcript and Bind Click Tooltips
-        function renderHighlightedTranscript(text) {
-            const container = document.getElementById('interactiveTranscriptDisplay');
-            if (!text || text.trim() === "") {
-                container.innerText = "No vocal answers captured in this interaction turn window.";
-                return;
-            }
-
-            const tokens = text.split(/(\b(?:um|uh|like)\b)/i);
-            container.innerHTML = ""; 
-
-            tokens.forEach(token => {
-                const standardized = token.toLowerCase().trim();
-                if (transitionalAlternatives[standardized]) {
-                    const span = document.createElement('span');
-                    span.className = "bg-amber-950 text-[#F3E5AB] font-bold px-1.5 py-0.5 rounded border border-amber-500/50 cursor-pointer hover:bg-amber-900 transition-colors inline-block relative mx-0.5 text-[11px]";
-                    span.innerText = token;
-                    
-                    span.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        showPopoverTooltip(e.target, standardized);
-                    });
-                    container.appendChild(span);
-                } else {
-                    container.appendChild(document.createTextNode(token));
-                }
-            });
-        }
-
-        function showPopoverTooltip(element, fillerWord) {
+        function triggerFillerTipPopover(word, targetElem) {
             const popover = document.getElementById('fillerPopover');
-            const txt = document.getElementById('popoverAlternativeText');
+            const popoverText = document.getElementById('popoverAlternativeText');
+            const altText = transitionalAlternatives[word.toLowerCase()] || "Focus on replacing verbal hesitations with brief silent pauses to convey authority.";
             
-            txt.innerText = transitionalAlternatives[fillerWord];
+            popoverText.innerText = altText;
             popover.classList.remove('hidden');
 
-            const rect = element.getBoundingClientRect();
-            const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
+            const rect = targetElem.getBoundingClientRect();
             const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
 
             popover.style.left = `${rect.left + scrollLeft - 20}px`;
             popover.style.top = `${rect.top + scrollTop - popover.offsetHeight - 12}px`;
@@ -639,21 +690,20 @@
             currentTrack = trackSelector.value;
             currentResume = document.getElementById('resumeInput').value;
             currentTargetContext = targetContextInput.value;
-            
+
             document.getElementById('questionDisplay').innerText = "Dynamically generating unique opening scenario prompt specialized to parameters...";
-            
+
             try {
                 const res = await fetch('/api/session/start', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
+                    body: JSON.stringify({
                         track: currentTrack,
                         resume: currentResume,
                         target_context: currentTargetContext
                     })
                 });
                 const data = await res.json();
-                
                 if (data.success) {
                     sessionHistory = data.history;
                     document.getElementById('questionDisplay').innerText = data.current_question;
@@ -662,58 +712,195 @@
                     detectedFillerHits = 0;
                     detectedFluencyDelays = 0;
                     finalTranscript = "";
+
                     document.getElementById('fillerCount').innerText = "0";
                     document.getElementById('pauseCount').innerText = "0";
                     document.getElementById('wpmValue').innerText = "0 WPM";
                     document.getElementById('wpmGauge').style.width = "0%";
                     document.getElementById('transcriptionFallback').innerText = "";
                     document.getElementById('transcriptionFallback').classList.add('hidden');
-                    document.getElementById('interactiveTranscriptDisplay').innerText = "No answers processed yet. Utter phrases like \"um\", \"uh\", or \"like\" during tracking to inspect highlighted transitions...";
-                    document.getElementById('critiqueOutput').innerHTML = '<div id="analysisDefaultText" class="text-slate-400 text-[11px] font-medium">Awaiting response collection window loop...</div>';
-                    
+                    document.getElementById('interactiveTranscriptDisplay').innerText = "No answers recorded yet. Click the record button and respond to the question. Hover over marked vocal fillers like 'um' or 'like' during tracking to inspect highlighted transitions...";
+
                     document.getElementById('recordBtn').removeAttribute('disabled');
-                    document.getElementById('endSessionBtn').removeAttribute('disabled');
                     document.getElementById('nextQuestionBtn').setAttribute('disabled', 'true');
-                } else {
-                    document.getElementById('questionDisplay').innerText = "Failed to launch context: " + data.error;
                 }
             } catch (err) {
-                console.error("Failed to map initial session routing metrics:", err);
-                document.getElementById('questionDisplay').innerText = "Server pipeline error launching session context.";
+                document.getElementById('questionDisplay').innerText = "Connection Error: Failed to generate session prompt. Please verify your backend server status.";
             }
         });
 
-        // Toggle Audio Capture Pipelines
-        document.getElementById('recordBtn').addEventListener('click', () => {
-            if (!isRecording) {
-                startRecordingSequence();
-            } else {
-                isRecording = false;
-                if (speechEngine) speechEngine.stop();
-            }
-        });
+        // Audio Spectrum Visualizer Function
+        function renderSpectrumVisualization() {
+            const canvas = document.getElementById('audioSpectrum');
+            const canvasCtx = canvas.getContext('2d');
+            const bufferLength = audioAnalyser.frequencyBinCount;
+            const dataArray = new Uint8Array(bufferLength);
 
-        // Trigger Adaptive Turn Advancement
-        document.getElementById('nextQuestionBtn').addEventListener('click', async () => {
-            if (!finalTranscript || finalTranscript.trim() === "") {
-                document.getElementById('questionDisplay').innerText = "Please record an answer voice track completely before proceeding.";
+            function draw() {
+                animationFrameId = requestAnimationFrame(draw);
+                audioAnalyser.getByteFrequencyData(dataArray);
+
+                canvasCtx.fillStyle = '#0a122c';
+                canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
+
+                const barWidth = (canvas.width / bufferLength) * 2.5;
+                let barHeight;
+                let x = 0;
+
+                for (let i = 0; i < bufferLength; i++) {
+                    barHeight = dataArray[i] / 3;
+                    canvasCtx.fillStyle = `rgba(212, 175, 55, ${barHeight / 80})`;
+                    canvasCtx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
+                    x += barWidth + 1;
+                }
+            }
+            draw();
+        }
+
+        function resetFluencyDelayTicker() {
+            if (pauseTrackingTimeout) clearTimeout(pauseTrackingTimeout);
+            pauseTrackingTimeout = setTimeout(() => {
+                if (isRecording) {
+                    detectedFluencyDelays += 1;
+                    document.getElementById('pauseCount').innerText = detectedFluencyDelays;
+                }
+            }, 2500);
+        }
+
+        function renderHighlightedTranscript(text) {
+            const container = document.getElementById('interactiveTranscriptDisplay');
+            if (!text || text.trim() === "") {
+                container.innerText = "No spoken transcript registered yet. Speak clearly into your microphone...";
                 return;
             }
 
-            document.getElementById('nextQuestionBtn').setAttribute('disabled', 'true');
-            document.getElementById('recordBtn').setAttribute('disabled', 'true');
-            document.getElementById('questionDisplay').innerText = "Processing response records through rapid inference engine...";
-            
-            if (!sessionHistory.some(turn => turn.content === finalTranscript.trim())) {
+            const fillerRegex = /\b(um|uh|like|you know|sort of|basically)\b/gi;
+            let formattedHtml = text.replace(fillerRegex, (match) => {
+                return `<span class="filler-word text-[#D4AF37] underline decoration-amber-500/60 decoration-2 font-bold cursor-pointer hover:bg-amber-500/20 px-1 rounded transition-colors" onclick="event.stopPropagation(); triggerFillerTipPopover('${match}', this)">${match}</span>`;
+            });
+
+            container.innerHTML = formattedHtml;
+        }
+
+        // Toggle Audio Recording Loop
+        document.getElementById('recordBtn').addEventListener('click', async () => {
+            if (!speechEngine) return;
+
+            if (!isRecording) {
+                try {
+                    mediaStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                    audioAnalyser = audioCtx.createAnalyser();
+                    audioSource = audioCtx.createMediaStreamSource(mediaStream);
+                    audioSource.connect(audioAnalyser);
+                    audioAnalyser.fftSize = 64;
+
+                    renderSpectrumVisualization();
+
+                    isRecording = true;
+                    speechStartTime = Date.now();
+                    finalTranscript = "";
+                    
+                    speechEngine.start();
+
+                    document.getElementById('recordBtn').className = "bg-amber-500/20 border-2 border-[#D4AF37] text-white p-4 rounded-full transition-all duration-200 group relative shadow-lg shadow-[#D4AF37]/20";
+                    document.getElementById('avatarContainer').className = "w-24 h-24 rounded-full bg-[#16224F] border-2 border-[#D4AF37] flex items-center justify-center shadow-xl shadow-[#D4AF37]/20 relative z-10 transition-all duration-300";
+                    document.getElementById('avatarIcon').className = "w-9 h-9 text-[#D4AF37] transition-colors duration-300";
+                    document.getElementById('avatarPulse').classList.remove('hidden');
+                    document.getElementById('waveformPlaceholder').classList.add('hidden');
+
+                    resetFluencyDelayTicker();
+                } catch (err) {
+                    alert("Microphone permission denied or audio input device not found.");
+                }
+            } else {
+                isRecording = false;
+                speechEngine.stop();
+
+                document.getElementById('avatarContainer').className = "w-24 h-24 rounded-full bg-[#101A36] border-2 border-slate-700 flex items-center justify-center shadow-sm relative z-10 transition-all duration-300";
+                document.getElementById('avatarIcon').className = "w-9 h-9 text-slate-400 transition-colors duration-300";
+                document.getElementById('avatarPulse').classList.add('hidden');
+                document.getElementById('waveformPlaceholder').classList.remove('hidden');
+                document.getElementById('waveformPlaceholder').innerText = "Audio Feed Inactive";
+                document.getElementById('recordBtn').className = "bg-[#101A36] border border-slate-700 hover:border-[#D4AF37]/40 disabled:opacity-30 disabled:pointer-events-none text-slate-200 p-4 rounded-full transition-all duration-200 group relative shadow-sm";
+                
+                clearTimeout(pauseTrackingTimeout);
+                
+                if (mediaStream) {
+                    mediaStream.getTracks().forEach(track => track.stop());
+                }
+                if (animationFrameId) {
+                    cancelAnimationFrame(animationFrameId);
+                }
+                if (audioCtx) {
+                    try { audioCtx.close(); } catch(e) {}
+                }
+
+                if (finalTranscript && finalTranscript.trim() !== "") {
+                    document.getElementById('nextQuestionBtn').removeAttribute('disabled');
+                }
+            }
+        });
+
+        if (speechEngine) {
+            speechEngine.onresult = (event) => {
+                resetFluencyDelayTicker();
+                let cumulativeText = "";
+
+                for (let i = 0; i < event.results.length; ++i) {
+                    cumulativeText += event.results[i][0].transcript + " ";
+                }
+                finalTranscript = cumulativeText.trim();
+                
+                document.getElementById('transcriptionFallback').innerText = finalTranscript;
+                renderHighlightedTranscript(finalTranscript);
+
+                const matches = finalTranscript.match(/\b(um|uh|like|you know|sort of|basically)\b/gi);
+                detectedFillerHits = matches ? matches.length : 0;
+                document.getElementById('fillerCount').innerText = detectedFillerHits;
+
+                const wordsArr = finalTranscript.split(/\s+/).filter(w => w.length > 0);
+                totalWordsCount = wordsArr.length;
+                const elapsedMinutes = (Date.now() - speechStartTime) / 60000;
+                
+                if (elapsedMinutes > 0) {
+                    const currentWpm = Math.round(totalWordsCount / elapsedMinutes);
+                    document.getElementById('wpmValue').innerText = `${currentWpm} WPM`;
+                    const percentage = Math.min(Math.round((currentWpm / 200) * 100), 100);
+                    document.getElementById('wpmGauge').style.width = `${percentage}%`;
+                }
+            };
+
+            speechEngine.onerror = (event) => {
+                console.warn("Speech recognition event warning:", event.error);
+            };
+
+            speechEngine.onend = () => {
+                if (isRecording) {
+                    try { speechEngine.start(); } catch(e) {}
+                }
+            };
+        }
+
+        // Trigger Next Conversation Turn
+        document.getElementById('nextQuestionBtn').addEventListener('click', async () => {
+            if (isRecording) {
+                isRecording = false;
+                if (speechEngine) speechEngine.stop();
+            }
+
+            if (finalTranscript && finalTranscript.trim() !== "") {
                 sessionHistory.push({ "role": "user", "content": finalTranscript.trim() });
             }
 
+            document.getElementById('questionDisplay').innerText = "Analyzing candidate transcript response and formulating target follow-up scenario...";
+            document.getElementById('nextQuestionBtn').setAttribute('disabled', 'true');
+
             try {
-                const res = await fetch('/api/session/respond', {
+                const res = await fetch('/api/session/next', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        transcript: finalTranscript,
                         history: sessionHistory,
                         track: currentTrack,
                         resume: currentResume,
@@ -721,9 +908,6 @@
                     })
                 });
                 const data = await res.json();
-                
-                document.getElementById('recordBtn').removeAttribute('disabled');
-                
                 if (data.success) {
                     sessionHistory = data.history;
                     document.getElementById('questionDisplay').innerText = data.next_question;
@@ -731,18 +915,14 @@
                     finalTranscript = "";
                     document.getElementById('transcriptionFallback').innerText = "";
                     document.getElementById('transcriptionFallback').classList.add('hidden');
-                } else {
-                    document.getElementById('questionDisplay').innerText = "Error: " + data.error;
-                    document.getElementById('nextQuestionBtn').removeAttribute('disabled');
+                    document.getElementById('interactiveTranscriptDisplay').innerText = "Previous turn recorded. Ready for next response loop...";
                 }
             } catch (err) {
-                console.error("Pipeline breakdown sending response turn:", err);
-                document.getElementById('questionDisplay').innerText = "Network connection drop encountered.";
-                document.getElementById('recordBtn').removeAttribute('disabled');
+                document.getElementById('questionDisplay').innerText = "Connection Error: Failed to generate follow-up prompt.";
             }
         });
 
-        // Evaluation Review Execution Framework
+        // Trigger Final STAR Methodology Assessment
         document.getElementById('endSessionBtn').addEventListener('click', async () => {
             if (isRecording) {
                 isRecording = false;
@@ -769,170 +949,32 @@
                 const res = await fetch('/api/session/analyze', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
+                    body: JSON.stringify({
                         history: historyPayload,
                         resume: currentResume,
                         target_context: currentTargetContext
                     })
                 });
                 const data = await res.json();
-                
-                if (data.success) {
-                    outputBox.innerHTML = `<div class="whitespace-pre-line text-white leading-relaxed text-xs">${data.analysis}</div>`;
+                if (data.success && data.critique) {
+                    let formattedCritique = data.critique
+                        .replace(/^### (.*$)/gim, '<h3 class="text-[#D4AF37] font-bold text-xs uppercase tracking-wider mt-3 mb-1">$1</h3>')
+                        .replace(/^## (.*$)/gim, '<h4 class="text-[#F3E5AB] font-bold text-xs uppercase tracking-wider mt-4 mb-1.5 border-b border-slate-800 pb-1">$1</h4>')
+                        .replace(/\*\*(.*?)\*\*/g, '<strong class="text-white font-semibold">$1</strong>')
+                        .replace(/^\* (.*$)/gim, '<li class="ml-4 list-disc text-slate-300 my-0.5">$1</li>')
+                        .replace(/\n\n/g, '<br><br>');
+
+                    outputBox.innerHTML = `<div class="space-y-1">${formattedCritique}</div>`;
                 } else {
-                    outputBox.innerHTML = `<div class="text-amber-400 text-[11px]">Error generating analysis: ${data.error}</div>`;
+                    outputBox.innerHTML = `<span class="text-red-400">Failed to compile STAR evaluation matrix: ${data.error || 'Unknown error'}</span>`;
                 }
             } catch (err) {
-                outputBox.innerHTML = `<div class="text-amber-400 text-[11px]">Network error connection drop during diagnostic computation.</div>`;
+                outputBox.innerHTML = `<span class="text-red-400">Network Error: Unable to complete session evaluation synthesis.</span>`;
             }
         });
 
-        // Initialize Audio Streams
-        async function startRecordingSequence() {
-            if (!speechEngine) return;
-            
-            isRecording = true;
-            speechStartTime = Date.now();
-            document.getElementById('transcriptionFallback').classList.remove('hidden');
-            document.getElementById('transcriptionFallback').innerText = "Listening to vocal input stream...";
-            
-            document.getElementById('avatarContainer').classList.remove('border-slate-700');
-            document.getElementById('avatarContainer').classList.add('border-[#D4AF37]', 'shadow-lg', 'shadow-[#D4AF37]/20');
-            document.getElementById('avatarIcon').classList.remove('text-slate-400');
-            document.getElementById('avatarIcon').classList.add('text-[#D4AF37]');
-            document.getElementById('avatarPulse').classList.remove('hidden');
-            document.getElementById('recordBtn').classList.add('border-amber-500/50');
-            
-            try {
-                mediaStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
-                initializeWebAudioSpectrum(mediaStream);
-            } catch (err) {
-                console.error("Microphone hardware access blocked:", err);
-                document.getElementById('waveformPlaceholder').innerText = "Mic Hardware Blocked";
-                isRecording = false;
-                return;
-            }
-
-            speechEngine.start();
-            resetFluencyDelayTicker();
-        }
-
-        // Web Audio Spectrum Canvas Rendering Loop
-        function initializeWebAudioSpectrum(stream) {
-            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            audioAnalyser = audioCtx.createAnalyser();
-            audioSource = audioCtx.createMediaStreamSource(stream);
-            
-            audioSource.connect(audioAnalyser);
-            audioAnalyser.fftSize = 64; 
-            
-            const bufferLength = audioAnalyser.frequencyBinCount;
-            const dataArray = new Uint8Array(bufferLength);
-            
-            const canvas = document.getElementById('audioSpectrum');
-            const canvasCtx = canvas.getContext('2d');
-            document.getElementById('waveformPlaceholder').classList.add('hidden');
-            
-            function mixSpectrumFrames() {
-                if (!isRecording) return;
-                animationFrameId = requestAnimationFrame(mixSpectrumFrames);
-                
-                audioAnalyser.getByteFrequencyData(dataArray);
-                canvasCtx.fillStyle = 'rgba(10, 18, 44, 0.6)';
-                canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
-                
-                const barWidth = (canvas.width / bufferLength) * 1.6;
-                let barHeight;
-                let x = 0;
-                
-                for (let i = 0; i < bufferLength; i++) {
-                    barHeight = dataArray[i] / 2.2;
-                    canvasCtx.fillStyle = `rgba(212, 175, 55, ${0.4 + (barHeight / canvas.height)})`;
-                    canvasCtx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
-                    x += barWidth + 3;
-                }
-            }
-
-            mixSpectrumFrames();
-        }
-
-        // Live Fluency Tracker Delay Interval Checker
-        function resetFluencyDelayTicker() {
-            clearTimeout(pauseTrackingTimeout);
-            if (!isRecording) return;
-            
-            pauseTrackingTimeout = setTimeout(() => {
-                if (isRecording) {
-                    detectedFluencyDelays++;
-                    document.getElementById('pauseCount').innerText = detectedFluencyDelays;
-                    resetFluencyDelayTicker();
-                }
-            }, 3000);
-        }
-
-        // Speech Engine Lifecycle Handlers
-        if (speechEngine) {
-            speechEngine.onresult = (event) => {
-                resetFluencyDelayTicker(); 
-                let cumulativeText = "";
-                
-                for (let i = 0; i < event.results.length; ++i) {
-                    cumulativeText += event.results[i][0].transcript + " ";
-                }
-                
-                finalTranscript = cumulativeText.trim();
-                document.getElementById('transcriptionFallback').innerText = finalTranscript;
-                
-                renderHighlightedTranscript(finalTranscript);
-                
-                const matches = finalTranscript.toLowerCase().match(/\b(um|uh|like)\b/g);
-                detectedFillerHits = matches ? matches.length : 0;
-                document.getElementById('fillerCount').innerText = detectedFillerHits;
-                
-                const splitTextArray = finalTranscript.split(/\s+/).filter(w => w.length > 0);
-                totalWordsCount = splitTextArray.length;
-                
-                if (speechStartTime && totalWordsCount > 0) {
-                    const elapsedMinutes = (Date.now() - speechStartTime) / 60000;
-                    if (elapsedMinutes > 0.05) {
-                        const calculatedWPM = Math.round(totalWordsCount / elapsedMinutes);
-                        document.getElementById('wpmValue').innerText = `${calculatedWPM} WPM`;
-                        const percentageGaugeWidth = Math.min((calculatedWPM / 200) * 100, 100);
-                        document.getElementById('wpmGauge').style.width = `${percentageGaugeWidth}%`;
-                    }
-                }
-            };
-
-            speechEngine.onerror = (err) => {
-                console.error("Vocal recognition error captured:", err.error);
-                resetFluencyDelayTicker();
-            };
-
-            speechEngine.onend = () => {
-                document.getElementById('avatarContainer').className = "w-24 h-24 rounded-full bg-[#101A36] border-2 border-slate-700 flex items-center justify-center shadow-sm relative z-10 transition-all duration-300";
-                document.getElementById('avatarIcon').className = "w-9 h-9 text-slate-400 transition-colors duration-300";
-                document.getElementById('avatarPulse').classList.add('hidden');
-                document.getElementById('waveformPlaceholder').classList.remove('hidden');
-                document.getElementById('waveformPlaceholder').innerText = "Audio Feed Inactive";
-                document.getElementById('recordBtn').className = "bg-[#101A36] border border-slate-700 hover:border-[#D4AF37]/40 disabled:opacity-30 disabled:pointer-events-none text-slate-200 p-4 rounded-full transition-all duration-200 group relative shadow-sm";
-                
-                clearTimeout(pauseTrackingTimeout);
-                
-                if (mediaStream) {
-                    mediaStream.getTracks().forEach(track => track.stop());
-                }
-                if (animationFrameId) {
-                    cancelAnimationFrame(animationFrameId);
-                }
-                if (audioCtx) {
-                    try { audioCtx.close(); } catch(e) {}
-                }
-
-                if (finalTranscript && finalTranscript.trim() !== "") {
-                    document.getElementById('nextQuestionBtn').removeAttribute('disabled');
-                }
-            };
-        }
+        // Initialize Authentication Status on Page Load
+        window.addEventListener('load', initAuth);
     </script>
 </body>
 </html>
