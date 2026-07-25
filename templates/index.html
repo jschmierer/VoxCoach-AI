@@ -86,9 +86,124 @@
         .text-rotate-space {
             white-space: pre;
         }
+
+        /* --- BorderGlow Button Styles (Gold/Navy Theme) --- */
+        .border-glow-card {
+            --edge-proximity: 0;
+            --cursor-angle: 45deg;
+            --edge-sensitivity: 10; 
+            --color-sensitivity: calc(var(--edge-sensitivity) + 15);
+            --border-radius: 9999px; /* Ensures it stays a perfect circle */
+            --glow-padding: 40px;
+            --cone-spread: 55;
+            --card-bg: #101A36;
+            
+            /* Gold Glow HSL values (approx #D4AF37) */
+            --glow-color: hsl(43deg 67% 52% / 100%);
+            --glow-color-80: hsl(43deg 67% 52% / 80%);
+            --glow-color-60: hsl(43deg 67% 52% / 60%);
+            --glow-color-40: hsl(43deg 67% 52% / 40%);
+            --glow-color-30: hsl(43deg 67% 52% / 30%);
+            --glow-color-20: hsl(43deg 67% 52% / 20%);
+            --glow-color-10: hsl(43deg 67% 52% / 10%);
+
+            position: relative;
+            border-radius: var(--border-radius);
+            isolation: isolate;
+            transform: translate3d(0, 0, 0.01px);
+            display: grid;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            background: var(--card-bg);
+            overflow: visible;
+        }
+
+        .border-glow-card::before,
+        .border-glow-card::after,
+        .border-glow-card > .edge-light {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            transition: opacity 0.25s ease-out;
+            z-index: -1;
+        }
+
+        .border-glow-card:not(:hover)::before,
+        .border-glow-card:not(:hover)::after,
+        .border-glow-card:not(:hover) > .edge-light {
+            opacity: 0;
+            transition: opacity 0.75s ease-in-out;
+        }
+
+        /* Gold mesh-gradient border */
+        .border-glow-card::before {
+            border: 1px solid transparent;
+            background:
+                linear-gradient(var(--card-bg) 0 100%) padding-box,
+                linear-gradient(rgb(255 255 255 / 0%) 0% 100%) border-box,
+                radial-gradient(at 80% 55%, #D4AF37 0px, transparent 50%) border-box,
+                radial-gradient(at 69% 34%, #F3E5AB 0px, transparent 50%) border-box,
+                radial-gradient(at 8% 6%, #AA7C11 0px, transparent 50%) border-box,
+                linear-gradient(#D4AF37 0 100%) border-box;
+
+            opacity: calc((var(--edge-proximity) - var(--color-sensitivity)) / (100 - var(--color-sensitivity)));
+            mask-image:
+                conic-gradient(
+                    from var(--cursor-angle) at center,
+                    black calc(var(--cone-spread) * 1%),
+                    transparent calc((var(--cone-spread) + 15) * 1%),
+                    transparent calc((100 - var(--cone-spread) - 15) * 1%),
+                    black calc((100 - var(--cone-spread)) * 1%)
+                );
+        }
+
+        /* Outer Gold Glow Layer */
+        .border-glow-card > .edge-light {
+            inset: calc(var(--glow-padding) * -1);
+            pointer-events: none;
+            z-index: 1;
+            mask-image: conic-gradient(from var(--cursor-angle) at center, black 2.5%, transparent 10%, transparent 90%, black 97.5%);
+            opacity: calc((var(--edge-proximity) - var(--edge-sensitivity)) / (100 - var(--edge-sensitivity)));
+            mix-blend-mode: plus-lighter;
+        }
+
+        .border-glow-card > .edge-light::before {
+            content: "";
+            position: absolute;
+            inset: var(--glow-padding);
+            border-radius: inherit;
+            box-shadow:
+                /* Inner glow layers */
+                inset 0 0 0 1px var(--glow-color),
+                inset 0 0 2px 0 var(--glow-color-80),
+                inset 0 0 5px 0 var(--glow-color-60),
+                inset 0 0 12px 0 var(--glow-color-40),
+                inset 0 0 25px 2px var(--glow-color-30),
+                inset 0 0 40px 5px var(--glow-color-20),
+                /* Outer glow layers pushing much further out */
+                0 0 2px 0 var(--glow-color-80),
+                0 0 5px 0 var(--glow-color-60),
+                0 0 12px 0 var(--glow-color-40),
+                0 0 25px 2px var(--glow-color-30),
+                0 0 45px 5px var(--glow-color-20),
+                0 0 70px 10px var(--glow-color-20);
+        }
+
+        .border-glow-inner {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            position: relative;
+            z-index: 2;
+            border-radius: inherit;
+        }
     </style>
 </head>
 <body class="text-white min-h-screen flex flex-col tracking-wide relative overflow-x-hidden">
+
+    <canvas id="shapeGridCanvas" class="fixed inset-0 w-full h-full pointer-events-none z-[-1]"></canvas>
 
     <div class="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] rounded-full bg-blue-900/20 blur-[120px] pointer-events-none"></div>
     <div class="absolute bottom-[-10%] right-[-10%] w-[50vw] h-[50vw] rounded-full bg-amber-900/10 blur-[150px] pointer-events-none"></div>
@@ -215,7 +330,7 @@
                 </div>
                 <div class="gold-glass rounded-2xl p-7 shadow-md hover:border-[#D4AF37]/60 transition-colors duration-300">
                     <div class="text-[#D4AF37] mb-6 bg-[#16224F] w-14 h-14 rounded-xl flex items-center justify-center border border-slate-700">
-                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
                     </div>
                     <h3 class="text-white text-sm uppercase tracking-wider font-bold mb-3">Structural Diagnostics</h3>
                     <p class="text-slate-300 text-sm leading-relaxed font-normal">Monitors words-per-minute pacing velocity, structural pauses, and counts verbal vulnerabilities instantly.</p>
@@ -263,11 +378,14 @@
                 </div>
 
                 <div class="flex-1 flex items-center justify-center w-full my-6 relative">
-                    <button id="recordBtn" class="w-36 h-36 rounded-full bg-[#101A36] border-2 border-slate-700 flex items-center justify-center shadow-lg relative z-10 transition-all duration-300 outline-none group hover:border-[#D4AF37]/50" title="Click to start scenario / toggle recording">
-                        <svg id="recordIcon" class="w-14 h-14 text-[#D4AF37] group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4zm4 10.93A7.001 7.001 0 0017 8a1 1 0 10-2 0 A5 5 0 015 8a1 1 0 00-2 0 7.001 7.001 0 006 6.93V17H6a1 1 0 100 2h8a1 1 0 100-2h-3v-2.07z" clip-rule="evenodd"></path>
-                        </svg>
-                        <div id="avatarPulse" class="absolute inset-0 rounded-full bg-[#D4AF37]/20 scale-[1.3] hidden opacity-40 animate-ping"></div>
+                    <button id="recordBtn" class="border-glow-card w-36 h-36 rounded-full shadow-lg relative z-10 transition-all duration-300 outline-none group cursor-pointer" title="Click to start scenario / toggle recording">
+                        <span class="edge-light"></span>
+                        <div class="border-glow-inner">
+                            <svg id="recordIcon" class="w-14 h-14 text-[#D4AF37] group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4zm4 10.93A7.001 7.001 0 0017 8a1 1 0 10-2 0 A5 5 0 015 8a1 1 0 00-2 0 7.001 7.001 0 006 6.93V17H6a1 1 0 100 2h8a1 1 0 100-2h-3v-2.07z" clip-rule="evenodd"></path>
+                            </svg>
+                        </div>
+                        <div id="avatarPulse" class="absolute inset-0 rounded-full bg-[#D4AF37]/20 scale-[1.3] hidden opacity-40 animate-ping pointer-events-none"></div>
                     </button>
                 </div>
 
@@ -806,7 +924,8 @@
                     speechEngine.start();
 
                     const micBtn = document.getElementById('recordBtn');
-                    micBtn.className = "w-36 h-36 rounded-full bg-amber-500/20 border-4 border-[#D4AF37] flex items-center justify-center shadow-2xl shadow-[#D4AF37]/30 relative z-10 transition-all duration-300 outline-none";
+                    // Add recording visual cues to the new button while maintaining the border-glow base
+                    micBtn.className = "border-glow-card w-36 h-36 rounded-full bg-amber-500/20 border-4 border-[#D4AF37] shadow-2xl shadow-[#D4AF37]/30 relative z-10 transition-all duration-300 outline-none cursor-pointer";
                     document.getElementById('recordIcon').classList.add('animate-pulse');
                     document.getElementById('avatarPulse').classList.remove('hidden');
                     document.getElementById('waveformPlaceholder').classList.add('hidden');
@@ -817,7 +936,8 @@
                 speechEngine.stop();
                 
                 const micBtn = document.getElementById('recordBtn');
-                micBtn.className = "w-36 h-36 rounded-full bg-[#101A36] border-2 border-slate-700 flex items-center justify-center shadow-lg relative z-10 transition-all duration-300 outline-none group hover:border-[#D4AF37]/50";
+                // Reset back to normal border-glow card state
+                micBtn.className = "border-glow-card w-36 h-36 rounded-full shadow-lg relative z-10 transition-all duration-300 outline-none group cursor-pointer";
                 document.getElementById('recordIcon').classList.remove('animate-pulse');
                 document.getElementById('avatarPulse').classList.add('hidden');
                 document.getElementById('waveformPlaceholder').classList.remove('hidden');
@@ -927,6 +1047,203 @@
         });
 
         window.addEventListener('load', initAuth);
+
+        // --- BorderGlow Mouse Tracking Logic ---
+        const glowBtn = document.getElementById('recordBtn');
+
+        glowBtn.addEventListener('pointermove', (e) => {
+            const rect = glowBtn.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            const cx = rect.width / 2;
+            const cy = rect.height / 2;
+            const dx = x - cx;
+            const dy = y - cy;
+
+            // Calculate proximity to the edge of the circle
+            const maxDist = rect.width / 2;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            let edge = dist / maxDist;
+            edge = Math.min(Math.max(edge, 0), 1); // Clamp between 0 and 1
+
+            // Calculate angle for the light cone
+            let radians = Math.atan2(dy, dx);
+            let degrees = radians * (180 / Math.PI) + 90;
+            if (degrees < 0) degrees += 360;
+
+            glowBtn.style.setProperty('--edge-proximity', `${(edge * 100).toFixed(3)}`);
+            glowBtn.style.setProperty('--cursor-angle', `${degrees.toFixed(3)}deg`);
+        });
+
+        // Reset the glow gracefully when the mouse leaves
+        glowBtn.addEventListener('pointerleave', () => {
+            glowBtn.style.setProperty('--edge-proximity', `0`);
+        });
+
+        // --- ShapeGrid Background Logic ---
+        const sgCanvas = document.getElementById('shapeGridCanvas');
+        const sgCtx = sgCanvas.getContext('2d');
+        
+        // Settings configured for a subtle background layer
+        const sgShape = 'square'; 
+        const sgSize = 40;
+        const sgSpeed = 0.2;
+        const sgDirection = 'diagonal';
+        const sgBorderColor = 'rgba(212, 175, 55, 0.1)'; // Very subtle gold
+        
+        let sgOffset = { x: 0, y: 0 };
+        
+        function sgResize() {
+            sgCanvas.width = window.innerWidth;
+            sgCanvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', sgResize);
+        sgResize();
+        
+        // Drawing helpers adapted directly from the requested component
+        const isHex = sgShape === 'hexagon';
+        const isTri = sgShape === 'triangle';
+        const hexHoriz = sgSize * 1.5;
+        const hexVert = sgSize * Math.sqrt(3);
+        
+        function drawHex(cx, cy, size) {
+            sgCtx.beginPath();
+            for (let i = 0; i < 6; i++) {
+                const angle = (Math.PI / 3) * i;
+                const vx = cx + size * Math.cos(angle);
+                const vy = cy + size * Math.sin(angle);
+                if (i === 0) sgCtx.moveTo(vx, vy);
+                else sgCtx.lineTo(vx, vy);
+            }
+            sgCtx.closePath();
+        }
+        
+        function drawCircle(cx, cy, size) {
+            sgCtx.beginPath();
+            sgCtx.arc(cx, cy, size / 2, 0, Math.PI * 2);
+            sgCtx.closePath();
+        }
+        
+        function drawTri(cx, cy, size, flip) {
+            sgCtx.beginPath();
+            if (flip) {
+                sgCtx.moveTo(cx, cy + size / 2);
+                sgCtx.lineTo(cx + size / 2, cy - size / 2);
+                sgCtx.lineTo(cx - size / 2, cy - size / 2);
+            } else {
+                sgCtx.moveTo(cx, cy - size / 2);
+                sgCtx.lineTo(cx + size / 2, cy + size / 2);
+                sgCtx.lineTo(cx - size / 2, cy + size / 2);
+            }
+            sgCtx.closePath();
+        }
+        
+        function sgDraw() {
+            sgCtx.clearRect(0, 0, sgCanvas.width, sgCanvas.height);
+            
+            // Generate grid paths depending on shape (Hover logic removed entirely)
+            if (isHex) {
+                const colShift = Math.floor(sgOffset.x / hexHoriz);
+                const offsetX = ((sgOffset.x % hexHoriz) + hexHoriz) % hexHoriz;
+                const offsetY = ((sgOffset.y % hexVert) + hexVert) % hexVert;
+                const cols = Math.ceil(sgCanvas.width / hexHoriz) + 3;
+                const rows = Math.ceil(sgCanvas.height / hexVert) + 3;
+                
+                for (let col = -2; col < cols; col++) {
+                    for (let row = -2; row < rows; row++) {
+                        const cx = col * hexHoriz + offsetX;
+                        const cy = row * hexVert + ((col + colShift) % 2 !== 0 ? hexVert / 2 : 0) + offsetY;
+                        drawHex(cx, cy, sgSize);
+                        sgCtx.strokeStyle = sgBorderColor;
+                        sgCtx.stroke();
+                    }
+                }
+            } else if (isTri) {
+                const halfW = sgSize / 2;
+                const colShift = Math.floor(sgOffset.x / halfW);
+                const rowShift = Math.floor(sgOffset.y / sgSize);
+                const offsetX = ((sgOffset.x % halfW) + halfW) % halfW;
+                const offsetY = ((sgOffset.y % sgSize) + sgSize) % sgSize;
+                const cols = Math.ceil(sgCanvas.width / halfW) + 4;
+                const rows = Math.ceil(sgCanvas.height / sgSize) + 4;
+                
+                for (let col = -2; col < cols; col++) {
+                    for (let row = -2; row < rows; row++) {
+                        const cx = col * halfW + offsetX;
+                        const cy = row * sgSize + sgSize / 2 + offsetY;
+                        const flip = ((col + colShift + row + rowShift) % 2 + 2) % 2 !== 0;
+                        drawTri(cx, cy, sgSize, flip);
+                        sgCtx.strokeStyle = sgBorderColor;
+                        sgCtx.stroke();
+                    }
+                }
+            } else if (sgShape === 'circle') {
+                const offsetX = ((sgOffset.x % sgSize) + sgSize) % sgSize;
+                const offsetY = ((sgOffset.y % sgSize) + sgSize) % sgSize;
+                const cols = Math.ceil(sgCanvas.width / sgSize) + 3;
+                const rows = Math.ceil(sgCanvas.height / sgSize) + 3;
+                for (let col = -2; col < cols; col++) {
+                    for (let row = -2; row < rows; row++) {
+                        const cx = col * sgSize + sgSize / 2 + offsetX;
+                        const cy = row * sgSize + sgSize / 2 + offsetY;
+                        drawCircle(cx, cy, sgSize);
+                        sgCtx.strokeStyle = sgBorderColor;
+                        sgCtx.stroke();
+                    }
+                }
+            } else {
+                // Default Square
+                const offsetX = ((sgOffset.x % sgSize) + sgSize) % sgSize;
+                const offsetY = ((sgOffset.y % sgSize) + sgSize) % sgSize;
+                const cols = Math.ceil(sgCanvas.width / sgSize) + 3;
+                const rows = Math.ceil(sgCanvas.height / sgSize) + 3;
+                for (let col = -2; col < cols; col++) {
+                    for (let row = -2; row < rows; row++) {
+                        const sx = col * sgSize + offsetX;
+                        const sy = row * sgSize + offsetY;
+                        sgCtx.strokeStyle = sgBorderColor;
+                        sgCtx.strokeRect(sx, sy, sgSize, sgSize);
+                    }
+                }
+            }
+            
+            // Radial gradient overlay to fade edges smoothly into the #070D1F body background
+            const gradient = sgCtx.createRadialGradient(
+                sgCanvas.width / 2, sgCanvas.height / 2, 0,
+                sgCanvas.width / 2, sgCanvas.height / 2, Math.sqrt(sgCanvas.width ** 2 + sgCanvas.height ** 2) / 1.5
+            );
+            gradient.addColorStop(0, 'rgba(7, 13, 31, 0)'); // Center transparent
+            gradient.addColorStop(1, 'rgba(7, 13, 31, 1)'); // Edges perfectly matching dark navy bg
+            
+            sgCtx.fillStyle = gradient;
+            sgCtx.fillRect(0, 0, sgCanvas.width, sgCanvas.height);
+        }
+        
+        function sgUpdate() {
+            const wrapX = isHex ? hexHoriz * 2 : sgSize;
+            const wrapY = isHex ? hexVert : (isTri ? sgSize * 2 : sgSize);
+            
+            // Handle directional math
+            if (sgDirection === 'right' || sgDirection === 'diagonal') {
+                sgOffset.x = (sgOffset.x - sgSpeed + wrapX) % wrapX;
+            } else if (sgDirection === 'left') {
+                sgOffset.x = (sgOffset.x + sgSpeed + wrapX) % wrapX;
+            }
+            
+            if (sgDirection === 'down' || sgDirection === 'diagonal') {
+                sgOffset.y = (sgOffset.y - sgSpeed + wrapY) % wrapY;
+            } else if (sgDirection === 'up') {
+                sgOffset.y = (sgOffset.y + sgSpeed + wrapY) % wrapY;
+            }
+            
+            sgDraw();
+            requestAnimationFrame(sgUpdate);
+        }
+        
+        // Start the animation loop
+        sgUpdate();
+
     </script>
 </body>
 </html>
