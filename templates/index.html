@@ -37,52 +37,89 @@
             100% { background-position: -200% 0; }
         }
         ::-webkit-scrollbar {
-            width: 6px;
+            width: 8px;
         }
         ::-webkit-scrollbar-track {
             background: #070D1F;
         }
         ::-webkit-scrollbar-thumb {
             background: rgba(212, 175, 55, 0.3);
-            border-radius: 3px;
+            border-radius: 4px;
         }
         ::-webkit-scrollbar-thumb:hover {
             background: rgba(212, 175, 55, 0.5);
         }
+
+        /* Rotating Text CSS Port - Adjusted for single line wrapping prevention */
+        .text-rotate-container {
+            display: inline-flex;
+            white-space: nowrap;
+            position: relative;
+            overflow: hidden;
+            justify-content: center;
+            vertical-align: middle;
+        }
+        .text-rotate-word {
+            display: inline-flex;
+            overflow: hidden;
+        }
+        .text-rotate-element {
+            display: inline-block;
+            transform: translateY(100%);
+            opacity: 0;
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.5s ease;
+            
+            /* Apply Gradient Directly to Characters */
+            background: linear-gradient(135deg, #D4AF37 0%, #F3E5AB 50%, #AA7C11 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .text-rotate-element.in {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        .text-rotate-element.out {
+            transform: translateY(-120%);
+            opacity: 0;
+        }
+        .text-rotate-space {
+            white-space: pre;
+        }
     </style>
 </head>
-<body class="text-white min-h-screen flex flex-col justify-between tracking-wide relative overflow-x-hidden">
+<body class="text-white min-h-screen flex flex-col tracking-wide relative overflow-x-hidden">
 
     <div class="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] rounded-full bg-blue-900/20 blur-[120px] pointer-events-none"></div>
     <div class="absolute bottom-[-10%] right-[-10%] w-[50vw] h-[50vw] rounded-full bg-amber-900/10 blur-[150px] pointer-events-none"></div>
 
-    <div id="fillerPopover" class="hidden absolute p-5 rounded-xl border border-amber-500/40 bg-[#101A36] shadow-2xl max-w-xs z-50 text-xs text-slate-200 leading-relaxed">
-        <div class="font-bold text-[#F3E5AB] mb-1.5 flex items-center gap-1.5 uppercase tracking-wider text-[10px]">
-            <span class="w-1.5 h-1.5 rounded-full bg-[#D4AF37]"></span>VoxCoach Executive Tip
+    <div id="fillerPopover" class="hidden absolute p-5 rounded-xl border border-amber-500/40 bg-[#101A36] shadow-2xl max-w-xs z-50 text-sm text-slate-200 leading-relaxed backdrop-blur-xl">
+        <div class="font-bold text-[#F3E5AB] mb-2 flex items-center gap-2 uppercase tracking-wider text-xs">
+            <span class="w-2 h-2 rounded-full bg-[#D4AF37]"></span>VoxCoach Executive Tip
         </div>
-        <p id="popoverAlternativeText" class="mb-2 text-slate-300"></p>
-        <span class="text-[10px] text-slate-400 block border-t border-slate-700/50 pt-2 mt-2">Alternative transitional phrasing optimized for elite US communicative standards.</span>
+        <p id="popoverAlternativeText" class="mb-3 text-slate-300"></p>
+        <span class="text-xs text-slate-400 block border-t border-slate-700/50 pt-2 mt-2">Alternative transitional phrasing optimized for elite US communicative standards.</span>
     </div>
 
     <div id="authModal" class="fixed inset-0 bg-[#070D1F]/80 backdrop-blur-md z-50 flex items-center justify-center hidden transition-opacity duration-300">
-        <div class="gold-glass border border-amber-500/30 rounded-2xl p-8 max-w-md w-full mx-4 shadow-2xl relative">
-            <button id="closeAuthModalBtn" class="absolute top-4 right-4 text-slate-400 hover:text-white text-lg font-bold transition-colors">&times;</button>
+        <div class="gold-glass border border-amber-500/30 rounded-2xl p-7 max-w-lg w-full mx-4 shadow-2xl relative">
+            <button id="closeAuthModalBtn" class="absolute top-4 right-4 text-slate-400 hover:text-white text-2xl font-bold transition-colors">&times;</button>
             
-            <div class="text-center mb-6">
-                <h2 id="authModalTitle" class="text-2xl font-extrabold text-white">Welcome Back</h2>
-                <p id="authModalSubtitle" class="text-xs text-slate-400 mt-1">Sign in to access your interview workspace</p>
+            <div class="text-center mb-8">
+                <h2 id="authModalTitle" class="text-3xl font-extrabold text-white tracking-tight">Welcome Back</h2>
+                <p id="authModalSubtitle" class="text-sm text-slate-400 mt-2">Sign in to access your interview workspace</p>
             </div>
 
-            <div class="flex border-b border-slate-800 mb-6">
-                <button id="tabSigninBtn" class="flex-1 pb-3 text-xs font-bold uppercase tracking-wider text-[#D4AF37] border-b-2 border-[#D4AF37] transition-all">Sign In</button>
-                <button id="tabSignupBtn" class="flex-1 pb-3 text-xs font-bold uppercase tracking-wider text-slate-400 border-b-2 border-transparent hover:text-slate-200 transition-all">Sign Up</button>
+            <div class="flex border-b border-slate-800 mb-8">
+                <button id="tabSigninBtn" class="flex-1 pb-4 text-sm font-bold uppercase tracking-wider text-[#D4AF37] border-b-2 border-[#D4AF37] transition-all">Sign In</button>
+                <button id="tabSignupBtn" class="flex-1 pb-4 text-sm font-bold uppercase tracking-wider text-slate-400 border-b-2 border-transparent hover:text-slate-200 transition-all">Sign Up</button>
             </div>
 
-            <div id="authErrorMsg" class="hidden text-xs bg-red-950/60 border border-red-500/40 text-red-200 p-3 rounded-lg mb-4 text-center"></div>
-            <div id="authSuccessMsg" class="hidden text-xs bg-emerald-950/60 border border-emerald-500/40 text-emerald-200 p-3 rounded-lg mb-4 text-center"></div>
+            <div id="authErrorMsg" class="hidden text-sm bg-red-950/60 border border-red-500/40 text-red-200 p-4 rounded-lg mb-6 text-center font-medium"></div>
+            <div id="authSuccessMsg" class="hidden text-sm bg-emerald-950/60 border border-emerald-500/40 text-emerald-200 p-4 rounded-lg mb-6 text-center font-medium"></div>
 
-            <button id="googleSignInBtn" class="w-full bg-[#101A36] hover:bg-[#16224F] border border-slate-700 text-white font-semibold text-xs py-3 px-4 rounded-xl flex items-center justify-center gap-3 transition-colors mb-4 shadow-sm">
-                <svg class="w-4 h-4" viewBox="0 0 24 24">
+            <button id="googleSignInBtn" class="w-full bg-[#101A36] hover:bg-[#16224F] border border-slate-700 text-white font-semibold text-sm py-4 px-4 rounded-xl flex items-center justify-center gap-3 transition-colors mb-6 shadow-sm">
+                <svg class="w-5 h-5" viewBox="0 0 24 24">
                     <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
                     <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
                     <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
@@ -91,246 +128,261 @@
                 Continue with Google
             </button>
 
-            <div class="relative flex py-2 items-center mb-4">
+            <div class="relative flex py-2 items-center mb-6">
                 <div class="flex-grow border-t border-slate-800"></div>
-                <span class="flex-shrink mx-3 text-[10px] text-slate-500 uppercase font-bold tracking-wider">Or email</span>
+                <span class="flex-shrink mx-4 text-xs text-slate-500 uppercase font-bold tracking-wider">Or email</span>
                 <div class="flex-grow border-t border-slate-800"></div>
             </div>
 
-            <form id="authForm" class="space-y-4">
+            <form id="authForm" class="space-y-5">
                 <div>
-                    <label class="block text-[10px] font-bold uppercase tracking-widest text-slate-300 mb-1">Email / Username</label>
-                    <input id="authEmail" type="email" required placeholder="name@domain.com" class="w-full bg-[#101A36] border border-slate-700 rounded-lg px-3.5 py-2.5 text-xs text-white gold-border-focus transition-colors placeholder-slate-500 font-medium shadow-sm">
+                    <label class="block text-xs font-bold uppercase tracking-widest text-slate-300 mb-2">Email / Username</label>
+                    <input id="authEmail" type="email" required placeholder="name@domain.com" class="w-full bg-[#101A36] border border-slate-700 rounded-lg px-4 py-3 text-sm text-white gold-border-focus transition-colors placeholder-slate-500 font-medium shadow-sm outline-none">
                 </div>
                 <div>
-                    <label class="block text-[10px] font-bold uppercase tracking-widest text-slate-300 mb-1">Password</label>
-                    <input id="authPassword" type="password" required placeholder="••••••••" class="w-full bg-[#101A36] border border-slate-700 rounded-lg px-3.5 py-2.5 text-xs text-white gold-border-focus transition-colors placeholder-slate-500 font-medium shadow-sm">
+                    <label class="block text-xs font-bold uppercase tracking-widest text-slate-300 mb-2">Password</label>
+                    <input id="authPassword" type="password" required placeholder="••••••••" class="w-full bg-[#101A36] border border-slate-700 rounded-lg px-4 py-3 text-sm text-white gold-border-focus transition-colors placeholder-slate-500 font-medium shadow-sm outline-none">
                 </div>
-                <button id="authSubmitBtn" type="submit" class="w-full gold-gradient-bg text-[#070D1F] font-bold text-xs uppercase tracking-wider py-3 rounded-xl shadow-md hover:opacity-95 transition-all mt-2">
+                <button id="authSubmitBtn" type="submit" class="w-full gold-gradient-bg text-[#070D1F] font-bold text-sm uppercase tracking-wider py-4 rounded-xl shadow-md hover:opacity-95 transition-all mt-4">
                     Sign In
                 </button>
             </form>
         </div>
     </div>
 
-    <header class="border-b border-slate-800/80 bg-[#070D1F]/90 backdrop-blur-md px-8 py-5 flex items-center justify-between sticky top-0 z-40 transition-all duration-300 shadow-lg">
-        <div class="flex items-center space-x-3.5">
-            <div class="h-9 w-9 rounded-lg gold-gradient-bg flex items-center justify-center text-[#070D1F] font-black text-xl shadow-md shadow-[#D4AF37]/20">V</div>
-            <div class="flex flex-col">
-                <span class="text-md font-bold tracking-wider text-white">VoxCoach <span class="text-[#D4AF37]">AI</span></span>
-                <span class="text-[9px] text-slate-400 tracking-widest uppercase font-semibold">High-Fidelity Analytics</span>
+    <header class="border-b border-slate-800/80 bg-[#070D1F]/90 backdrop-blur-md px-8 py-4 flex items-center justify-between sticky top-0 z-40 transition-all duration-300 shadow-lg relative">
+        <div class="flex items-center space-x-5 cursor-pointer w-1/4" id="navLogoBtn">
+            <div class="h-12 w-12 rounded-xl gold-gradient-bg flex items-center justify-center text-[#070D1F] font-black text-3xl shadow-md shadow-[#D4AF37]/20">V</div>
+            <div class="flex flex-col hidden sm:flex">
+                <span class="text-2xl font-black tracking-wider text-white">VoxCoach <span class="text-[#D4AF37]">AI</span></span>
+                <span class="text-sm text-slate-400 tracking-widest uppercase font-bold">Analytics</span>
             </div>
         </div>
-        <div class="flex items-center space-x-4">
-            <div class="flex items-center space-x-2 bg-[#101A36] border border-slate-700 px-3 py-1.5 rounded-full shadow-inner">
-                <span class="flex h-2 w-2 rounded-full bg-amber-500 animate-pulse"></span>
-                <span class="text-[10px] text-slate-300 font-bold tracking-wider uppercase">US-Context Engine v2.6</span>
+        
+        <div class="w-2/4 flex justify-center">
+            <nav id="appNavigation" class="hidden flex items-center space-x-14 text-2xl font-black uppercase tracking-widest text-slate-400">
+                <button id="navHomeBtn" class="hover:text-white transition-colors">Home</button>
+                <button id="navSimulatorBtn" class="hover:text-white transition-colors">Simulator</button>
+                <button id="navAnalysisBtn" class="hover:text-white transition-colors hidden">Analysis</button>
+            </nav>
+        </div>
+
+        <div class="flex w-1/4 items-center justify-end space-x-6">
+            <div class="hidden xl:flex items-center space-x-3 bg-[#101A36] border border-slate-700 px-5 py-2.5 rounded-full shadow-inner">
+                <span class="flex h-3 w-3 rounded-full bg-amber-500 animate-pulse"></span>
+                <span class="text-sm text-slate-300 font-bold tracking-wider uppercase">US-Context Engine</span>
             </div>
 
-            <div id="userProfileBadge" class="hidden items-center space-x-2.5 bg-[#101A36] border border-slate-700 px-3 py-1 rounded-full shadow-inner">
-                <div id="userAvatarChar" class="w-5 h-5 rounded-full gold-gradient-bg flex items-center justify-center text-[#070D1F] text-[10px] font-bold">U</div>
-                <span id="userEmailDisplay" class="text-xs text-slate-200 font-medium max-w-[120px] truncate"></span>
-                <button id="signOutBtn" class="text-[10px] text-slate-400 hover:text-amber-400 font-bold uppercase transition-colors">Sign Out</button>
+            <button id="navAuthBtn" class="text-sm text-[#D4AF37] hover:underline font-extrabold tracking-wide transition-colors">Sign In / Sign Up</button>
+            
+            <div id="userProfileBadge" class="hidden items-center space-x-3 bg-[#101A36] border border-slate-700 px-5 py-2.5 rounded-full shadow-inner">
+                <div id="userAvatarChar" class="w-8 h-8 rounded-full gold-gradient-bg flex items-center justify-center text-[#070D1F] text-sm font-bold">U</div>
+                <span id="userEmailDisplay" class="text-sm text-slate-200 font-semibold max-w-[160px] truncate"></span>
+                <button id="signOutBtn" class="text-xs text-slate-400 hover:text-amber-400 font-bold uppercase transition-colors ml-2">Sign Out</button>
             </div>
-
-            <button id="navAuthBtn" class="text-xs text-[#D4AF37] hover:underline font-bold tracking-wide">Sign In / Sign Up</button>
-            <button id="navDashboardBtn" class="hidden text-xs text-slate-400 hover:text-[#D4AF37] transition-colors font-bold tracking-wide">Reset View</button>
         </div>
     </header>
 
-    <div id="landingPage" class="flex-1 max-w-6xl w-full mx-auto px-6 py-16 flex flex-col justify-center items-center text-center relative z-10 animate-fadeIn">
-        <div class="max-w-3xl mx-auto space-y-6">
-            <span class="text-xs font-bold uppercase tracking-[0.2em] text-[#F3E5AB] bg-amber-950/40 px-4 py-2 rounded-full border border-amber-500/30 shadow-sm inline-block">Intelligent Architectural Speech Feedback</span>
-            <h1 class="text-5xl md:text-6xl font-extrabold tracking-tight text-white leading-[1.15]">
-                Master the Art of <br><span class="italic font-light text-transparent bg-clip-text bg-gradient-to-r from-[#AA7C11] via-[#F3E5AB] to-[#AA7C11]">Executive Presence</span>
-            </h1>
-            <p class="text-slate-300 text-sm md:text-base max-w-xl mx-auto leading-relaxed font-normal">
-                VoxCoach AI processes your verbal arguments in real-time, mapping behavioral criteria against competitive benchmarks for elite corporate screening and university environments.
-            </p>
-            <div class="pt-6">
-                <button id="signInBtn" class="gold-gradient-bg text-[#070D1F] font-bold text-xs uppercase tracking-widest px-8 py-4 rounded-xl shadow-lg shadow-[#D4AF37]/20 hover:opacity-95 transform hover:-translate-y-0.5 transition-all duration-200">
-                    Enter Simulation Workspace
-                </button>
-            </div>
-        </div>
+    <main class="flex-1 w-full max-w-[1275px] mx-auto px-5 py-8 relative">
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-24 w-full text-left">
-            <div class="gold-glass rounded-2xl p-6 shadow-md hover:border-[#D4AF37]/60 transition-colors duration-300">
-                <div class="text-[#D4AF37] mb-4 bg-[#16224F] w-10 h-10 rounded-xl flex items-center justify-center border border-slate-700">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 100-6 3 3 0 000 6z"></path></svg>
-                </div>
-                <h3 class="text-white text-xs uppercase tracking-wider font-bold mb-2">Adaptive Evaluation Loops</h3>
-                <p class="text-slate-300 text-xs leading-relaxed font-normal">Generates dynamic contextual inquiries modeled perfectly around target roles or academic tracks.</p>
-            </div>
-            <div class="gold-glass rounded-2xl p-6 shadow-md hover:border-[#D4AF37]/60 transition-colors duration-300">
-                <div class="text-[#D4AF37] mb-4 bg-[#16224F] w-10 h-10 rounded-xl flex items-center justify-center border border-slate-700">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
-                </div>
-                <h3 class="text-white text-xs uppercase tracking-wider font-bold mb-2">Structural Diagnostics</h3>
-                <p class="text-slate-300 text-xs leading-relaxed font-normal">Monitors words-per-minute pacing velocity, structural pauses, and counts verbal vulnerabilities instantly.</p>
-            </div>
-            <div class="gold-glass rounded-2xl p-6 shadow-md hover:border-[#D4AF37]/60 transition-colors duration-300">
-                <div class="text-[#D4AF37] mb-4 bg-[#16224F] w-10 h-10 rounded-xl flex items-center justify-center border border-slate-700">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
-                </div>
-                <h3 class="text-white text-xs uppercase tracking-wider font-bold mb-2">STAR Methodology Mapping</h3>
-                <p class="text-slate-300 text-xs leading-relaxed font-normal">Transforms dialogue history into qualitative data breakdowns mapping passive language to operational power indicators.</p>
-            </div>
-        </div>
-    </div>
-
-    <main id="mainWorkspace" class="hidden flex-1 max-w-7xl w-full mx-auto px-6 py-8 grid grid-cols-1 lg:grid-cols-12 gap-8 opacity-0 transition-opacity duration-500">
-        
-        <section class="lg:col-span-7 flex flex-col space-y-6">
-            <div class="gold-glass rounded-2xl p-6 flex flex-col overflow-hidden min-h-[520px] justify-between relative shadow-2xl">
+        <div id="landingView" class="flex flex-col justify-center items-center text-center min-h-[75vh] animate-fadeIn">
+            <div class="max-w-6xl mx-auto space-y-7 flex flex-col items-center">
+                <span class="text-sm font-bold uppercase tracking-[0.2em] text-[#F3E5AB] bg-amber-950/40 px-6 py-3 rounded-full border border-amber-500/30 shadow-sm inline-block">Intelligent Architectural Speech Feedback</span>
                 
-                <div>
-                    <div class="w-full grid grid-cols-1 md:grid-cols-3 gap-4 mb-5 text-left z-10 relative">
-                        <div>
-                            <label class="block text-[10px] font-bold uppercase tracking-widest text-slate-300 mb-1.5">Active Track Target</label>
-                            <select id="trackSelector" class="w-full bg-[#101A36] border border-slate-700 rounded-lg px-3 py-2.5 text-xs text-white gold-border-focus transition-colors cursor-pointer font-medium shadow-sm">
-                                <option value="General Corporate Interview">US Corporate Recruitment Track</option>
-                                <option value="General College Admissions">Elite US Admissions Track</option>
-                            </select>
-                        </div>
-                        <div class="md:col-span-2">
-                            <label id="targetContextLabel" class="block text-[10px] font-bold uppercase tracking-widest text-slate-300 mb-1.5">Target Job Description / Role</label>
-                            <input id="targetContextInput" type="text" placeholder="e.g., Senior Software Engineer at Google, or key role goals..." class="w-full bg-[#101A36] border border-slate-700 rounded-lg px-3 py-2.5 text-xs text-white gold-border-focus transition-colors placeholder-slate-500 font-medium shadow-sm">
-                        </div>
-                    </div>
-
-                    <div class="w-full text-left mb-6 z-10 relative grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
-                        <div class="md:col-span-3">
-                            <label class="block text-[10px] font-bold uppercase tracking-widest text-slate-300 mb-1.5">Structural Background / Experience Indicators</label>
-                            <textarea id="resumeInput" rows="2" placeholder="Paste structural background achievements, key projects, or leadership items here to contextualize AI responses..." class="w-full bg-[#101A36] border border-slate-700 rounded-lg px-3 py-2 text-xs text-white gold-border-focus transition-colors resize-none placeholder-slate-500 font-medium shadow-sm"></textarea>
-                        </div>
-                        <div>
-                            <button id="startSessionBtn" class="w-full gold-gradient-bg text-[#070D1F] text-xs font-bold uppercase tracking-wider py-3.5 px-4 rounded-lg shadow-md hover:opacity-95 transition-all duration-200">
-                                Start Simulator
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="border-t border-slate-800 my-4 w-full"></div>
-
-                    <div class="my-6 relative flex justify-center">
-                        <div class="relative">
-                            <div id="avatarContainer" class="w-24 h-24 rounded-full bg-[#101A36] border-2 border-slate-700 flex items-center justify-center shadow-sm relative z-10 transition-all duration-300">
-                                <svg id="avatarIcon" class="w-9 h-9 text-slate-400 transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 100-6 3 3 0 000 6z"></path>
-                                </svg>
-                            </div>
-                            <div id="avatarPulse" class="absolute inset-0 rounded-full bg-[#D4AF37]/20 scale-125 hidden opacity-40 animate-ping"></div>
-                        </div>
-                    </div>
-
-                    <div class="w-full max-w-xl mx-auto z-10 text-center flex flex-col justify-center px-4">
-                        <p id="questionDisplay" class="text-white italic text-sm md:text-base leading-relaxed min-h-[64px] font-medium tracking-wide">
-                            Configure your target application criteria and resume variables above, then click "Start Simulator" to launch the tailored contextual coach engine...
-                        </p>
-                        <div id="transcriptionFallback" class="mt-4 text-xs text-slate-300 bg-[#101A36] border border-slate-700 rounded-xl p-3 min-h-[54px] hidden max-w-md mx-auto text-left overflow-y-auto"></div>
-                    </div>
-                </div>
-
-                <div class="mt-6 z-10 relative border-t border-slate-800/80 pt-6">
-                    <div class="h-12 relative w-full mb-5">
-                        <canvas id="audioSpectrum" class="w-full h-full rounded-lg bg-[#0a122c] border border-slate-800 shadow-inner"></canvas>
-                        <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-                            <span id="waveformPlaceholder" class="text-slate-400 text-[10px] font-bold uppercase tracking-[0.2em]">Audio Feed Inactive</span>
-                        </div>
-                    </div>
-
-                    <div class="flex flex-wrap items-center justify-center gap-4 border-t border-slate-800 pt-5">
-                        <button id="recordBtn" disabled class="bg-[#101A36] border border-slate-700 hover:border-[#D4AF37]/40 disabled:opacity-30 disabled:pointer-events-none text-slate-200 p-4 rounded-full transition-all duration-200 group relative shadow-sm" title="Toggle Voice Recording">
-                            <svg id="recordIcon" class="w-5 h-5 text-[#D4AF37] group-hover:scale-105 transition-transform" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4zm4 10.93A7.001 7.001 0 0017 8a1 1 0 10-2 0 A5 5 0 015 8a1 1 0 00-2 0 7.001 7.001 0 006 6.93V17H6a1 1 0 100 2h8a1 1 0 100-2h-3v-2.07z" clip-rule="evenodd"></path>
-                            </svg>
-                        </button>
-                        <button id="nextQuestionBtn" disabled class="bg-[#101A36] border border-slate-700 hover:border-[#D4AF37]/40 disabled:opacity-30 disabled:pointer-events-none text-slate-200 text-xs font-bold uppercase tracking-wider py-3.5 px-6 rounded-xl transition-all duration-200 shadow-sm">
-                            Next Scenario Turn
-                        </button>
-                        <button id="endSessionBtn" class="bg-red-950/40 border border-red-500/30 hover:border-red-500/60 text-red-200 text-xs font-bold uppercase tracking-wider py-3.5 px-6 rounded-xl transition-all duration-200 shadow-sm">
-                            Generate Full STAR Analysis
-                        </button>
-                    </div>
+                <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-normal flex flex-row flex-wrap items-center justify-center gap-x-4">
+                    <span>Ace your</span>
+                    <span id="rotatingTextContainer" class="ml-3 px-6 py-2 bg-amber-950/20 border border-[#D4AF37]/30 rounded-xl text-rotate-container shadow-lg shadow-[#D4AF37]/10">
+                        </span>
+                </h1>
+                
+                <p class="text-slate-300 text-sm md:text-lg max-w-3xl mx-auto leading-relaxed font-normal pt-4">
+                    VoxCoach AI processes your verbal arguments in real-time, mapping behavioral criteria against competitive benchmarks for elite corporate screening and university environments.
+                </p>
+                <div class="pt-10">
+                    <button id="signInBtn" class="gold-gradient-bg text-[#070D1F] font-bold text-sm uppercase tracking-widest px-12 py-4 rounded-xl shadow-lg shadow-[#D4AF37]/20 hover:opacity-95 transform hover:-translate-y-1 transition-all duration-200">
+                        Enter Simulation Workspace
+                    </button>
                 </div>
             </div>
-        </section>
 
-        <section class="lg:col-span-5 flex flex-col space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-7 mt-28 w-full text-left max-w-6xl mx-auto">
+                <div class="gold-glass rounded-2xl p-7 shadow-md hover:border-[#D4AF37]/60 transition-colors duration-300">
+                    <div class="text-[#D4AF37] mb-6 bg-[#16224F] w-14 h-14 rounded-xl flex items-center justify-center border border-slate-700">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 100-6 3 3 0 000 6z"></path></svg>
+                    </div>
+                    <h3 class="text-white text-sm uppercase tracking-wider font-bold mb-3">Adaptive Evaluation Loops</h3>
+                    <p class="text-slate-300 text-sm leading-relaxed font-normal">Generates dynamic contextual inquiries modeled perfectly around target roles or academic tracks.</p>
+                </div>
+                <div class="gold-glass rounded-2xl p-7 shadow-md hover:border-[#D4AF37]/60 transition-colors duration-300">
+                    <div class="text-[#D4AF37] mb-6 bg-[#16224F] w-14 h-14 rounded-xl flex items-center justify-center border border-slate-700">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                    </div>
+                    <h3 class="text-white text-sm uppercase tracking-wider font-bold mb-3">Structural Diagnostics</h3>
+                    <p class="text-slate-300 text-sm leading-relaxed font-normal">Monitors words-per-minute pacing velocity, structural pauses, and counts verbal vulnerabilities instantly.</p>
+                </div>
+                <div class="gold-glass rounded-2xl p-7 shadow-md hover:border-[#D4AF37]/60 transition-colors duration-300">
+                    <div class="text-[#D4AF37] mb-6 bg-[#16224F] w-14 h-14 rounded-xl flex items-center justify-center border border-slate-700">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477-4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                    </div>
+                    <h3 class="text-white text-sm uppercase tracking-wider font-bold mb-3">STAR Methodology</h3>
+                    <p class="text-slate-300 text-sm leading-relaxed font-normal">Transforms dialogue history into qualitative data breakdowns mapping passive language to operational power indicators.</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="simulatorView" class="hidden grid grid-cols-1 lg:grid-cols-[1fr_1.75fr_1fr] gap-7 animate-fadeIn items-start">
             
-            <div class="grid grid-cols-3 gap-4">
-                <div class="gold-glass rounded-2xl p-4 text-center">
-                    <span class="block text-[9px] font-bold uppercase tracking-widest text-slate-400 mb-1">Cadence / Pace</span>
-                    <span id="wpmValue" class="text-xl font-extrabold text-[#F3E5AB]">0 WPM</span>
-                    <div class="w-full bg-slate-800 rounded-full h-1.5 mt-2 overflow-hidden">
-                        <div id="wpmGauge" class="gold-gradient-bg h-1.5 rounded-full transition-all duration-300 w-0"></div>
+            <section class="gold-glass rounded-2xl p-7 flex flex-col shadow-2xl h-[720px]">
+                <h3 class="text-[#D4AF37] text-sm font-bold uppercase tracking-widest mb-6 border-b border-slate-700/80 pb-4">Simulation Parameters</h3>
+                
+                <div class="space-y-6 flex-1 flex flex-col min-h-0">
+                    <div>
+                        <label class="block text-sm font-bold uppercase tracking-widest text-slate-300 mb-2">Track Target</label>
+                        <select id="trackSelector" class="w-full bg-[#101A36] border border-slate-700 rounded-xl px-4 py-3 text-sm text-white gold-border-focus transition-colors cursor-pointer font-medium shadow-sm outline-none">
+                            <option value="General Corporate Interview">Corporate Recruitment</option>
+                            <option value="General College Admissions">Elite Admissions</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label id="targetContextLabel" class="block text-sm font-bold uppercase tracking-widest text-slate-300 mb-2">Target Role</label>
+                        <input id="targetContextInput" type="text" placeholder="e.g., Senior Software Engineer at Google" class="w-full bg-[#101A36] border border-slate-700 rounded-xl px-4 py-3 text-sm text-white gold-border-focus transition-colors placeholder-slate-500 font-medium shadow-sm outline-none">
+                    </div>
+                    <div class="flex-1 flex flex-col min-h-0">
+                        <label class="block text-sm font-bold uppercase tracking-widest text-slate-300 mb-2">Background Data</label>
+                        <textarea id="resumeInput" placeholder="Paste structural background achievements, past projects, or relevant data..." class="w-full flex-1 bg-[#101A36] border border-slate-700 rounded-xl px-4 py-3 text-sm text-white gold-border-focus transition-colors resize-none placeholder-slate-500 font-medium shadow-sm outline-none min-h-[140px]"></textarea>
+                    </div>
+                </div>
+            </section>
+
+            <section class="gold-glass rounded-2xl p-7 flex flex-col justify-between items-center shadow-2xl h-[720px] relative">
+                
+                <div class="w-full text-center mb-4">
+                    <p id="questionDisplay" class="text-white text-lg md:text-2xl leading-relaxed font-medium tracking-wide min-h-[100px] flex items-center justify-center">
+                        Configure parameters on the left, then click the microphone to generate your opening scenario.
+                    </p>
+                </div>
+
+                <div class="flex-1 flex items-center justify-center w-full my-6 relative">
+                    <button id="recordBtn" class="w-36 h-36 rounded-full bg-[#101A36] border-2 border-slate-700 flex items-center justify-center shadow-lg relative z-10 transition-all duration-300 outline-none group hover:border-[#D4AF37]/50" title="Click to start scenario / toggle recording">
+                        <svg id="recordIcon" class="w-14 h-14 text-[#D4AF37] group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4zm4 10.93A7.001 7.001 0 0017 8a1 1 0 10-2 0 A5 5 0 015 8a1 1 0 00-2 0 7.001 7.001 0 006 6.93V17H6a1 1 0 100 2h8a1 1 0 100-2h-3v-2.07z" clip-rule="evenodd"></path>
+                        </svg>
+                        <div id="avatarPulse" class="absolute inset-0 rounded-full bg-[#D4AF37]/20 scale-[1.3] hidden opacity-40 animate-ping"></div>
+                    </button>
+                </div>
+
+                <div class="w-full mt-auto">
+                    <div class="h-16 relative w-full mb-6 rounded-xl overflow-hidden border border-slate-800 bg-[#0a122c] shadow-inner">
+                        <canvas id="audioSpectrum" class="w-full h-full"></canvas>
+                        <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                            <span id="waveformPlaceholder" class="text-slate-400 text-xs font-bold uppercase tracking-[0.2em]">Audio Feed Inactive</span>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row items-center justify-center gap-4 w-full">
+                        <button id="nextQuestionBtn" disabled class="flex-1 bg-[#101A36] border border-slate-700 hover:border-[#D4AF37]/40 disabled:opacity-30 disabled:pointer-events-none text-slate-200 text-sm font-bold uppercase tracking-wider py-4 px-6 rounded-xl transition-all duration-200 shadow-sm outline-none">
+                            Next Scenario
+                        </button>
+                        <button id="endSessionBtn" disabled class="flex-1 bg-red-950/40 border border-red-500/30 hover:border-red-500/60 disabled:opacity-30 disabled:pointer-events-none text-red-200 text-sm font-bold uppercase tracking-wider py-4 px-6 rounded-xl transition-all duration-200 shadow-sm outline-none">
+                            Finish & Analyze
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <section class="flex flex-col space-y-6 h-[720px]">
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="gold-glass rounded-2xl p-5 text-center col-span-2">
+                        <span class="block text-xs font-bold uppercase tracking-widest text-slate-400 mb-2">Cadence / Pace</span>
+                        <span id="wpmValue" class="text-3xl font-extrabold text-[#F3E5AB]">0 WPM</span>
+                        <div class="w-full bg-slate-800 rounded-full h-2 mt-3 overflow-hidden">
+                            <div id="wpmGauge" class="gold-gradient-bg h-2 rounded-full transition-all duration-300 w-0"></div>
+                        </div>
+                        <span class="block text-xs text-slate-400 mt-2 uppercase font-semibold">Optimal Range: 130-160 WPM</span>
+                    </div>
+
+                    <div class="gold-glass rounded-2xl p-4 text-center flex flex-col justify-center">
+                        <span class="block text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-1">Vocal Fillers</span>
+                        <span id="fillerCount" class="text-2xl font-extrabold text-[#F3E5AB]">0</span>
+                        <span class="block text-[9px] text-slate-500 mt-1 uppercase font-semibold">Tracked Hits</span>
+                    </div>
+
+                    <div class="gold-glass rounded-2xl p-4 text-center flex flex-col justify-center">
+                        <span class="block text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-1">Pauses</span>
+                        <span id="pauseCount" class="text-2xl font-extrabold text-[#F3E5AB]">0</span>
+                        <span class="block text-[9px] text-slate-500 mt-1 uppercase font-semibold">&gt; 2.5s Delays</span>
                     </div>
                 </div>
 
-                <div class="gold-glass rounded-2xl p-4 text-center">
-                    <span class="block text-[9px] font-bold uppercase tracking-widest text-slate-400 mb-1">Vocal Fillers</span>
-                    <span id="fillerCount" class="text-xl font-extrabold text-[#F3E5AB]">0</span>
-                    <span class="block text-[8px] text-slate-500 mt-1 uppercase font-semibold">Tracked Hits</span>
-                </div>
-
-                <div class="gold-glass rounded-2xl p-4 text-center">
-                    <span class="block text-[9px] font-bold uppercase tracking-widest text-slate-400 mb-1">Structural Pauses</span>
-                    <span id="pauseCount" class="text-xl font-extrabold text-[#F3E5AB]">0</span>
-                    <span class="block text-[8px] text-slate-500 mt-1 uppercase font-semibold">&gt; 2.5s Delays</span>
-                </div>
-            </div>
-
-            <div class="gold-glass rounded-2xl p-6 flex-1 flex flex-col justify-between shadow-2xl">
-                <div class="flex-1 flex flex-col">
+                <div class="gold-glass rounded-2xl p-5 flex-1 flex flex-col shadow-2xl h-full overflow-hidden">
                     <div class="flex items-center justify-between mb-3 border-b border-slate-800/80 pb-3">
-                        <span class="text-[10px] font-bold uppercase tracking-widest text-slate-300">Live Transcript Stream</span>
-                        <span class="text-[9px] text-[#D4AF37] font-semibold uppercase tracking-wider">Interactive Feedback Enabled</span>
+                        <span class="text-xs font-bold uppercase tracking-widest text-slate-300">Live Transcript</span>
+                        <span class="text-[10px] text-[#D4AF37] font-semibold uppercase tracking-wider">Feedback Enabled</span>
                     </div>
 
-                    <div id="interactiveTranscriptDisplay" class="bg-[#101A36] border border-slate-700/80 rounded-xl p-4 flex-1 min-h-[160px] max-h-[220px] overflow-y-auto text-xs leading-relaxed text-slate-300 font-normal">
-                        No answers recorded yet. Click the record button and respond to the question. Hover over marked vocal fillers like "um" or "like" during tracking to inspect highlighted transitions...
+                    <div id="interactiveTranscriptDisplay" class="bg-[#101A36] border border-slate-700/80 rounded-xl p-4 flex-1 overflow-y-auto text-sm leading-relaxed text-slate-300 font-normal">
+                        No answers recorded yet.
                     </div>
+                    <div id="transcriptionFallback" class="hidden"></div>
+                </div>
+            </section>
+        </div>
+
+        <div id="analysisView" class="hidden animate-fadeIn">
+            <div class="max-w-5xl mx-auto gold-glass rounded-2xl p-7 md:p-14 shadow-2xl">
+                <div class="text-center border-b border-slate-800 pb-10 mb-10">
+                    <h2 class="text-4xl font-extrabold text-white mb-4">Performance Blueprint</h2>
+                    <p class="text-sm text-slate-400 font-medium">Executive behavioral mapping and structural feedback.</p>
                 </div>
 
-                <div class="mt-4 pt-4 border-t border-slate-800 flex-1 flex flex-col justify-end">
-                    <span class="block text-[10px] font-bold uppercase tracking-widest text-slate-300 mb-2.5">Comprehensive Evaluation Matrix Output</span>
-                    <div id="critiqueOutput" class="bg-[#101A36] border border-slate-700 rounded-xl p-4 min-h-[140px] max-h-[170px] overflow-y-auto text-xs text-slate-200 leading-relaxed tracking-wide shadow-inner">
-                        <div id="analysisDefaultText" class="text-slate-400 text-[11px] font-medium">Awaiting submission context data metrics validation loop...</div>
-                        <div id="analysisSkeleton" class="hidden space-y-3 w-full">
-                            <div class="h-2.5 skeleton-shimmer rounded w-11/12"></div>
-                            <div class="h-2.5 skeleton-shimmer rounded w-full"></div>
-                            <div class="h-2.5 skeleton-shimmer rounded w-4/5"></div>
+                <div id="critiqueOutput" class="text-sm text-slate-200 leading-loose tracking-wide">
+                    <div id="analysisDefaultText" class="text-center text-slate-500 italic text-lg">No session data found. Complete a simulation to generate a report.</div>
+                    <div id="analysisSkeleton" class="hidden space-y-7 w-full">
+                        <div class="space-y-4">
+                            <div class="h-6 skeleton-shimmer rounded w-1/4 mb-6"></div>
+                            <div class="h-4 skeleton-shimmer rounded w-full"></div>
+                            <div class="h-4 skeleton-shimmer rounded w-11/12"></div>
+                            <div class="h-4 skeleton-shimmer rounded w-4/5"></div>
+                        </div>
+                        <div class="space-y-4 pt-6">
+                            <div class="h-6 skeleton-shimmer rounded w-1/3 mb-6"></div>
+                            <div class="h-4 skeleton-shimmer rounded w-full"></div>
+                            <div class="h-4 skeleton-shimmer rounded w-full"></div>
                         </div>
                     </div>
                 </div>
+
+                <div class="mt-14 text-center pt-10 border-t border-slate-800">
+                    <button id="restartSimBtn" class="bg-[#101A36] hover:bg-[#16224F] border border-slate-700 text-white font-bold text-sm uppercase tracking-wider py-4 px-12 rounded-xl transition-colors shadow-sm">
+                        Start New Session
+                    </button>
+                </div>
             </div>
-        </section>
+        </div>
+
     </main>
 
-    <footer class="border-t border-slate-800 py-6 text-center text-[10px] text-slate-400 font-medium tracking-widest uppercase">
+    <footer class="border-t border-slate-800 py-8 text-center text-xs text-slate-500 font-medium tracking-widest uppercase relative z-10 mt-10">
         VoxCoach AI Architecture &copy; 2026. High-Fidelity Communication Engine.
     </footer>
 
     <script>
-        // Initialize Supabase Client with credentials from Flask template rendering
+        // Supabase Initialization
         const SUPABASE_URL = "{{ supabase_url|default('https://rmydbdccwnsqvwgwraxj.supabase.co') }}";
         const SUPABASE_KEY = "{{ supabase_key|default('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJteWRiZGNjd25zcXZ3Z3dyYXhqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ2NDQwMDgsImV4cCI6MjEwMDIyMDAwOH0.LSyOUNBjetuemKnGCE_sXYe2Y56BLJpPzasc8GLd2x0') }}";
 
         let supabaseClient = null;
         if (window.supabase && SUPABASE_URL && SUPABASE_KEY && !SUPABASE_URL.startsWith("{% raw %}{{% endraw %}")) {
-            try {
-                supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-            } catch(e) {
-                console.error("Supabase client initialization error:", e);
-            }
+            try { supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY); } 
+            catch(e) { console.error("Supabase client initialization error:", e); }
         }
 
-        // Global State Registers
+        // Global State
         let sessionHistory = [];
         let currentTrack = "General Corporate Interview";
         let currentResume = "";
         let currentTargetContext = "";
+        let isSessionActive = false;
         let isRecording = false;
         let finalTranscript = "";
         
@@ -340,10 +392,23 @@
         let detectedFluencyDelays = 0;
         let pauseTrackingTimeout = null;
 
-        // Auth UI Modal State Variables
+        // View Management Variables
+        const landingView = document.getElementById('landingView');
+        const simulatorView = document.getElementById('simulatorView');
+        const analysisView = document.getElementById('analysisView');
+        
+        const appNavigation = document.getElementById('appNavigation');
+        const navHomeBtn = document.getElementById('navHomeBtn');
+        const navSimulatorBtn = document.getElementById('navSimulatorBtn');
+        const navAnalysisBtn = document.getElementById('navAnalysisBtn');
+        const navLogoBtn = document.getElementById('navLogoBtn');
+        const navAuthBtn = document.getElementById('navAuthBtn');
+        const signInBtn = document.getElementById('signInBtn');
+        const restartSimBtn = document.getElementById('restartSimBtn');
+
+        // Auth UI
         let authMode = 'signin';
         const authModal = document.getElementById('authModal');
-        const navAuthBtn = document.getElementById('navAuthBtn');
         const closeAuthModalBtn = document.getElementById('closeAuthModalBtn');
         const tabSigninBtn = document.getElementById('tabSigninBtn');
         const tabSignupBtn = document.getElementById('tabSignupBtn');
@@ -360,11 +425,115 @@
         const userEmailDisplay = document.getElementById('userEmailDisplay');
         const signOutBtn = document.getElementById('signOutBtn');
 
-        const landingPage = document.getElementById('landingPage');
-        const mainWorkspace = document.getElementById('mainWorkspace');
-        const navDashboardBtn = document.getElementById('navDashboardBtn');
-        const signInBtn = document.getElementById('signInBtn');
+        // --- View Controller ---
+        function switchView(viewName) {
+            landingView.classList.add('hidden');
+            simulatorView.classList.add('hidden');
+            analysisView.classList.add('hidden');
 
+            // Reset Nav active states
+            [navHomeBtn, navSimulatorBtn, navAnalysisBtn].forEach(btn => {
+                btn.classList.remove('text-[#D4AF37]');
+                btn.classList.add('text-slate-400');
+            });
+
+            if (viewName === 'landing') {
+                landingView.classList.remove('hidden');
+                navHomeBtn.classList.add('text-[#D4AF37]');
+                navHomeBtn.classList.remove('text-slate-400');
+            } else if (viewName === 'simulator') {
+                simulatorView.classList.remove('hidden');
+                navSimulatorBtn.classList.add('text-[#D4AF37]');
+                navSimulatorBtn.classList.remove('text-slate-400');
+            } else if (viewName === 'analysis') {
+                analysisView.classList.remove('hidden');
+                navAnalysisBtn.classList.remove('hidden');
+                navAnalysisBtn.classList.add('text-[#D4AF37]');
+                navAnalysisBtn.classList.remove('text-slate-400');
+            }
+        }
+
+        navHomeBtn.addEventListener('click', () => switchView('landing'));
+        navLogoBtn.addEventListener('click', () => switchView('landing'));
+        navSimulatorBtn.addEventListener('click', () => switchView('simulator'));
+        navAnalysisBtn.addEventListener('click', () => switchView('analysis'));
+        restartSimBtn.addEventListener('click', () => {
+            isSessionActive = false;
+            sessionHistory = [];
+            finalTranscript = "";
+            document.getElementById('questionDisplay').innerText = "Configure parameters on the left, then click the microphone to generate your opening scenario.";
+            document.getElementById('interactiveTranscriptDisplay').innerText = "No answers recorded yet.";
+            document.getElementById('nextQuestionBtn').setAttribute('disabled', 'true');
+            document.getElementById('endSessionBtn').setAttribute('disabled', 'true');
+            switchView('simulator');
+        });
+
+        signInBtn.addEventListener('click', () => {
+            if (!localStorage.getItem('voxcoach_user')) {
+                authModal.classList.remove('hidden');
+            } else {
+                switchView('simulator');
+            }
+        });
+
+        // --- Rotating Text Vanilla JS Adaptation ---
+        const rotatingTexts = ['interviews', 'admissions', 'dream job', 'opportunities', 'career', 'future'];
+        const textContainer = document.getElementById('rotatingTextContainer');
+        let currentTextIndex = 0;
+
+        function renderRotatingText(text, isInitial = false) {
+            textContainer.innerHTML = '';
+            const words = text.split(' ');
+            
+            words.forEach((word, wordIndex) => {
+                const wordSpan = document.createElement('span');
+                wordSpan.className = 'text-rotate-word';
+                
+                const chars = Array.from(word);
+                chars.forEach((char, charIndex) => {
+                    const charSpan = document.createElement('span');
+                    charSpan.className = 'text-rotate-element';
+                    charSpan.textContent = char;
+                    
+                    const delay = (wordIndex * 5 + charIndex) * 30; // ms
+                    charSpan.style.transitionDelay = `${delay}ms`;
+                    
+                    wordSpan.appendChild(charSpan);
+                });
+
+                textContainer.appendChild(wordSpan);
+                if (wordIndex < words.length - 1) {
+                    const space = document.createElement('span');
+                    space.className = 'text-rotate-space';
+                    space.textContent = ' ';
+                    textContainer.appendChild(space);
+                }
+            });
+
+            setTimeout(() => {
+                document.querySelectorAll('.text-rotate-element').forEach(el => {
+                    el.classList.add('in');
+                });
+            }, 50);
+        }
+
+        function cycleText() {
+            document.querySelectorAll('.text-rotate-element').forEach(el => {
+                el.classList.remove('in');
+                el.classList.add('out');
+            });
+
+            setTimeout(() => {
+                currentTextIndex = (currentTextIndex + 1) % rotatingTexts.length;
+                renderRotatingText(rotatingTexts[currentTextIndex]);
+            }, 600);
+        }
+
+        renderRotatingText(rotatingTexts[0], true);
+        setInterval(cycleText, 3000);
+
+
+        // --- Auth Logic ---
         function showAuthError(msg) {
             authErrorMsg.innerText = msg;
             authErrorMsg.classList.remove('hidden');
@@ -380,8 +549,6 @@
         function clearAuthMsgs() {
             authErrorMsg.classList.add('hidden');
             authSuccessMsg.classList.add('hidden');
-            authErrorMsg.innerText = '';
-            authSuccessMsg.innerText = '';
         }
 
         function updateUIForLoggedInUser(user) {
@@ -392,34 +559,24 @@
             userProfileBadge.classList.add('flex');
             navAuthBtn.classList.add('hidden');
             authModal.classList.add('hidden');
+            appNavigation.classList.remove('hidden');
         }
 
         function updateUIForLoggedOutUser() {
             userProfileBadge.classList.add('hidden');
             userProfileBadge.classList.remove('flex');
             navAuthBtn.classList.remove('hidden');
-            
-            mainWorkspace.classList.add('hidden');
-            mainWorkspace.classList.remove('opacity-100');
-            mainWorkspace.classList.add('opacity-0');
-            landingPage.classList.remove('hidden');
-            navDashboardBtn.classList.add('hidden');
+            appNavigation.classList.add('hidden');
+            switchView('landing');
         }
 
-        // Initialize Auth Session and Google OAuth Redirect Callback Handler
         async function initAuth() {
             if (supabaseClient) {
-                // Listen to OAuth state changes (triggers when returning from Google Sign-In)
                 supabaseClient.auth.onAuthStateChange((event, session) => {
                     if (session && session.user) {
-                        const userData = {
-                            id: session.user.id,
-                            email: session.user.email,
-                            token: session.access_token
-                        };
+                        const userData = { id: session.user.id, email: session.user.email, token: session.access_token };
                         localStorage.setItem('voxcoach_user', JSON.stringify(userData));
                         updateUIForLoggedInUser(userData);
-
                         if (window.location.hash || window.location.search.includes('code=')) {
                             window.history.replaceState(null, '', window.location.pathname);
                         }
@@ -429,205 +586,88 @@
                 try {
                     const { data: { session } } = await supabaseClient.auth.getSession();
                     if (session && session.user) {
-                        const userData = {
-                            id: session.user.id,
-                            email: session.user.email,
-                            token: session.access_token
-                        };
+                        const userData = { id: session.user.id, email: session.user.email, token: session.access_token };
                         localStorage.setItem('voxcoach_user', JSON.stringify(userData));
                         updateUIForLoggedInUser(userData);
                         return;
                     }
-                } catch (e) {
-                    console.error("Error retrieving Supabase session:", e);
-                }
+                } catch (e) {}
             }
 
-            // Fallback: Check direct URL hash parameters if access_token was returned
-            if (window.location.hash && window.location.hash.includes('access_token=')) {
-                try {
-                    const hashParams = new URLSearchParams(window.location.hash.substring(1));
-                    const accessToken = hashParams.get('access_token');
-                    if (accessToken) {
-                        const res = await fetch('/api/auth/me', {
-                            headers: { 'Authorization': `Bearer ${accessToken}` }
-                        });
-                        const data = await res.json();
-                        if (data.success && data.user) {
-                            const userData = {
-                                id: data.user.id,
-                                email: data.user.email,
-                                token: accessToken
-                            };
-                            localStorage.setItem('voxcoach_user', JSON.stringify(userData));
-                            updateUIForLoggedInUser(userData);
-                            window.history.replaceState(null, '', window.location.pathname);
-                            return;
-                        }
-                    }
-                } catch (err) {
-                    console.error("Failed to parse token from URL hash:", err);
-                }
-            }
-
-            // Fallback: Check local storage
             const savedUser = localStorage.getItem('voxcoach_user');
             if (savedUser) {
-                try {
-                    const user = JSON.parse(savedUser);
-                    updateUIForLoggedInUser(user);
-                } catch (e) {
-                    localStorage.removeItem('voxcoach_user');
-                }
+                try { updateUIForLoggedInUser(JSON.parse(savedUser)); } 
+                catch (e) { localStorage.removeItem('voxcoach_user'); }
             }
         }
 
-        // Google Sign-In Action Event Listener
         googleSignInBtn.addEventListener('click', async () => {
             clearAuthMsgs();
             const redirectUrl = window.location.origin + window.location.pathname;
             try {
                 if (supabaseClient) {
-                    const { data, error } = await supabaseClient.auth.signInWithOAuth({
-                        provider: 'google',
-                        options: {
-                            redirectTo: redirectUrl
-                        }
-                    });
+                    const { error } = await supabaseClient.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: redirectUrl } });
                     if (error) throw error;
                 } else {
-                    const res = await fetch('/api/auth/google', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ redirect_to: redirectUrl })
-                    });
+                    const res = await fetch('/api/auth/google', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ redirect_to: redirectUrl }) });
                     const data = await res.json();
-                    if (data.success && data.url) {
-                        window.location.href = data.url;
-                    } else {
-                        showAuthError(data.error || "Failed to initiate Google Sign-In.");
-                    }
+                    if (data.success && data.url) window.location.href = data.url;
+                    else showAuthError(data.error || "Failed to initiate Google Sign-In.");
                 }
-            } catch (err) {
-                showAuthError(err.message || "Google Sign-In failed.");
-            }
+            } catch (err) { showAuthError(err.message || "Google Sign-In failed."); }
         });
 
-        // Email / Password Authentication Event Listener
         authForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             clearAuthMsgs();
-
             const email = authEmail.value.trim();
             const password = authPassword.value.trim();
-
-            if (!email || !password) {
-                showAuthError("Please fill in all fields.");
-                return;
-            }
+            if (!email || !password) return showAuthError("Please fill in all fields.");
 
             const endpoint = authMode === 'signup' ? '/api/auth/signup' : '/api/auth/signin';
-
             try {
-                const res = await fetch(endpoint, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, password })
-                });
+                const res = await fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, password }) });
                 const data = await res.json();
-
                 if (data.success && data.user) {
-                    const userData = {
-                        id: data.user.id,
-                        email: data.user.email,
-                        token: data.session || ''
-                    };
+                    const userData = { id: data.user.id, email: data.user.email, token: data.session || '' };
                     localStorage.setItem('voxcoach_user', JSON.stringify(userData));
                     updateUIForLoggedInUser(userData);
                     showAuthSuccess(authMode === 'signup' ? "Account created successfully!" : "Signed in successfully!");
-                    setTimeout(() => {
-                        authModal.classList.add('hidden');
-                        clearAuthMsgs();
-                    }, 1000);
-                } else {
-                    showAuthError(data.error || "Authentication failed.");
-                }
-            } catch (err) {
-                showAuthError("Network error. Please try again.");
-            }
+                    setTimeout(() => authModal.classList.add('hidden'), 1000);
+                } else showAuthError(data.error || "Authentication failed.");
+            } catch (err) { showAuthError("Network error. Please try again."); }
         });
 
-        // Modal Control Listeners
-        navAuthBtn.addEventListener('click', () => {
-            clearAuthMsgs();
-            authModal.classList.remove('hidden');
-        });
-
-        closeAuthModalBtn.addEventListener('click', () => {
-            authModal.classList.add('hidden');
-        });
+        navAuthBtn.addEventListener('click', () => { clearAuthMsgs(); authModal.classList.remove('hidden'); });
+        closeAuthModalBtn.addEventListener('click', () => authModal.classList.add('hidden'));
 
         tabSigninBtn.addEventListener('click', () => {
             authMode = 'signin';
-            tabSigninBtn.className = "flex-1 pb-3 text-xs font-bold uppercase tracking-wider text-[#D4AF37] border-b-2 border-[#D4AF37] transition-all";
-            tabSignupBtn.className = "flex-1 pb-3 text-xs font-bold uppercase tracking-wider text-slate-400 border-b-2 border-transparent hover:text-slate-200 transition-all";
-            authModalTitle.innerText = "Welcome Back";
-            authModalSubtitle.innerText = "Sign in to access your interview workspace";
+            tabSigninBtn.className = "flex-1 pb-4 text-sm font-bold uppercase tracking-wider text-[#D4AF37] border-b-2 border-[#D4AF37] transition-all";
+            tabSignupBtn.className = "flex-1 pb-4 text-sm font-bold uppercase tracking-wider text-slate-400 border-b-2 border-transparent hover:text-slate-200 transition-all";
+            document.getElementById('authModalTitle').innerText = "Welcome Back";
+            document.getElementById('authModalSubtitle').innerText = "Sign in to access your interview workspace";
             authSubmitBtn.innerText = "Sign In";
-            clearAuthMsgs();
         });
 
         tabSignupBtn.addEventListener('click', () => {
             authMode = 'signup';
-            tabSignupBtn.className = "flex-1 pb-3 text-xs font-bold uppercase tracking-wider text-[#D4AF37] border-b-2 border-[#D4AF37] transition-all";
-            tabSigninBtn.className = "flex-1 pb-3 text-xs font-bold uppercase tracking-wider text-slate-400 border-b-2 border-transparent hover:text-slate-200 transition-all";
-            authModalTitle.innerText = "Create Account";
-            authModalSubtitle.innerText = "Sign up to track your communication analytics";
+            tabSignupBtn.className = "flex-1 pb-4 text-sm font-bold uppercase tracking-wider text-[#D4AF37] border-b-2 border-[#D4AF37] transition-all";
+            tabSigninBtn.className = "flex-1 pb-4 text-sm font-bold uppercase tracking-wider text-slate-400 border-b-2 border-transparent hover:text-slate-200 transition-all";
+            document.getElementById('authModalTitle').innerText = "Create Account";
+            document.getElementById('authModalSubtitle').innerText = "Sign up to track your communication analytics";
             authSubmitBtn.innerText = "Sign Up";
-            clearAuthMsgs();
         });
 
         signOutBtn.addEventListener('click', async () => {
             localStorage.removeItem('voxcoach_user');
-            if (supabaseClient) {
-                try { await supabaseClient.auth.signOut(); } catch(e){}
-            }
+            if (supabaseClient) try { await supabaseClient.auth.signOut(); } catch(e){}
             updateUIForLoggedOutUser();
         });
 
-        // Workspace Launch Listeners
-        signInBtn.addEventListener('click', () => {
-            const savedUser = localStorage.getItem('voxcoach_user');
-            if (!savedUser) {
-                clearAuthMsgs();
-                authModal.classList.remove('hidden');
-            } else {
-                landingPage.classList.add('hidden');
-                mainWorkspace.classList.remove('hidden');
-                setTimeout(() => {
-                    mainWorkspace.classList.remove('opacity-0');
-                    mainWorkspace.classList.add('opacity-100');
-                }, 50);
-                navDashboardBtn.classList.remove('hidden');
-            }
-        });
 
-        navDashboardBtn.addEventListener('click', () => {
-            mainWorkspace.classList.add('hidden');
-            mainWorkspace.classList.remove('opacity-100');
-            mainWorkspace.classList.add('opacity-0');
-            landingPage.classList.remove('hidden');
-            navDashboardBtn.classList.add('hidden');
-        });
-
-        // Web Audio Context Subsystem Elements
-        let audioCtx = null;
-        let audioAnalyser = null;
-        let audioSource = null;
-        let mediaStream = null;
-        let animationFrameId = null;
-
-        // Speech Recognition Architecture Selection
+        // --- Audio & Web Speech API ---
+        let audioCtx = null, audioAnalyser = null, audioSource = null, mediaStream = null, animationFrameId = null;
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         let speechEngine = null;
 
@@ -636,28 +676,24 @@
             speechEngine.continuous = true;
             speechEngine.interimResults = true;
             speechEngine.lang = 'en-US';
-        } else {
-            document.getElementById('questionDisplay').innerText = "Critical Warning: This browser does not support native Web Speech APIs. Please use Google Chrome or Microsoft Edge.";
         }
 
-        // Track Selector Toggle UI Adjustments
         const trackSelector = document.getElementById('trackSelector');
         const targetContextLabel = document.getElementById('targetContextLabel');
         const targetContextInput = document.getElementById('targetContextInput');
 
         trackSelector.addEventListener('change', () => {
             if (trackSelector.value === "General Corporate Interview") {
-                targetContextLabel.innerText = "Target Job Description / Role";
-                targetContextInput.placeholder = "e.g., Senior Software Engineer at Google, or key role goals...";
+                targetContextLabel.innerText = "Target Role";
+                targetContextInput.placeholder = "e.g., Senior Software Engineer at Google";
             } else {
-                targetContextLabel.innerText = "Target College / Program";
-                targetContextInput.placeholder = "e.g., Harvard University - Economics BA, or target program details...";
+                targetContextLabel.innerText = "Target Program";
+                targetContextInput.placeholder = "e.g., Harvard University - Economics BA";
             }
         });
 
-        // US Context Alternative Transition Vocabulary Configurations
         const transitionalAlternatives = {
-            "um": "Instead of executing a vocal stall like 'um', practice using stabilizing structural bridges: 'Certainly,' 'Consequently,' or 'To break this down...'",
+            "um": "Instead of executing a vocal stall like 'um', practice using stabilizing structural bridges: 'Certainly,' or 'To break this down...'",
             "uh": "To remove vocal hesitations like 'uh', embrace deliberate structural pauses to frame your upcoming thoughts.",
             "like": "Instead of casual conversational indicators like 'like', use precise analytical metrics: 'specifically,' 'for instance,' or 'namely.'",
             "you know": "Avoid relying on passive validation phrases like 'you know'. Affirm your points directly: 'As evidenced by our results...'",
@@ -665,71 +701,18 @@
             "basically": "Replace informal summarizers like 'basically' with authoritative phrasing: 'fundamentally,' or 'at its core.'"
         };
 
-        function triggerFillerTipPopover(word, targetElem) {
+        window.triggerFillerTipPopover = function(word, targetElem) {
             const popover = document.getElementById('fillerPopover');
             const popoverText = document.getElementById('popoverAlternativeText');
-            const altText = transitionalAlternatives[word.toLowerCase()] || "Focus on replacing verbal hesitations with brief silent pauses to convey authority.";
-            
-            popoverText.innerText = altText;
+            popoverText.innerText = transitionalAlternatives[word.toLowerCase()] || "Focus on replacing verbal hesitations with brief silent pauses to convey authority.";
             popover.classList.remove('hidden');
-
             const rect = targetElem.getBoundingClientRect();
-            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-            const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
+            popover.style.left = `${rect.left + window.scrollX - 20}px`;
+            popover.style.top = `${rect.top + window.scrollY - popover.offsetHeight - 12}px`;
+        };
 
-            popover.style.left = `${rect.left + scrollLeft - 20}px`;
-            popover.style.top = `${rect.top + scrollTop - popover.offsetHeight - 12}px`;
-        }
+        document.addEventListener('click', () => document.getElementById('fillerPopover').classList.add('hidden'));
 
-        document.addEventListener('click', () => {
-            document.getElementById('fillerPopover').classList.add('hidden');
-        });
-
-        // Initialize Simulator and Load a Question
-        document.getElementById('startSessionBtn').addEventListener('click', async () => {
-            currentTrack = trackSelector.value;
-            currentResume = document.getElementById('resumeInput').value;
-            currentTargetContext = targetContextInput.value;
-
-            document.getElementById('questionDisplay').innerText = "Dynamically generating unique opening scenario prompt specialized to parameters...";
-
-            try {
-                const res = await fetch('/api/session/start', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        track: currentTrack,
-                        resume: currentResume,
-                        target_context: currentTargetContext
-                    })
-                });
-                const data = await res.json();
-                if (data.success) {
-                    sessionHistory = data.history;
-                    document.getElementById('questionDisplay').innerText = data.current_question;
-                    
-                    totalWordsCount = 0;
-                    detectedFillerHits = 0;
-                    detectedFluencyDelays = 0;
-                    finalTranscript = "";
-
-                    document.getElementById('fillerCount').innerText = "0";
-                    document.getElementById('pauseCount').innerText = "0";
-                    document.getElementById('wpmValue').innerText = "0 WPM";
-                    document.getElementById('wpmGauge').style.width = "0%";
-                    document.getElementById('transcriptionFallback').innerText = "";
-                    document.getElementById('transcriptionFallback').classList.add('hidden');
-                    document.getElementById('interactiveTranscriptDisplay').innerText = "No answers recorded yet. Click the record button and respond to the question. Hover over marked vocal fillers like 'um' or 'like' during tracking to inspect highlighted transitions...";
-
-                    document.getElementById('recordBtn').removeAttribute('disabled');
-                    document.getElementById('nextQuestionBtn').setAttribute('disabled', 'true');
-                }
-            } catch (err) {
-                document.getElementById('questionDisplay').innerText = "Connection Error: Failed to generate session prompt. Please verify your backend server status.";
-            }
-        });
-
-        // Audio Spectrum Visualizer Function
         function renderSpectrumVisualization() {
             const canvas = document.getElementById('audioSpectrum');
             const canvasCtx = canvas.getContext('2d');
@@ -739,16 +722,12 @@
             function draw() {
                 animationFrameId = requestAnimationFrame(draw);
                 audioAnalyser.getByteFrequencyData(dataArray);
-
                 canvasCtx.fillStyle = '#0a122c';
                 canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
-
                 const barWidth = (canvas.width / bufferLength) * 2.5;
-                let barHeight;
                 let x = 0;
-
                 for (let i = 0; i < bufferLength; i++) {
-                    barHeight = dataArray[i] / 3;
+                    const barHeight = dataArray[i] / 3;
                     canvasCtx.fillStyle = `rgba(212, 175, 55, ${barHeight / 80})`;
                     canvasCtx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
                     x += barWidth + 1;
@@ -761,7 +740,7 @@
             if (pauseTrackingTimeout) clearTimeout(pauseTrackingTimeout);
             pauseTrackingTimeout = setTimeout(() => {
                 if (isRecording) {
-                    detectedFluencyDelays += 1;
+                    detectedFluencyDelays++;
                     document.getElementById('pauseCount').innerText = detectedFluencyDelays;
                 }
             }, 2500);
@@ -769,22 +748,47 @@
 
         function renderHighlightedTranscript(text) {
             const container = document.getElementById('interactiveTranscriptDisplay');
-            if (!text || text.trim() === "") {
-                container.innerText = "No spoken transcript registered yet. Speak clearly into your microphone...";
-                return;
-            }
-
+            if (!text || text.trim() === "") return container.innerText = "Listening...";
+            
             const fillerRegex = /\b(um|uh|like|you know|sort of|basically)\b/gi;
-            let formattedHtml = text.replace(fillerRegex, (match) => {
-                return `<span class="filler-word text-[#D4AF37] underline decoration-amber-500/60 decoration-2 font-bold cursor-pointer hover:bg-amber-500/20 px-1 rounded transition-colors" onclick="event.stopPropagation(); triggerFillerTipPopover('${match}', this)">${match}</span>`;
-            });
-
-            container.innerHTML = formattedHtml;
+            container.innerHTML = text.replace(fillerRegex, match => 
+                `<span class="text-[#D4AF37] underline decoration-amber-500/60 decoration-2 font-bold cursor-pointer hover:bg-amber-500/20 px-1 rounded transition-colors" onclick="event.stopPropagation(); triggerFillerTipPopover('${match}', this)">${match}</span>`
+            );
         }
 
-        // Toggle Audio Recording Loop
+        // Consolidated Mic Button (Init + Record Toggle)
         document.getElementById('recordBtn').addEventListener('click', async () => {
-            if (!speechEngine) return;
+            if (!speechEngine) return alert("Browser does not support Speech API.");
+
+            if (!isSessionActive) {
+                currentTrack = document.getElementById('trackSelector').value;
+                currentResume = document.getElementById('resumeInput').value;
+                currentTargetContext = document.getElementById('targetContextInput').value;
+                document.getElementById('questionDisplay').innerHTML = "<span class='animate-pulse text-[#D4AF37]'>Dynamically generating unique opening scenario...</span>";
+
+                try {
+                    const res = await fetch('/api/session/start', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ track: currentTrack, resume: currentResume, target_context: currentTargetContext })
+                    });
+                    const data = await res.json();
+                    if (data.success) {
+                        sessionHistory = data.history;
+                        document.getElementById('questionDisplay').innerText = data.current_question;
+                        totalWordsCount = detectedFillerHits = detectedFluencyDelays = 0;
+                        finalTranscript = "";
+                        document.getElementById('fillerCount').innerText = "0";
+                        document.getElementById('pauseCount').innerText = "0";
+                        document.getElementById('wpmValue').innerText = "0 WPM";
+                        document.getElementById('wpmGauge').style.width = "0%";
+                        document.getElementById('interactiveTranscriptDisplay').innerText = "Listening...";
+                        isSessionActive = true;
+                    }
+                } catch (err) {
+                    return document.getElementById('questionDisplay').innerText = "Connection Error: Failed to generate session prompt.";
+                }
+            }
 
             if (!isRecording) {
                 try {
@@ -794,186 +798,134 @@
                     audioSource = audioCtx.createMediaStreamSource(mediaStream);
                     audioSource.connect(audioAnalyser);
                     audioAnalyser.fftSize = 64;
-
                     renderSpectrumVisualization();
 
                     isRecording = true;
                     speechStartTime = Date.now();
                     finalTranscript = "";
-                    
                     speechEngine.start();
 
-                    document.getElementById('recordBtn').className = "bg-amber-500/20 border-2 border-[#D4AF37] text-white p-4 rounded-full transition-all duration-200 group relative shadow-lg shadow-[#D4AF37]/20";
-                    document.getElementById('avatarContainer').className = "w-24 h-24 rounded-full bg-[#16224F] border-2 border-[#D4AF37] flex items-center justify-center shadow-xl shadow-[#D4AF37]/20 relative z-10 transition-all duration-300";
-                    document.getElementById('avatarIcon').className = "w-9 h-9 text-[#D4AF37] transition-colors duration-300";
+                    const micBtn = document.getElementById('recordBtn');
+                    micBtn.className = "w-36 h-36 rounded-full bg-amber-500/20 border-4 border-[#D4AF37] flex items-center justify-center shadow-2xl shadow-[#D4AF37]/30 relative z-10 transition-all duration-300 outline-none";
+                    document.getElementById('recordIcon').classList.add('animate-pulse');
                     document.getElementById('avatarPulse').classList.remove('hidden');
                     document.getElementById('waveformPlaceholder').classList.add('hidden');
-
                     resetFluencyDelayTicker();
-                } catch (err) {
-                    alert("Microphone permission denied or audio input device not found.");
-                }
+                } catch (err) { alert("Microphone access denied."); }
             } else {
                 isRecording = false;
                 speechEngine.stop();
-
-                document.getElementById('avatarContainer').className = "w-24 h-24 rounded-full bg-[#101A36] border-2 border-slate-700 flex items-center justify-center shadow-sm relative z-10 transition-all duration-300";
-                document.getElementById('avatarIcon').className = "w-9 h-9 text-slate-400 transition-colors duration-300";
+                
+                const micBtn = document.getElementById('recordBtn');
+                micBtn.className = "w-36 h-36 rounded-full bg-[#101A36] border-2 border-slate-700 flex items-center justify-center shadow-lg relative z-10 transition-all duration-300 outline-none group hover:border-[#D4AF37]/50";
+                document.getElementById('recordIcon').classList.remove('animate-pulse');
                 document.getElementById('avatarPulse').classList.add('hidden');
                 document.getElementById('waveformPlaceholder').classList.remove('hidden');
                 document.getElementById('waveformPlaceholder').innerText = "Audio Feed Inactive";
-                document.getElementById('recordBtn').className = "bg-[#101A36] border border-slate-700 hover:border-[#D4AF37]/40 disabled:opacity-30 disabled:pointer-events-none text-slate-200 p-4 rounded-full transition-all duration-200 group relative shadow-sm";
                 
                 clearTimeout(pauseTrackingTimeout);
-                
-                if (mediaStream) {
-                    mediaStream.getTracks().forEach(track => track.stop());
-                }
-                if (animationFrameId) {
-                    cancelAnimationFrame(animationFrameId);
-                }
-                if (audioCtx) {
-                    try { audioCtx.close(); } catch(e) {}
-                }
+                if (mediaStream) mediaStream.getTracks().forEach(t => t.stop());
+                if (animationFrameId) cancelAnimationFrame(animationFrameId);
+                if (audioCtx) try { audioCtx.close(); } catch(e){}
 
-                if (finalTranscript && finalTranscript.trim() !== "") {
+                if (finalTranscript.trim()) {
                     document.getElementById('nextQuestionBtn').removeAttribute('disabled');
+                    document.getElementById('endSessionBtn').removeAttribute('disabled');
                 }
             }
         });
 
         if (speechEngine) {
-            speechEngine.onresult = (event) => {
+            speechEngine.onresult = (e) => {
                 resetFluencyDelayTicker();
-                let cumulativeText = "";
-
-                for (let i = 0; i < event.results.length; ++i) {
-                    cumulativeText += event.results[i][0].transcript + " ";
-                }
-                finalTranscript = cumulativeText.trim();
+                let text = "";
+                for (let i = 0; i < e.results.length; i++) text += e.results[i][0].transcript + " ";
+                finalTranscript = text.trim();
                 
                 document.getElementById('transcriptionFallback').innerText = finalTranscript;
                 renderHighlightedTranscript(finalTranscript);
-
+                
                 const matches = finalTranscript.match(/\b(um|uh|like|you know|sort of|basically)\b/gi);
                 detectedFillerHits = matches ? matches.length : 0;
                 document.getElementById('fillerCount').innerText = detectedFillerHits;
 
-                const wordsArr = finalTranscript.split(/\s+/).filter(w => w.length > 0);
-                totalWordsCount = wordsArr.length;
-                const elapsedMinutes = (Date.now() - speechStartTime) / 60000;
-                
-                if (elapsedMinutes > 0) {
-                    const currentWpm = Math.round(totalWordsCount / elapsedMinutes);
-                    document.getElementById('wpmValue').innerText = `${currentWpm} WPM`;
-                    const percentage = Math.min(Math.round((currentWpm / 200) * 100), 100);
-                    document.getElementById('wpmGauge').style.width = `${percentage}%`;
+                const wordsCount = finalTranscript.split(/\s+/).filter(w => w.length > 0).length;
+                const mins = (Date.now() - speechStartTime) / 60000;
+                if (mins > 0) {
+                    const wpm = Math.round(wordsCount / mins);
+                    document.getElementById('wpmValue').innerText = `${wpm} WPM`;
+                    document.getElementById('wpmGauge').style.width = `${Math.min((wpm/200)*100, 100)}%`;
                 }
             };
-
-            speechEngine.onerror = (event) => {
-                console.warn("Speech recognition event warning:", event.error);
-            };
-
-            speechEngine.onend = () => {
-                if (isRecording) {
-                    try { speechEngine.start(); } catch(e) {}
-                }
-            };
+            speechEngine.onend = () => { if (isRecording) try { speechEngine.start(); } catch(e){} };
         }
 
-        // Trigger Next Conversation Turn
         document.getElementById('nextQuestionBtn').addEventListener('click', async () => {
-            if (isRecording) {
-                isRecording = false;
-                if (speechEngine) speechEngine.stop();
-            }
-
-            if (finalTranscript && finalTranscript.trim() !== "") {
-                sessionHistory.push({ "role": "user", "content": finalTranscript.trim() });
-            }
-
-            document.getElementById('questionDisplay').innerText = "Analyzing candidate transcript response and formulating target follow-up scenario...";
+            if (isRecording) document.getElementById('recordBtn').click();
+            if (finalTranscript.trim()) sessionHistory.push({ role: "user", content: finalTranscript.trim() });
+            
+            document.getElementById('questionDisplay').innerHTML = "<span class='animate-pulse text-slate-400'>Analyzing response and formulating follow-up scenario...</span>";
             document.getElementById('nextQuestionBtn').setAttribute('disabled', 'true');
 
             try {
                 const res = await fetch('/api/session/next', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        history: sessionHistory,
-                        track: currentTrack,
-                        resume: currentResume,
-                        target_context: currentTargetContext
-                    })
+                    body: JSON.stringify({ history: sessionHistory, track: currentTrack, resume: currentResume, target_context: currentTargetContext })
                 });
                 const data = await res.json();
                 if (data.success) {
                     sessionHistory = data.history;
                     document.getElementById('questionDisplay').innerText = data.next_question;
-                    
                     finalTranscript = "";
-                    document.getElementById('transcriptionFallback').innerText = "";
-                    document.getElementById('transcriptionFallback').classList.add('hidden');
-                    document.getElementById('interactiveTranscriptDisplay').innerText = "Previous turn recorded. Ready for next response loop...";
+                    document.getElementById('interactiveTranscriptDisplay').innerText = "Previous turn recorded. Click microphone to answer...";
                 }
             } catch (err) {
                 document.getElementById('questionDisplay').innerText = "Connection Error: Failed to generate follow-up prompt.";
             }
         });
 
-        // Trigger Final STAR Methodology Assessment
         document.getElementById('endSessionBtn').addEventListener('click', async () => {
-            if (isRecording) {
-                isRecording = false;
-                if (speechEngine) speechEngine.stop();
+            if (isRecording) document.getElementById('recordBtn').click();
+            
+            let payload = [...sessionHistory];
+            if (finalTranscript.trim() && !payload.some(t => t.content === finalTranscript.trim())) {
+                payload.push({ role: "user", content: finalTranscript.trim() });
             }
 
-            let historyPayload = [...sessionHistory];
-            if (finalTranscript && finalTranscript.trim() !== "") {
-                if (!historyPayload.some(turn => turn.content === finalTranscript.trim())) {
-                    historyPayload.push({ "role": "user", "content": finalTranscript.trim() });
-                }
-            }
-
-            const outputBox = document.getElementById('critiqueOutput');
-            outputBox.innerHTML = `
-                <div id="analysisSkeleton" class="space-y-3 w-full">
-                    <div class="h-2.5 skeleton-shimmer rounded w-11/12"></div>
-                    <div class="h-2.5 skeleton-shimmer rounded w-full"></div>
-                    <div class="h-2.5 skeleton-shimmer rounded w-4/5"></div>
-                </div>
-            `;
+            switchView('analysis');
+            
+            const outBox = document.getElementById('critiqueOutput');
+            document.getElementById('analysisDefaultText').classList.add('hidden');
+            const skeleton = document.getElementById('analysisSkeleton');
+            skeleton.classList.remove('hidden');
 
             try {
                 const res = await fetch('/api/session/analyze', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        history: historyPayload,
-                        resume: currentResume,
-                        target_context: currentTargetContext
-                    })
+                    body: JSON.stringify({ history: payload, resume: currentResume, target_context: currentTargetContext })
                 });
                 const data = await res.json();
-                if (data.success && data.critique) {
-                    let formattedCritique = data.critique
-                        .replace(/^### (.*$)/gim, '<h3 class="text-[#D4AF37] font-bold text-xs uppercase tracking-wider mt-3 mb-1">$1</h3>')
-                        .replace(/^## (.*$)/gim, '<h4 class="text-[#F3E5AB] font-bold text-xs uppercase tracking-wider mt-4 mb-1.5 border-b border-slate-800 pb-1">$1</h4>')
-                        .replace(/\*\*(.*?)\*\*/g, '<strong class="text-white font-semibold">$1</strong>')
-                        .replace(/^\* (.*$)/gim, '<li class="ml-4 list-disc text-slate-300 my-0.5">$1</li>')
-                        .replace(/\n\n/g, '<br><br>');
+                skeleton.classList.add('hidden');
 
-                    outputBox.innerHTML = `<div class="space-y-1">${formattedCritique}</div>`;
+                if (data.success && data.critique) {
+                    let html = data.critique
+                        .replace(/^### (.*$)/gim, '<h3 class="text-[#D4AF37] font-bold text-lg uppercase tracking-wider mt-8 mb-3">$1</h3>')
+                        .replace(/^## (.*$)/gim, '<h4 class="text-[#F3E5AB] font-bold text-2xl mt-10 mb-4 border-b border-slate-800 pb-3">$1</h4>')
+                        .replace(/\*\*(.*?)\*\*/g, '<strong class="text-white font-semibold">$1</strong>')
+                        .replace(/^\* (.*$)/gim, '<li class="ml-6 list-disc text-slate-300 my-2 text-sm">$1</li>')
+                        .replace(/\n\n/g, '<br><br>');
+                    outBox.innerHTML = `<div class="text-left space-y-2 text-sm">${html}</div>`;
                 } else {
-                    outputBox.innerHTML = `<span class="text-red-400">Failed to compile STAR evaluation matrix: ${data.error || 'Unknown error'}</span>`;
+                    outBox.innerHTML = `<span class="text-red-400">Failed to compile STAR evaluation matrix.</span>`;
                 }
             } catch (err) {
-                outputBox.innerHTML = `<span class="text-red-400">Network Error: Unable to complete session evaluation synthesis.</span>`;
+                skeleton.classList.add('hidden');
+                outBox.innerHTML = `<span class="text-red-400">Network Error: Unable to complete session evaluation synthesis.</span>`;
             }
         });
 
-        // Initialize Authentication Status on Page Load
         window.addEventListener('load', initAuth);
     </script>
 </body>
