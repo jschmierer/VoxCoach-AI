@@ -187,27 +187,22 @@ def start_session():
 
     if is_college:
         system_instruction = (
-            "You are an elite US University Admissions Officer. Generate exactly ONE unique, challenging, "
-            "and highly realistic initial opening interview question designed for an elite college applicant.\n"
+            "You are an elite US University Admissions Officer. "
             f"Target Institution/Program: {target_context}\n"
-            f"Applicant Resume/Core Experiences: {resume}\n"
-            "Incorporate and personalize the question based on their unique background while focusing on themes of holistic character, "
-            "community contribution, or personal growth. Do not output greetings, prefaces, or extra text. Output only the single question."
+            f"Applicant Resume: {resume}\n"
+            "CRITICAL RULES: DO NOT ask about their entire background. Pick exactly ONE specific extracurricular or academic detail from their resume and ask a single, highly concise opening question about it. Do not output greetings, prefaces, or extra text. Output only the short question."
         )
     else:
         system_instruction = (
-            "You are a principal corporate recruiter managing high-stakes behavioral screening loops in the US market. "
-            "Generate exactly ONE unique, realistic, and highly professional initial interview question targeting "
-            "a candidate's behavioral history (e.g., leadership, dealing with ambiguity, or project failures).\n"
-            f"Target Position/Job Description: {target_context}\n"
-            f"Candidate Resume/Core Experiences: {resume}\n"
-            "Tailor the question specifically to their declared experience background and target role. "
-            "Do not output greetings, prefaces, or extra text. Output only the single question."
+            "You are a principal corporate recruiter. "
+            f"Target Position: {target_context}\n"
+            f"Candidate Resume: {resume}\n"
+            "CRITICAL RULES: DO NOT ask a broad question about their entire resume. Pick exactly ONE specific project, role, or skill listed in their background and ask a single, concise behavioral question about it. Keep it brief. Do not output greetings, prefaces, or extra text. Output only the short question."
         )
 
     messages = [
         {"role": "system", "content": system_instruction},
-        {"role": "user", "content": "Please output the personalized opening scenario question now."}
+        {"role": "user", "content": "Please output the concise opening scenario question now."}
     ]
 
     try:
@@ -215,7 +210,7 @@ def start_session():
             model="llama-3.3-70b-versatile",
             messages=messages,
             temperature=0.7,
-            max_tokens=150
+            max_tokens=100
         )
         initial_question = completion.choices[0].message.content.strip()
     except Exception:
@@ -252,20 +247,17 @@ def next_question():
 
     if is_college:
         context_guideline = (
-            "You are an elite US University Admissions Officer. The user is an applicant. Review the conversation history.\n"
-            f"Target Institution/Program Context: {target_context}\n"
-            f"Applicant Background Context: {resume}\n"
-            "Ask exactly ONE incisive, direct follow-up question that builds naturally on their last response, challenges gaps in their narrative, "
-            "or moves to a related holistic candidate evaluation metric. Keep their application target and background in perspective. "
-            "Do not offer encouragement, feedback, or commentary. Output only the single question."
+            "You are an elite US University Admissions Officer. Review the conversation history to see what has already been discussed.\n"
+            f"Target Context: {target_context}\n"
+            f"Resume: {resume}\n"
+            "CRITICAL RULES: Ask exactly ONE short, direct follow-up question. Either challenge their last response or pivot to a completely NEW, unexplored specific detail from their resume. Keep the question brief. Do not offer encouragement, feedback, or commentary. Output only the single question."
         )
     else:
         context_guideline = (
-            "You are an expert technical recruiter interviewing a candidate for a highly competitive US corporate role. Review the conversation history.\n"
-            f"Target Position/Role Context: {target_context}\n"
-            f"Candidate Background Context: {resume}\n"
-            "Ask exactly ONE incisive, professional follow-up question digging into specific technical decisions, behavioral actions, or metrics from their last answer. "
-            "Do not offer encouragement, feedback, or commentary. Output only the single question."
+            "You are an expert technical recruiter. Review the conversation history to see what has already been discussed.\n"
+            f"Target Context: {target_context}\n"
+            f"Resume: {resume}\n"
+            "CRITICAL RULES: Ask exactly ONE short, direct follow-up question. Either dig deeper into their last answer or pivot to a NEW, unexplored specific project/skill from their resume. Keep the question brief. Do not offer encouragement, feedback, or commentary. Output only the single question."
         )
 
     messages = [{"role": "system", "content": context_guideline}] + history
@@ -275,7 +267,7 @@ def next_question():
             model="llama-3.3-70b-versatile",
             messages=messages,
             temperature=0.6,
-            max_tokens=150
+            max_tokens=100
         )
         next_q = completion.choices[0].message.content.strip()
     except Exception:
@@ -290,7 +282,7 @@ def next_question():
 
 @app.route('/api/session/analyze', methods=['POST'])
 def analyze_session():
-    """Performs deep STAR behavioral framework breakdown, executive vocabulary critique, and structured insights with emojis, strengths/weaknesses, and standalone action items."""
+    """Performs deep STAR behavioral framework breakdown, executive vocabulary critique, and structured insights."""
     data = request.get_json() or {}
     history = data.get('history', [])
     resume = data.get('resume', '').strip() or "Not provided"
@@ -299,35 +291,26 @@ def analyze_session():
     if not groq_client:
         return jsonify({
             "success": True,
-            "critique": "### 📊 Evaluation Matrix Output\n\n"
-                        "#### 🟢 What Went Right (Strengths)\n"
-                        "- Clear baseline conversational engagement.\n"
-                        "- Addressed core aspects of the presented prompts.\n\n"
-                        "#### 🔴 What Needs Work (Weaknesses)\n"
-                        "- Missing quantified outcome metrics in behavioral explanations.\n"
-                        "- Occasional use of hesitant or passive vocabulary.\n\n"
-                        "#### 🎯 Strategic Action Items\n"
-                        "1. **Structure with STAR**: Explicitly segment context into Situation, Task, Action, and Result.\n"
-                        "2. **Eliminate Hedging**: Replace weak qualifiers like 'I think' with command verbs.\n"
-                        "3. **Pacing Control**: Minimize filler pauses during structural transitions."
+            "critique": "## STAR Analysis\nGood start.\n\n## Vocabulary and Vibe\nNeeds work.\n\n## Strengths\n- Clear tone.\n\n## Weaknesses\n- Hesitant pacing.\n\n## How to Improve\n- Speak clearly.\n\n[SCORE: 65]"
         }), 200
 
     analysis_prompt = (
-        "You are an expert executive coach specializing in US professional recruitment trends and Ivy League admissions criteria. "
-        "Analyze the provided interview transcript history and generate a structured, highly polished evaluation report formatted cleanly in Markdown.\n\n"
+        "You are an expert executive coach specializing in US professional recruitment. "
+        "Analyze the interview transcript and generate a structured evaluation report.\n\n"
         f"Declared Target Context: {target_context}\n"
         f"Candidate Background Record: {resume}\n\n"
-        "Please strictly format your response to include emojis in section headings and use these exact components:\n"
-        "## 📊 1. STAR Behavioral Methodology Analysis\n"
-        "Assess how effectively the candidate articulated Situation, Task, Action, and Result. Identify missing metrics or vague experiences.\n\n"
-        "## 🟢 2. What Went Right (Key Strengths)\n"
-        "Provide a clean bulleted list highlighting positive delivery indicators, technical strengths, or well-handled narrative points.\n\n"
-        "## 🔴 3. What Needs Work (Areas for Improvement)\n"
-        "Provide a clean bulleted list highlighting vulnerabilities, structural gaps, or missing details.\n\n"
-        "## 💬 4. Vocabulary & Executive Presence Vibe Check\n"
-        "Deeply analyze vocabulary choices. Point out passive phrases (e.g., 'I just helped', 'sort of') and map out strong action alternatives (e.g., 'Spearheaded', 'Architected').\n\n"
-        "## 🎯 5. Actionable Next Steps\n"
-        "Provide exactly three distinct, standalone, highly tactical steps for immediate performance scaling."
+        "CRITICAL RULES FOR FORMATTING:\n"
+        "1. When giving your response, don't use words like \"the candidate\", rather use \"you\"."
+        "2. DO NOT use numbered lists for the main sections. Use EXACTLY these Markdown headings:\n"
+        "## STAR Analysis\n"
+        "## Vocabulary and Vibe\n"
+        "## Strengths\n"
+        "## Weaknesses\n"
+        "## How to Improve\n"
+        "3. The 'STAR Analysis' section MUST be written as a paragraph of roughly 4 sentences explaining how well they structured their thoughts.\n"
+        "4. The 'Vocabulary and Vibe' section MUST be written as a paragraph of roughly 3 sentences focusing on tone, filler words, and confidence.\n"
+        "5. The 'Strengths', 'Weaknesses', and 'How to Improve' sections MUST each be formatted as a bulleted list containing EXACTLY 3 to 5 bullet points per section.\n"
+        "6. At the very end of your response on a new line, you MUST output a final evaluation score out of 100 in exactly this format: [SCORE: XX]"
     )
 
     messages = [
@@ -340,7 +323,7 @@ def analyze_session():
             model="llama-3.3-70b-versatile",
             messages=messages,
             temperature=0.3,
-            max_tokens=1200
+            max_tokens=900
         )
         critique = completion.choices[0].message.content.strip()
     except Exception as e:
@@ -350,6 +333,40 @@ def analyze_session():
         "success": True,
         "critique": critique
     }), 200
+
+@app.route('/api/progress/summary', methods=['POST'])
+def progress_summary():
+    """Generates an overarching summary of a user's strengths and weaknesses across all historical sessions."""
+    data = request.get_json() or {}
+    history_texts = data.get('analyses', [])
+    
+    if not history_texts or not groq_client:
+        return jsonify({"success": True, "summary": "Complete more sessions to generate an overall historical trend summary."}), 200
+    
+    # Concatenate past analyses (limit characters to avoid token limits on long histories)
+    combined = "\n\n".join(history_texts)[:6000] 
+    
+    prompt = (
+        "You are an expert executive coach. Read the following past interview evaluations for a candidate and summarize their OVERALL recurring patterns.\n"
+        "Make sure to use \"you\" to make the report feel more personalized. Don't start every sentence with it, but use it when needed.\n"
+        "Format EXACTLY like this with no extra text or pleasantries:\n"
+        "**Overall Historical Strengths:**\n- [point 1]\n- [point 2]\n\n"
+        "**Overall Recurring Weaknesses:**\n- [point 1]\n- [point 2]"
+    )
+    
+    try:
+        completion = groq_client.chat.completions.create(
+            model="llama-3.3-70b-versatile",
+            messages=[
+                {"role": "system", "content": prompt},
+                {"role": "user", "content": f"Past Evaluations Data:\n{combined}"}
+            ],
+            temperature=0.3, 
+            max_tokens=400
+        )
+        return jsonify({"success": True, "summary": completion.choices[0].message.content.strip()}), 200
+    except Exception:
+        return jsonify({"success": False, "summary": "Failed to generate overall historical summary."}), 500
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)

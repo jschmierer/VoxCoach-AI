@@ -7,20 +7,14 @@
     
     <link rel="icon" href="/static/favicon.ico" sizes="any">
     
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        html { font-size: 90%; }
+        body { font-family: 'Inter', sans-serif; background-color: #070D1F; }
         
-        /* 90% Proportional Scaling for ALL UI Elements */
-        html {
-            font-size: 90%; 
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #070D1F;
-        }
         .gold-glass {
             background: rgba(16, 26, 54, 0.65);
             backdrop-filter: blur(20px);
@@ -44,169 +38,73 @@
             0% { background-position: 200% 0; }
             100% { background-position: -200% 0; }
         }
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #070D1F;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: rgba(212, 175, 55, 0.3);
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: rgba(212, 175, 55, 0.5);
-        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #070D1F; }
+        ::-webkit-scrollbar-thumb { background: rgba(212, 175, 55, 0.3); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(212, 175, 55, 0.5); }
 
-        /* Rotating Text CSS Port - Adjusted for single line wrapping prevention */
-        .text-rotate-container {
-            display: inline-flex;
-            white-space: nowrap;
-            position: relative;
-            overflow: hidden;
-            justify-content: center;
-            vertical-align: middle;
-        }
-        .text-rotate-word {
-            display: inline-flex;
-            overflow: hidden;
-        }
+        .text-rotate-container { display: inline-flex; white-space: nowrap; position: relative; overflow: hidden; justify-content: center; vertical-align: middle; }
+        .text-rotate-word { display: inline-flex; overflow: hidden; }
         .text-rotate-element {
             display: inline-block;
             transform: translateY(100%);
             opacity: 0;
             transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.5s ease;
-            
-            /* Apply Gradient Directly to Characters */
             background: linear-gradient(135deg, #D4AF37 0%, #F3E5AB 50%, #AA7C11 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
-        .text-rotate-element.in {
-            transform: translateY(0);
-            opacity: 1;
-        }
-        .text-rotate-element.out {
-            transform: translateY(-120%);
-            opacity: 0;
-        }
-        .text-rotate-space {
-            white-space: pre;
-        }
+        .text-rotate-element.in { transform: translateY(0); opacity: 1; }
+        .text-rotate-element.out { transform: translateY(-120%); opacity: 0; }
+        .text-rotate-space { white-space: pre; }
 
-        /* --- BorderGlow Button Styles (Gold/Navy Theme) --- */
         .border-glow-card {
             --edge-proximity: 0;
             --cursor-angle: 45deg;
             --edge-sensitivity: 10; 
             --color-sensitivity: calc(var(--edge-sensitivity) + 15);
-            --border-radius: 9999px; /* Ensures it stays a perfect circle */
+            --border-radius: 9999px;
             --glow-padding: 40px;
             --cone-spread: 55;
             --card-bg: #101A36;
-            
-            /* Gold Glow HSL values (approx #D4AF37) */
             --glow-color: hsl(43deg 67% 52% / 100%);
             --glow-color-80: hsl(43deg 67% 52% / 80%);
             --glow-color-60: hsl(43deg 67% 52% / 60%);
             --glow-color-40: hsl(43deg 67% 52% / 40%);
             --glow-color-30: hsl(43deg 67% 52% / 30%);
             --glow-color-20: hsl(43deg 67% 52% / 20%);
-            --glow-color-10: hsl(43deg 67% 52% / 10%);
-
-            position: relative;
-            border-radius: var(--border-radius);
-            isolation: isolate;
-            transform: translate3d(0, 0, 0.01px);
-            display: grid;
-            border: 1px solid rgba(212, 175, 55, 0.3);
-            background: var(--card-bg);
-            overflow: visible;
+            
+            position: relative; border-radius: var(--border-radius); isolation: isolate;
+            transform: translate3d(0, 0, 0.01px); display: grid;
+            border: 1px solid rgba(212, 175, 55, 0.3); background: var(--card-bg); overflow: visible;
         }
-
-        .border-glow-card::before,
-        .border-glow-card::after,
-        .border-glow-card > .edge-light {
-            content: "";
-            position: absolute;
-            inset: 0;
-            border-radius: inherit;
-            transition: opacity 0.25s ease-out;
-            z-index: -1;
+        .border-glow-card::before, .border-glow-card::after, .border-glow-card > .edge-light {
+            content: ""; position: absolute; inset: 0; border-radius: inherit; transition: opacity 0.25s ease-out; z-index: -1;
         }
-
-        .border-glow-card:not(:hover)::before,
-        .border-glow-card:not(:hover)::after,
-        .border-glow-card:not(:hover) > .edge-light {
-            opacity: 0;
-            transition: opacity 0.75s ease-in-out;
+        .border-glow-card:not(:hover)::before, .border-glow-card:not(:hover)::after, .border-glow-card:not(:hover) > .edge-light {
+            opacity: 0; transition: opacity 0.75s ease-in-out;
         }
-
-        /* Gold mesh-gradient border */
         .border-glow-card::before {
             border: 1px solid transparent;
-            background:
-                linear-gradient(var(--card-bg) 0 100%) padding-box,
-                linear-gradient(rgb(255 255 255 / 0%) 0% 100%) border-box,
-                radial-gradient(at 80% 55%, #D4AF37 0px, transparent 50%) border-box,
-                radial-gradient(at 69% 34%, #F3E5AB 0px, transparent 50%) border-box,
-                radial-gradient(at 8% 6%, #AA7C11 0px, transparent 50%) border-box,
-                linear-gradient(#D4AF37 0 100%) border-box;
-
+            background: linear-gradient(var(--card-bg) 0 100%) padding-box, linear-gradient(rgb(255 255 255 / 0%) 0% 100%) border-box, radial-gradient(at 80% 55%, #D4AF37 0px, transparent 50%) border-box, radial-gradient(at 69% 34%, #F3E5AB 0px, transparent 50%) border-box, radial-gradient(at 8% 6%, #AA7C11 0px, transparent 50%) border-box, linear-gradient(#D4AF37 0 100%) border-box;
             opacity: calc((var(--edge-proximity) - var(--color-sensitivity)) / (100 - var(--color-sensitivity)));
-            mask-image:
-                conic-gradient(
-                    from var(--cursor-angle) at center,
-                    black calc(var(--cone-spread) * 1%),
-                    transparent calc((var(--cone-spread) + 15) * 1%),
-                    transparent calc((100 - var(--cone-spread) - 15) * 1%),
-                    black calc((100 - var(--cone-spread)) * 1%)
-                );
+            mask-image: conic-gradient(from var(--cursor-angle) at center, black calc(var(--cone-spread) * 1%), transparent calc((var(--cone-spread) + 15) * 1%), transparent calc((100 - var(--cone-spread) - 15) * 1%), black calc((100 - var(--cone-spread)) * 1%));
         }
-
-        /* Outer Gold Glow Layer */
         .border-glow-card > .edge-light {
-            inset: calc(var(--glow-padding) * -1);
-            pointer-events: none;
-            z-index: 1;
+            inset: calc(var(--glow-padding) * -1); pointer-events: none; z-index: 1;
             mask-image: conic-gradient(from var(--cursor-angle) at center, black 2.5%, transparent 10%, transparent 90%, black 97.5%);
-            opacity: calc((var(--edge-proximity) - var(--edge-sensitivity)) / (100 - var(--edge-sensitivity)));
-            mix-blend-mode: plus-lighter;
+            opacity: calc((var(--edge-proximity) - var(--edge-sensitivity)) / (100 - var(--edge-sensitivity))); mix-blend-mode: plus-lighter;
         }
-
         .border-glow-card > .edge-light::before {
-            content: "";
-            position: absolute;
-            inset: var(--glow-padding);
-            border-radius: inherit;
-            box-shadow:
-                /* Inner glow layers */
-                inset 0 0 0 1px var(--glow-color),
-                inset 0 0 2px 0 var(--glow-color-80),
-                inset 0 0 5px 0 var(--glow-color-60),
-                inset 0 0 12px 0 var(--glow-color-40),
-                inset 0 0 25px 2px var(--glow-color-30),
-                inset 0 0 40px 5px var(--glow-color-20),
-                /* Outer glow layers pushing much further out */
-                0 0 2px 0 var(--glow-color-80),
-                0 0 5px 0 var(--glow-color-60),
-                0 0 12px 0 var(--glow-color-40),
-                0 0 25px 2px var(--glow-color-30),
-                0 0 45px 5px var(--glow-color-20),
-                0 0 70px 10px var(--glow-color-20);
+            content: ""; position: absolute; inset: var(--glow-padding); border-radius: inherit;
+            box-shadow: inset 0 0 0 1px var(--glow-color), inset 0 0 2px 0 var(--glow-color-80), inset 0 0 5px 0 var(--glow-color-60), inset 0 0 12px 0 var(--glow-color-40), inset 0 0 25px 2px var(--glow-color-30), inset 0 0 40px 5px var(--glow-color-20), 0 0 2px 0 var(--glow-color-80), 0 0 5px 0 var(--glow-color-60), 0 0 12px 0 var(--glow-color-40), 0 0 25px 2px var(--glow-color-30), 0 0 45px 5px var(--glow-color-20), 0 0 70px 10px var(--glow-color-20);
         }
+        .border-glow-inner { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; position: relative; z-index: 2; border-radius: inherit; }
 
-        .border-glow-inner {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
-            height: 100%;
-            position: relative;
-            z-index: 2;
-            border-radius: inherit;
-        }
+        .nav-link { position: relative; overflow: hidden; font-weight: 900; font-family: 'Montserrat', sans-serif; transition: color 0.3s ease; }
+        .nav-link::after { content: ''; position: absolute; width: 100%; transform: scaleX(0); height: 2px; bottom: -4px; left: 0; background-color: #D4AF37; transform-origin: bottom right; transition: transform 0.25s ease-out; }
+        .nav-link:hover::after { transform: scaleX(1); transform-origin: bottom left; }
     </style>
 </head>
 <body class="text-white min-h-screen flex flex-col tracking-wide relative overflow-x-hidden">
@@ -227,36 +125,23 @@
     <div id="authModal" class="fixed inset-0 bg-[#070D1F]/80 backdrop-blur-md z-50 flex items-center justify-center hidden transition-opacity duration-300">
         <div class="gold-glass border border-amber-500/30 rounded-2xl p-7 max-w-lg w-full mx-4 shadow-2xl relative">
             <button id="closeAuthModalBtn" class="absolute top-4 right-4 text-slate-400 hover:text-white text-2xl font-bold transition-colors">&times;</button>
-            
             <div class="text-center mb-8">
                 <h2 id="authModalTitle" class="text-3xl font-extrabold text-white tracking-tight">Welcome Back</h2>
                 <p id="authModalSubtitle" class="text-sm text-slate-400 mt-2">Sign in to access your interview workspace</p>
             </div>
-
             <div class="flex border-b border-slate-800 mb-8">
                 <button id="tabSigninBtn" class="flex-1 pb-4 text-sm font-bold uppercase tracking-wider text-[#D4AF37] border-b-2 border-[#D4AF37] transition-all">Sign In</button>
                 <button id="tabSignupBtn" class="flex-1 pb-4 text-sm font-bold uppercase tracking-wider text-slate-400 border-b-2 border-transparent hover:text-slate-200 transition-all">Sign Up</button>
             </div>
-
             <div id="authErrorMsg" class="hidden text-sm bg-red-950/60 border border-red-500/40 text-red-200 p-4 rounded-lg mb-6 text-center font-medium"></div>
             <div id="authSuccessMsg" class="hidden text-sm bg-emerald-950/60 border border-emerald-500/40 text-emerald-200 p-4 rounded-lg mb-6 text-center font-medium"></div>
-
             <button id="googleSignInBtn" class="w-full bg-[#101A36] hover:bg-[#16224F] border border-slate-700 text-white font-semibold text-sm py-4 px-4 rounded-xl flex items-center justify-center gap-3 transition-colors mb-6 shadow-sm">
-                <svg class="w-5 h-5" viewBox="0 0 24 24">
-                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
-                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
-                </svg>
+                <svg class="w-5 h-5" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/></svg>
                 Continue with Google
             </button>
-
             <div class="relative flex py-2 items-center mb-6">
-                <div class="flex-grow border-t border-slate-800"></div>
-                <span class="flex-shrink mx-4 text-xs text-slate-500 uppercase font-bold tracking-wider">Or email</span>
-                <div class="flex-grow border-t border-slate-800"></div>
+                <div class="flex-grow border-t border-slate-800"></div><span class="flex-shrink mx-4 text-xs text-slate-500 uppercase font-bold tracking-wider">Or email</span><div class="flex-grow border-t border-slate-800"></div>
             </div>
-
             <form id="authForm" class="space-y-5">
                 <div>
                     <label class="block text-xs font-bold uppercase tracking-widest text-slate-300 mb-2">Email / Username</label>
@@ -266,22 +151,15 @@
                     <label class="block text-xs font-bold uppercase tracking-widest text-slate-300 mb-2">Password</label>
                     <input id="authPassword" type="password" required placeholder="••••••••" class="w-full bg-[#101A36] border border-slate-700 rounded-lg px-4 py-3 text-sm text-white gold-border-focus transition-colors placeholder-slate-500 font-medium shadow-sm outline-none">
                 </div>
-                <button id="authSubmitBtn" type="submit" class="w-full gold-gradient-bg text-[#070D1F] font-bold text-sm uppercase tracking-wider py-4 rounded-xl shadow-md hover:opacity-95 transition-all mt-4">
-                    Sign In
-                </button>
+                <button id="authSubmitBtn" type="submit" class="w-full gold-gradient-bg text-[#070D1F] font-bold text-sm uppercase tracking-wider py-4 rounded-xl shadow-md hover:opacity-95 transition-all mt-4">Sign In</button>
             </form>
         </div>
     </div>
 
     <header class="border-b border-slate-800/80 bg-[#070D1F]/90 backdrop-blur-md px-8 py-4 flex items-center justify-between sticky top-0 z-40 transition-all duration-300 shadow-lg relative">
         <div class="flex items-center space-x-4 cursor-pointer w-1/4" id="navLogoBtn">
-            <img src="{{ url_for('static', filename='logo.png') }}" 
-                 alt="VoxCoach Logo" 
-                 class="h-12 w-auto object-contain drop-shadow-md flex-shrink-0" 
-                 onerror="this.onerror=null; this.style.display='none'; document.getElementById('logoFallbackBox').style.display='flex';">
-            
+            <img src="{{ url_for('static', filename='logo.png') }}" alt="VoxCoach Logo" class="h-12 w-auto object-contain drop-shadow-md flex-shrink-0" onerror="this.onerror=null; this.style.display='none'; document.getElementById('logoFallbackBox').style.display='flex';">
             <div id="logoFallbackBox" class="h-12 w-12 rounded-xl gold-gradient-bg hidden items-center justify-center text-[#070D1F] font-black text-2xl shadow-md shadow-[#D4AF37]/20 flex-shrink-0">V</div>
-            
             <div class="flex flex-col hidden sm:flex leading-tight">
                 <span class="text-2xl font-black tracking-wider text-white">VoxCoach <span class="text-[#D4AF37]">AI</span></span>
                 <span class="text-xs text-slate-400 tracking-widest uppercase font-bold mt-0.5">Analytics</span>
@@ -289,11 +167,11 @@
         </div>
         
         <div class="w-2/4 flex justify-center">
-            <nav id="appNavigation" class="hidden flex items-center space-x-14 text-2xl font-black uppercase tracking-widest text-slate-400">
-                <button id="navHomeBtn" class="hover:text-white transition-colors">Home</button>
-                <button id="navSimulatorBtn" class="hover:text-white transition-colors">Simulator</button>
-                <button id="navAnalysisBtn" class="hover:text-white transition-colors hidden">Analysis</button>
-                <button id="navProgressBtn" class="hover:text-white transition-colors">Progress</button>
+            <nav id="appNavigation" class="hidden flex items-center space-x-3 text-2xl font-medium tracking-wide">
+                <button id="navHomeBtn" class="nav-link min-h-[44px] py-2.5 px-6 rounded-full text-[#d4af37] bg-[rgba(16,26,54,0.65)] backdrop-blur-md border border-[rgba(212,175,55,0.25)] hover:text-[#F3E5AB] hover:bg-[rgba(16,26,54,0.4)] hover:border-white/10 transition-all">Home</button>
+                <button id="navSimulatorBtn" class="nav-link min-h-[44px] py-2.5 px-6 rounded-full text-slate-400 bg-transparent border border-transparent hover:text-[#F3E5AB] hover:bg-[rgba(16,26,54,0.4)] hover:border-white/10 transition-all">Simulator</button>
+                <button id="navAnalysisBtn" class="nav-link min-h-[44px] py-2.5 px-6 rounded-full text-slate-400 bg-transparent border border-transparent hover:text-[#F3E5AB] hover:bg-[rgba(16,26,54,0.4)] hover:border-white/10 transition-all">Analysis</button>
+                <button id="navProgressBtn" class="nav-link min-h-[44px] py-2.5 px-6 rounded-full text-slate-400 bg-transparent border border-transparent hover:text-[#F3E5AB] hover:bg-[rgba(16,26,54,0.4)] hover:border-white/10 transition-all">Progress</button>
             </nav>
         </div>
 
@@ -302,9 +180,7 @@
                 <span class="flex h-3 w-3 rounded-full bg-amber-500 animate-pulse"></span>
                 <span class="text-sm text-slate-300 font-bold tracking-wider uppercase">US-Context Engine</span>
             </div>
-
             <button id="navAuthBtn" class="text-sm text-[#D4AF37] hover:underline font-extrabold tracking-wide transition-colors">Sign In / Sign Up</button>
-            
             <div id="userProfileBadge" class="hidden items-center space-x-3 bg-[#101A36] border border-slate-700 px-5 py-2.5 rounded-full shadow-inner">
                 <div id="userAvatarChar" class="w-8 h-8 rounded-full gold-gradient-bg flex items-center justify-center text-[#070D1F] text-sm font-bold">U</div>
                 <span id="userEmailDisplay" class="text-sm text-slate-200 font-semibold max-w-[160px] truncate"></span>
@@ -313,18 +189,15 @@
         </div>
     </header>
 
-    <main class="flex-1 w-full max-w-[1275px] mx-auto px-5 py-8 relative">
+    <main class="flex-1 w-full max-w-[1300px] mx-auto px-5 py-8 relative">
 
         <div id="landingView" class="flex flex-col justify-center items-center text-center min-h-[75vh] animate-fadeIn">
             <div class="max-w-6xl mx-auto space-y-7 flex flex-col items-center">
                 <span class="text-sm font-bold uppercase tracking-[0.2em] text-[#F3E5AB] bg-amber-950/40 px-6 py-3 rounded-full border border-amber-500/30 shadow-sm inline-block">Intelligent Architectural Speech Feedback</span>
-                
                 <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-normal flex flex-row flex-wrap items-center justify-center gap-x-4">
                     <span>Ace your</span>
-                    <span id="rotatingTextContainer" class="ml-3 px-6 py-2 bg-amber-950/20 border border-[#D4AF37]/30 rounded-xl text-rotate-container shadow-lg shadow-[#D4AF37]/10">
-                        </span>
+                    <span id="rotatingTextContainer" class="ml-3 px-6 py-2 bg-amber-950/20 border border-[#D4AF37]/30 rounded-xl text-rotate-container shadow-lg shadow-[#D4AF37]/10"></span>
                 </h1>
-                
                 <p class="text-slate-300 text-sm md:text-lg max-w-3xl mx-auto leading-relaxed font-normal pt-4">
                     VoxCoach AI processes your verbal arguments in real-time, mapping behavioral criteria against competitive benchmarks for elite corporate screening and university environments.
                 </p>
@@ -334,7 +207,6 @@
                     </button>
                 </div>
             </div>
-
             <div class="grid grid-cols-1 md:grid-cols-3 gap-7 mt-28 w-full text-left max-w-6xl mx-auto">
                 <div class="gold-glass rounded-2xl p-7 shadow-md hover:border-[#D4AF37]/60 transition-colors duration-300 overflow-visible">
                     <div class="text-[#D4AF37] mb-6 bg-[#16224F] w-14 h-14 rounded-xl flex items-center justify-center border border-slate-700 flex-shrink-0">
@@ -358,14 +230,12 @@
                     <p class="text-slate-300 text-sm leading-relaxed font-normal">Transforms dialogue history into qualitative data breakdowns mapping passive language to operational power indicators.</p>
                 </div>
             </div>
-            </div>
         </div>
 
-        <div id="simulatorView" class="hidden grid grid-cols-1 lg:grid-cols-[1fr_1.75fr_1fr] gap-7 animate-fadeIn items-start">
+        <div id="simulatorView" class="hidden grid grid-cols-1 lg:grid-cols-[1fr_1.75fr_1fr] gap-7 animate-fadeIn items-stretch">
             
-            <section class="gold-glass rounded-2xl p-7 flex flex-col shadow-2xl h-[720px]">
+            <section class="gold-glass rounded-2xl p-7 flex flex-col shadow-2xl min-h-[720px]">
                 <h3 class="text-[#D4AF37] text-sm font-bold uppercase tracking-widest mb-6 border-b border-slate-700/80 pb-4">Simulation Parameters</h3>
-                
                 <div class="space-y-6 flex-1 flex flex-col min-h-0">
                     <div>
                         <label class="block text-sm font-bold uppercase tracking-widest text-slate-300 mb-2">Track Target</label>
@@ -380,20 +250,25 @@
                     </div>
                     <div class="flex-1 flex flex-col min-h-0">
                         <label class="block text-sm font-bold uppercase tracking-widest text-slate-300 mb-2">Background Data</label>
-                        <textarea id="resumeInput" placeholder="Paste structural background achievements, past projects, or relevant data..." class="w-full flex-1 bg-[#101A36] border border-slate-700 rounded-xl px-4 py-3 text-sm text-white gold-border-focus transition-colors resize-none placeholder-slate-500 font-medium shadow-sm outline-none min-h-[140px]"></textarea>
+                        <textarea id="resumeInput" placeholder="Paste structural background achievements, past projects, or relevant data..." class="w-full flex-1 bg-[#101A36] border border-slate-700 rounded-xl px-4 py-3 text-sm text-white gold-border-focus transition-colors resize-none placeholder-slate-500 font-medium shadow-sm outline-none min-h-[140px] mb-3"></textarea>
+                        <button id="saveResumeBtn" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-600 rounded-lg py-2 text-xs font-bold uppercase tracking-widest transition-colors">Save to Cloud Profile</button>
                     </div>
                 </div>
             </section>
 
-            <section class="gold-glass rounded-2xl p-7 flex flex-col justify-between items-center shadow-2xl h-[720px] relative">
+            <section class="gold-glass rounded-2xl p-7 flex flex-col justify-between items-center shadow-2xl min-h-[720px] relative">
                 
-                <div class="w-full text-center mb-4">
-                    <p id="questionDisplay" class="text-white text-lg md:text-2xl leading-relaxed font-medium tracking-wide min-h-[100px] flex items-center justify-center">
+                <div class="w-full text-center mb-6">
+                    <p id="questionDisplay" class="text-white text-lg md:text-2xl leading-relaxed font-medium tracking-wide min-h-[120px] flex items-center justify-center break-words">
                         Configure parameters on the left, then click the microphone to generate your opening scenario.
                     </p>
                 </div>
 
-                <div class="flex-1 flex items-center justify-center w-full my-6 relative">
+                <div class="flex-1 flex items-center justify-center w-full my-6 relative flex-col">
+                    <div id="simHelperTip" class="absolute -top-10 text-xs font-bold text-amber-500/80 uppercase tracking-widest animate-pulse">
+                        Tip: Click the mic to toggle recording
+                    </div>
+
                     <button id="recordBtn" class="border-glow-card w-36 h-36 rounded-full shadow-lg relative z-10 transition-all duration-300 outline-none group cursor-pointer" title="Click to start scenario / toggle recording">
                         <span class="edge-light"></span>
                         <div class="border-glow-inner">
@@ -412,7 +287,6 @@
                             <span id="waveformPlaceholder" class="text-slate-400 text-xs font-bold uppercase tracking-[0.2em]">Audio Feed Inactive</span>
                         </div>
                     </div>
-
                     <div class="flex flex-col sm:flex-row items-center justify-center gap-4 w-full">
                         <button id="nextQuestionBtn" disabled class="flex-1 bg-[#101A36] border border-slate-700 hover:border-[#D4AF37]/40 disabled:opacity-30 disabled:pointer-events-none text-slate-200 text-sm font-bold uppercase tracking-wider py-4 px-6 rounded-xl transition-all duration-200 shadow-sm outline-none">
                             Next Scenario
@@ -424,7 +298,7 @@
                 </div>
             </section>
 
-            <section class="flex flex-col space-y-6 h-[720px]">
+            <section class="flex flex-col space-y-6 min-h-[720px]">
                 <div class="grid grid-cols-2 gap-4">
                     <div class="gold-glass rounded-2xl p-5 text-center col-span-2">
                         <span class="block text-xs font-bold uppercase tracking-widest text-slate-400 mb-2">Cadence / Pace</span>
@@ -434,26 +308,22 @@
                         </div>
                         <span class="block text-xs text-slate-400 mt-2 uppercase font-semibold">Optimal Range: 130-160 WPM</span>
                     </div>
-
                     <div class="gold-glass rounded-2xl p-4 text-center flex flex-col justify-center">
                         <span class="block text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-1">Vocal Fillers</span>
                         <span id="fillerCount" class="text-2xl font-extrabold text-[#F3E5AB]">0</span>
                         <span class="block text-[9px] text-slate-500 mt-1 uppercase font-semibold">Tracked Hits</span>
                     </div>
-
                     <div class="gold-glass rounded-2xl p-4 text-center flex flex-col justify-center">
                         <span class="block text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-1">Pauses</span>
                         <span id="pauseCount" class="text-2xl font-extrabold text-[#F3E5AB]">0</span>
-                        <span class="block text-[9px] text-slate-500 mt-1 uppercase font-semibold">&gt; 2.5s Delays</span>
+                        <span class="block text-[9px] text-slate-500 mt-1 uppercase font-semibold">&gt; 1.5s Delays</span>
                     </div>
                 </div>
-
                 <div class="gold-glass rounded-2xl p-5 flex-1 flex flex-col shadow-2xl h-full overflow-hidden">
                     <div class="flex items-center justify-between mb-3 border-b border-slate-800/80 pb-3">
                         <span class="text-xs font-bold uppercase tracking-widest text-slate-300">Live Transcript</span>
                         <span class="text-[10px] text-[#D4AF37] font-semibold uppercase tracking-wider">Feedback Enabled</span>
                     </div>
-
                     <div id="interactiveTranscriptDisplay" class="bg-[#101A36] border border-slate-700/80 rounded-xl p-4 flex-1 overflow-y-auto text-sm leading-relaxed text-slate-300 font-normal">
                         No answers recorded yet.
                     </div>
@@ -463,14 +333,22 @@
         </div>
 
         <div id="analysisView" class="hidden animate-fadeIn">
-            <div class="max-w-5xl mx-auto gold-glass rounded-2xl p-7 md:p-14 shadow-2xl">
-                <div class="text-center border-b border-slate-800 pb-10 mb-10">
+            <div class="max-w-5xl mx-auto gold-glass rounded-2xl p-7 md:p-14 shadow-2xl relative">
+                
+                <div id="scoreDisplayContainer" class="hidden absolute top-10 right-10 flex-col items-center justify-center">
+                    <div class="relative flex items-center justify-center w-24 h-24 rounded-full border-4 shadow-lg bg-[#101A36]" id="scoreCircle">
+                        <span id="scoreTextValue" class="text-2xl font-black">--</span>
+                    </div>
+                    <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mt-2">Overall Score</span>
+                </div>
+
+                <div class="text-center border-b border-slate-800 pb-10 mb-10 mr-28">
                     <h2 class="text-4xl font-extrabold text-white mb-4">Performance Blueprint</h2>
                     <p class="text-sm text-slate-400 font-medium">Executive behavioral mapping and structural feedback.</p>
                 </div>
 
-                <div id="critiqueOutput" class="text-sm text-slate-200 leading-loose tracking-wide">
-                    <div id="analysisDefaultText" class="text-center text-slate-500 italic text-lg">No session data found. Complete a simulation to generate a report.</div>
+                <div id="critiqueOutput" class="text-lg text-slate-200 leading-relaxed tracking-wide space-y-6">
+                    <div id="analysisDefaultText" class="text-center text-slate-500 italic text-xl">No session data found. Complete a simulation to generate a report.</div>
                     <div id="analysisSkeleton" class="hidden space-y-7 w-full">
                         <div class="space-y-4">
                             <div class="h-6 skeleton-shimmer rounded w-1/4 mb-6"></div>
@@ -497,8 +375,17 @@
         <div id="progressView" class="hidden animate-fadeIn max-w-4xl mx-auto w-full">
             <div class="gold-glass rounded-2xl p-7 md:p-10 shadow-2xl">
                 <h2 class="text-3xl font-extrabold mb-6 text-white text-center">Your Progress Over Time</h2>
-                <div id="history-container" class="space-y-6">
-                    </div>
+                
+                <div id="progressSummary" class="mb-10 bg-[#101A36] p-6 rounded-xl border border-amber-500/40 shadow-lg">
+                    <h3 class="text-2xl font-bold text-[#F3E5AB] mb-4 border-b border-slate-700/80 pb-2 flex items-center gap-2">
+                        <svg class="w-5 h-5 text-[#D4AF37]" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                        Historical Trend Analysis
+                    </h3>
+                    <div id="progressSummaryContent" class="text-slate-200 text-md leading-relaxed space-y-2">
+                        </div>
+                </div>
+
+                <div id="history-container" class="space-y-6"></div>
             </div>
         </div>
 
@@ -509,49 +396,46 @@
     </footer>
 
     <script>
-        // Supabase Initialization
         const SUPABASE_URL = "{{ supabase_url|default('https://rmydbdccwnsqvwgwraxj.supabase.co') }}";
         const SUPABASE_KEY = "{{ supabase_key|default('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJteWRiZGNjd25zcXZ3Z3dyYXhqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ2NDQwMDgsImV4cCI6MjEwMDIyMDAwOH0.LSyOUNBjetuemKnGCE_sXYe2Y56BLJpPzasc8GLd2x0') }}";
 
         let supabaseClient = null;
         if (window.supabase && SUPABASE_URL && SUPABASE_KEY && !SUPABASE_URL.startsWith("{% raw %}{{% endraw %}")) {
             try { supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY); } 
-            catch(e) { console.error("Supabase client initialization error:", e); }
+            catch(e) { console.error("Supabase client init error:", e); }
         }
 
-        // Global State
         let sessionHistory = [];
         let currentTrack = "General Corporate Interview";
         let currentResume = "";
         let currentTargetContext = "";
         let isSessionActive = false;
         let isRecording = false;
-        let finalTranscript = "";
         
+        let finalTranscript = "";
+        let accumulatedTranscriptForTurn = ""; 
+
         let speechStartTime = 0;
         let totalWordsCount = 0;
         let detectedFillerHits = 0;
         let detectedFluencyDelays = 0;
         let pauseTrackingTimeout = null;
 
-        // View Management Variables
         const landingView = document.getElementById('landingView');
         const simulatorView = document.getElementById('simulatorView');
         const analysisView = document.getElementById('analysisView');
-        const progressView = document.getElementById('progressView'); // Added for new page
+        const progressView = document.getElementById('progressView');
         
         const appNavigation = document.getElementById('appNavigation');
         const navHomeBtn = document.getElementById('navHomeBtn');
         const navSimulatorBtn = document.getElementById('navSimulatorBtn');
         const navAnalysisBtn = document.getElementById('navAnalysisBtn');
-        const navProgressBtn = document.getElementById('navProgressBtn'); // Added for new page
+        const navProgressBtn = document.getElementById('navProgressBtn');
         const navLogoBtn = document.getElementById('navLogoBtn');
         const navAuthBtn = document.getElementById('navAuthBtn');
         const signInBtn = document.getElementById('signInBtn');
         const restartSimBtn = document.getElementById('restartSimBtn');
 
-        // Auth UI
-        let authMode = 'signin';
         const authModal = document.getElementById('authModal');
         const closeAuthModalBtn = document.getElementById('closeAuthModalBtn');
         const tabSigninBtn = document.getElementById('tabSigninBtn');
@@ -568,15 +452,14 @@
         const userAvatarChar = document.getElementById('userAvatarChar');
         const userEmailDisplay = document.getElementById('userEmailDisplay');
         const signOutBtn = document.getElementById('signOutBtn');
+        let authMode = 'signin';
 
-        // --- View Controller ---
         function switchView(viewName) {
             landingView.classList.add('hidden');
             simulatorView.classList.add('hidden');
             analysisView.classList.add('hidden');
             progressView.classList.add('hidden');
 
-            // Reset Nav active states
             [navHomeBtn, navSimulatorBtn, navAnalysisBtn, navProgressBtn].forEach(btn => {
                 btn.classList.remove('text-[#D4AF37]');
                 btn.classList.add('text-slate-400');
@@ -599,73 +482,163 @@
                 progressView.classList.remove('hidden');
                 navProgressBtn.classList.add('text-[#D4AF37]');
                 navProgressBtn.classList.remove('text-slate-400');
-                renderProgress(); // Pull fresh data from local storage
+                renderProgress();
             }
         }
 
-        navHomeBtn.addEventListener('click', () => switchView('landing'));
-        navLogoBtn.addEventListener('click', () => switchView('landing'));
-        navSimulatorBtn.addEventListener('click', () => switchView('simulator'));
-        navAnalysisBtn.addEventListener('click', () => switchView('analysis'));
-        navProgressBtn.addEventListener('click', () => switchView('progress'));
+        navHomeBtn.addEventListener('click', () => {
+            switchView('landing');
+            updateActiveNavLink('navHomeBtn');
+        });
+        navLogoBtn.addEventListener('click', () => {
+            switchView('landing');
+            updateActiveNavLink('navHomeBtn');
+        });
+        navSimulatorBtn.addEventListener('click', () => {
+            switchView('simulator');
+            updateActiveNavLink('navSimulatorBtn');
+        });
+        navAnalysisBtn.addEventListener('click', () => {
+            switchView('analysis');
+            updateActiveNavLink('navAnalysisBtn');
+        });
+        navProgressBtn.addEventListener('click', () => {
+            switchView('progress');
+            updateActiveNavLink('navProgressBtn');
+        });
         restartSimBtn.addEventListener('click', () => {
             isSessionActive = false;
             sessionHistory = [];
             finalTranscript = "";
+            accumulatedTranscriptForTurn = "";
             document.getElementById('questionDisplay').innerText = "Configure parameters on the left, then click the microphone to generate your opening scenario.";
             document.getElementById('interactiveTranscriptDisplay').innerText = "No answers recorded yet.";
             document.getElementById('nextQuestionBtn').setAttribute('disabled', 'true');
             document.getElementById('endSessionBtn').setAttribute('disabled', 'true');
+            document.getElementById('scoreDisplayContainer').classList.add('hidden');
             switchView('simulator');
         });
 
         signInBtn.addEventListener('click', () => {
-            if (!localStorage.getItem('voxcoach_user')) {
-                authModal.classList.remove('hidden');
+            if (!localStorage.getItem('voxcoach_user')) authModal.classList.remove('hidden');
+            else switchView('simulator');
+        });
+
+        async function loadProfile() {
+            if(!supabaseClient) return;
+            const userStr = localStorage.getItem('voxcoach_user');
+            if(!userStr) return;
+            const user = JSON.parse(userStr);
+            const { data } = await supabaseClient.from('profiles').select('resume_text').eq('id', user.id).single();
+            if(data && data.resume_text) {
+                document.getElementById('resumeInput').value = data.resume_text;
+            }
+        }
+
+        document.getElementById('saveResumeBtn').addEventListener('click', async () => {
+            if(!supabaseClient) {
+                alert("Database disconnected. Cannot save profile.");
+                return;
+            }
+            const userStr = localStorage.getItem('voxcoach_user');
+            if(!userStr) {
+                alert("You must be logged in to save your profile to the cloud.");
+                return;
+            }
+            const user = JSON.parse(userStr);
+            const text = document.getElementById('resumeInput').value;
+            const btn = document.getElementById('saveResumeBtn');
+            btn.innerText = "Saving...";
+            const { error } = await supabaseClient.from('profiles').upsert({ id: user.id, resume_text: text });
+            if(!error) {
+                btn.innerText = "Saved!";
+                setTimeout(() => btn.innerText = "Save to Cloud Profile", 2000);
             } else {
-                switchView('simulator');
+                btn.innerText = "Error Saving";
+                setTimeout(() => btn.innerText = "Save to Cloud Profile", 2000);
             }
         });
 
-        // --- Local Storage Progress Tracking ---
-        function saveToProgress(newAnalysisText) {
-            let history = JSON.parse(localStorage.getItem('voxCoachHistory') || '[]');
-            history.push({
-                date: new Date().toLocaleDateString() + ' @ ' + new Date().toLocaleTimeString(),
-                analysis: newAnalysisText
+        async function saveAnalysisToDB(analysisText, scoreVal) {
+            if(!supabaseClient) return;
+            const userStr = localStorage.getItem('voxcoach_user');
+            if(!userStr) return;
+            const user = JSON.parse(userStr);
+            await supabaseClient.from('analyses').insert({
+                user_id: user.id,
+                analysis_content: analysisText,
+                score: scoreVal || null
             });
-            localStorage.setItem('voxCoachHistory', JSON.stringify(history));
         }
 
-        function renderProgress() {
-            const history = JSON.parse(localStorage.getItem('voxCoachHistory') || '[]');
+        async function renderProgress() {
             const container = document.getElementById('history-container');
-            
+            const summaryContainer = document.getElementById('progressSummaryContent');
             if (!container) return;
+            
+            container.innerHTML = '<p class="text-slate-400 text-center italic mt-10">Loading your historical blueprint data...</p>';
+            summaryContainer.innerHTML = '<span class="text-slate-400 italic">Generating historical trend analysis...</span>';
+
+            let history = [];
+            const userStr = localStorage.getItem('voxcoach_user');
+            
+            if (supabaseClient && userStr) {
+                const user = JSON.parse(userStr);
+                const { data, error } = await supabaseClient.from('analyses').select('*').eq('user_id', user.id).order('created_at', { ascending: false });
+                if (!error && data) {
+                    history = data.map(d => ({
+                        date: new Date(d.created_at).toLocaleDateString() + ' @ ' + new Date(d.created_at).toLocaleTimeString(),
+                        analysis: d.analysis_content,
+                        score: d.score
+                    }));
+                }
+            } else {
+                history = JSON.parse(localStorage.getItem('voxCoachHistory') || '[]').reverse();
+            }
             
             if (history.length === 0) {
                 container.innerHTML = '<p class="text-slate-400 text-center italic mt-10">No analyses yet. Complete a session to start tracking your progress!</p>';
+                summaryContainer.innerHTML = '<span class="text-slate-500 italic">No session history available to analyze trends.</span>';
                 return;
             }
 
-            container.innerHTML = history.slice().reverse().map((item) => {
-                // Apply Markdown formatting tailored for the UI
-                let formattedHtml = item.analysis
-                    .replace(/^### (.*$)/gim, '<h3 class="text-[#D4AF37] font-bold text-lg uppercase tracking-wider mt-5 mb-2">$1</h3>')
-                    .replace(/^## (.*$)/gim, '<h4 class="text-[#F3E5AB] font-bold text-xl mt-7 mb-3 border-b border-slate-800 pb-2">$1</h4>')
-                    .replace(/\*\*(.*?)\*\*/g, '<strong class="text-white font-semibold">$1</strong>')
-                    .replace(/^\* (.*$)/gim, '<li class="ml-6 list-disc text-slate-300 my-1 text-sm">$1</li>')
-                    .replace(/\n\n/g, '<br>');
+            // CHANGE 5: Fetch and display the AI historical summary
+            try {
+                const res = await fetch('/api/progress/summary', {
+                    method: 'POST', 
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ analyses: history.map(h => h.analysis) })
+                });
+                const data = await res.json();
+                if(data.success) {
+                    let html = data.summary.replace(/\*\*(.*?)\*\*/g, '<strong class="text-[#D4AF37] text-lg block mt-3 mb-1">$1</strong>').replace(/\n/g, '<br>');
+                    summaryContainer.innerHTML = html;
+                }
+            } catch(e) {
+                summaryContainer.innerHTML = '<span class="text-red-400">Failed to load trend summary.</span>';
+            }
 
+            container.innerHTML = history.map((item) => {
+                let html = formatAnalysisText(item.analysis);
+                let scoreBadge = item.score ? `<span class="bg-[#16224F] text-[#D4AF37] px-3 py-1 rounded-md text-sm ml-4 font-black">Score: ${item.score}</span>` : '';
                 return `
                 <div class="p-6 bg-[#101A36] border border-slate-700/80 rounded-xl shadow-lg">
-                    <div class="text-xs text-[#D4AF37] mb-4 font-bold uppercase tracking-widest border-b border-slate-800 pb-3">Session Date: ${item.date}</div>
-                    <div class="text-sm text-slate-200 leading-relaxed">${formattedHtml}</div>
+                    <div class="flex items-center text-xs text-[#D4AF37] mb-4 font-bold uppercase tracking-widest border-b border-slate-800 pb-3">
+                        Session Date: ${item.date} ${scoreBadge}
+                    </div>
+                    <div class="text-lg text-slate-200 leading-relaxed">${html}</div>
                 </div>
             `}).join('');
         }
 
-        // --- Rotating Text Vanilla JS Adaptation ---
+        function formatAnalysisText(text) {
+            return text
+                .replace(/^## (.*$)/gim, '<h3 class="text-[#D4AF37] font-bold text-2xl uppercase tracking-wider mt-8 mb-3">$1</h3>')
+                .replace(/\*\*(.*?)\*\*/g, '<strong class="text-white font-semibold">$1</strong>')
+                .replace(/^\* (.*$)/gim, '<li class="ml-6 list-disc text-slate-300 my-2 text-lg">$1</li>')
+                .replace(/\n\n/g, '<br><br>');
+        }
+
         const rotatingTexts = ['interviews', 'admissions', 'dream job', 'opportunities', 'career', 'future'];
         const textContainer = document.getElementById('rotatingTextContainer');
         let currentTextIndex = 0;
@@ -673,89 +646,46 @@
         function renderRotatingText(text, isInitial = false) {
             textContainer.innerHTML = '';
             const words = text.split(' ');
-            
             words.forEach((word, wordIndex) => {
-                const wordSpan = document.createElement('span');
-                wordSpan.className = 'text-rotate-word';
-                
+                const wordSpan = document.createElement('span'); wordSpan.className = 'text-rotate-word';
                 const chars = Array.from(word);
                 chars.forEach((char, charIndex) => {
-                    const charSpan = document.createElement('span');
-                    charSpan.className = 'text-rotate-element';
-                    charSpan.textContent = char;
-                    
-                    const delay = (wordIndex * 5 + charIndex) * 30; // ms
-                    charSpan.style.transitionDelay = `${delay}ms`;
-                    
+                    const charSpan = document.createElement('span'); charSpan.className = 'text-rotate-element';
+                    charSpan.textContent = char; charSpan.style.transitionDelay = `${(wordIndex * 5 + charIndex) * 30}ms`;
                     wordSpan.appendChild(charSpan);
                 });
-
                 textContainer.appendChild(wordSpan);
                 if (wordIndex < words.length - 1) {
-                    const space = document.createElement('span');
-                    space.className = 'text-rotate-space';
-                    space.textContent = ' ';
-                    textContainer.appendChild(space);
+                    const space = document.createElement('span'); space.className = 'text-rotate-space'; space.textContent = ' '; textContainer.appendChild(space);
                 }
             });
-
-            setTimeout(() => {
-                document.querySelectorAll('.text-rotate-element').forEach(el => {
-                    el.classList.add('in');
-                });
-            }, 50);
+            setTimeout(() => document.querySelectorAll('.text-rotate-element').forEach(el => el.classList.add('in')), 50);
         }
 
         function cycleText() {
-            document.querySelectorAll('.text-rotate-element').forEach(el => {
-                el.classList.remove('in');
-                el.classList.add('out');
-            });
-
+            document.querySelectorAll('.text-rotate-element').forEach(el => { el.classList.remove('in'); el.classList.add('out'); });
             setTimeout(() => {
                 currentTextIndex = (currentTextIndex + 1) % rotatingTexts.length;
                 renderRotatingText(rotatingTexts[currentTextIndex]);
             }, 600);
         }
+        renderRotatingText(rotatingTexts[0], true); setInterval(cycleText, 3000);
 
-        renderRotatingText(rotatingTexts[0], true);
-        setInterval(cycleText, 3000);
-
-
-        // --- Auth Logic ---
-        function showAuthError(msg) {
-            authErrorMsg.innerText = msg;
-            authErrorMsg.classList.remove('hidden');
-            authSuccessMsg.classList.add('hidden');
-        }
-
-        function showAuthSuccess(msg) {
-            authSuccessMsg.innerText = msg;
-            authSuccessMsg.classList.remove('hidden');
-            authErrorMsg.classList.add('hidden');
-        }
-
-        function clearAuthMsgs() {
-            authErrorMsg.classList.add('hidden');
-            authSuccessMsg.classList.add('hidden');
-        }
+        function showAuthError(msg) { authErrorMsg.innerText = msg; authErrorMsg.classList.remove('hidden'); authSuccessMsg.classList.add('hidden'); }
+        function showAuthSuccess(msg) { authSuccessMsg.innerText = msg; authSuccessMsg.classList.remove('hidden'); authErrorMsg.classList.add('hidden'); }
+        function clearAuthMsgs() { authErrorMsg.classList.add('hidden'); authSuccessMsg.classList.add('hidden'); }
 
         function updateUIForLoggedInUser(user) {
             if (!user || !user.email) return;
-            userEmailDisplay.innerText = user.email;
-            userAvatarChar.innerText = user.email.charAt(0).toUpperCase();
-            userProfileBadge.classList.remove('hidden');
-            userProfileBadge.classList.add('flex');
-            navAuthBtn.classList.add('hidden');
-            authModal.classList.add('hidden');
-            appNavigation.classList.remove('hidden');
+            userEmailDisplay.innerText = user.email; userAvatarChar.innerText = user.email.charAt(0).toUpperCase();
+            userProfileBadge.classList.remove('hidden'); userProfileBadge.classList.add('flex');
+            navAuthBtn.classList.add('hidden'); authModal.classList.add('hidden'); appNavigation.classList.remove('hidden');
+            loadProfile();
         }
 
         function updateUIForLoggedOutUser() {
-            userProfileBadge.classList.add('hidden');
-            userProfileBadge.classList.remove('flex');
-            navAuthBtn.classList.remove('hidden');
-            appNavigation.classList.add('hidden');
+            userProfileBadge.classList.add('hidden'); userProfileBadge.classList.remove('flex');
+            navAuthBtn.classList.remove('hidden'); appNavigation.classList.add('hidden');
             switchView('landing');
         }
 
@@ -766,61 +696,44 @@
                         const userData = { id: session.user.id, email: session.user.email, token: session.access_token };
                         localStorage.setItem('voxcoach_user', JSON.stringify(userData));
                         updateUIForLoggedInUser(userData);
-                        if (window.location.hash || window.location.search.includes('code=')) {
-                            window.history.replaceState(null, '', window.location.pathname);
-                        }
+                        if (window.location.hash || window.location.search.includes('code=')) window.history.replaceState(null, '', window.location.pathname);
                     }
                 });
-
                 try {
                     const { data: { session } } = await supabaseClient.auth.getSession();
                     if (session && session.user) {
                         const userData = { id: session.user.id, email: session.user.email, token: session.access_token };
                         localStorage.setItem('voxcoach_user', JSON.stringify(userData));
-                        updateUIForLoggedInUser(userData);
-                        return;
+                        updateUIForLoggedInUser(userData); return;
                     }
                 } catch (e) {}
             }
-
             const savedUser = localStorage.getItem('voxcoach_user');
-            if (savedUser) {
-                try { updateUIForLoggedInUser(JSON.parse(savedUser)); } 
-                catch (e) { localStorage.removeItem('voxcoach_user'); }
-            }
+            if (savedUser) try { updateUIForLoggedInUser(JSON.parse(savedUser)); } catch (e) { localStorage.removeItem('voxcoach_user'); }
         }
 
         googleSignInBtn.addEventListener('click', async () => {
-            clearAuthMsgs();
-            const redirectUrl = window.location.origin + window.location.pathname;
+            clearAuthMsgs(); const redirectUrl = window.location.origin + window.location.pathname;
             try {
-                if (supabaseClient) {
-                    const { error } = await supabaseClient.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: redirectUrl } });
-                    if (error) throw error;
-                } else {
+                if (supabaseClient) { const { error } = await supabaseClient.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: redirectUrl } }); if (error) throw error; } 
+                else {
                     const res = await fetch('/api/auth/google', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ redirect_to: redirectUrl }) });
-                    const data = await res.json();
-                    if (data.success && data.url) window.location.href = data.url;
-                    else showAuthError(data.error || "Failed to initiate Google Sign-In.");
+                    const data = await res.json(); if (data.success && data.url) window.location.href = data.url; else showAuthError(data.error || "Failed to initiate Google Sign-In.");
                 }
             } catch (err) { showAuthError(err.message || "Google Sign-In failed."); }
         });
 
         authForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            clearAuthMsgs();
-            const email = authEmail.value.trim();
-            const password = authPassword.value.trim();
+            e.preventDefault(); clearAuthMsgs();
+            const email = authEmail.value.trim(); const password = authPassword.value.trim();
             if (!email || !password) return showAuthError("Please fill in all fields.");
-
             const endpoint = authMode === 'signup' ? '/api/auth/signup' : '/api/auth/signin';
             try {
                 const res = await fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, password }) });
                 const data = await res.json();
                 if (data.success && data.user) {
                     const userData = { id: data.user.id, email: data.user.email, token: data.session || '' };
-                    localStorage.setItem('voxcoach_user', JSON.stringify(userData));
-                    updateUIForLoggedInUser(userData);
+                    localStorage.setItem('voxcoach_user', JSON.stringify(userData)); updateUIForLoggedInUser(userData);
                     showAuthSuccess(authMode === 'signup' ? "Account created successfully!" : "Signed in successfully!");
                     setTimeout(() => authModal.classList.add('hidden'), 1000);
                 } else showAuthError(data.error || "Authentication failed.");
@@ -834,28 +747,21 @@
             authMode = 'signin';
             tabSigninBtn.className = "flex-1 pb-4 text-sm font-bold uppercase tracking-wider text-[#D4AF37] border-b-2 border-[#D4AF37] transition-all";
             tabSignupBtn.className = "flex-1 pb-4 text-sm font-bold uppercase tracking-wider text-slate-400 border-b-2 border-transparent hover:text-slate-200 transition-all";
-            document.getElementById('authModalTitle').innerText = "Welcome Back";
-            document.getElementById('authModalSubtitle').innerText = "Sign in to access your interview workspace";
-            authSubmitBtn.innerText = "Sign In";
+            document.getElementById('authModalTitle').innerText = "Welcome Back"; document.getElementById('authModalSubtitle').innerText = "Sign in to access your interview workspace"; authSubmitBtn.innerText = "Sign In";
         });
 
         tabSignupBtn.addEventListener('click', () => {
             authMode = 'signup';
             tabSignupBtn.className = "flex-1 pb-4 text-sm font-bold uppercase tracking-wider text-[#D4AF37] border-b-2 border-[#D4AF37] transition-all";
             tabSigninBtn.className = "flex-1 pb-4 text-sm font-bold uppercase tracking-wider text-slate-400 border-b-2 border-transparent hover:text-slate-200 transition-all";
-            document.getElementById('authModalTitle').innerText = "Create Account";
-            document.getElementById('authModalSubtitle').innerText = "Sign up to track your communication analytics";
-            authSubmitBtn.innerText = "Sign Up";
+            document.getElementById('authModalTitle').innerText = "Create Account"; document.getElementById('authModalSubtitle').innerText = "Sign up to track your communication analytics"; authSubmitBtn.innerText = "Sign Up";
         });
 
         signOutBtn.addEventListener('click', async () => {
-            localStorage.removeItem('voxcoach_user');
-            if (supabaseClient) try { await supabaseClient.auth.signOut(); } catch(e){}
+            localStorage.removeItem('voxcoach_user'); if (supabaseClient) try { await supabaseClient.auth.signOut(); } catch(e){}
             updateUIForLoggedOutUser();
         });
 
-
-        // --- Audio & Web Speech API ---
         let audioCtx = null, audioAnalyser = null, audioSource = null, mediaStream = null, animationFrameId = null;
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         let speechEngine = null;
@@ -873,27 +779,27 @@
 
         trackSelector.addEventListener('change', () => {
             if (trackSelector.value === "General Corporate Interview") {
-                targetContextLabel.innerText = "Target Role";
-                targetContextInput.placeholder = "e.g., Senior Software Engineer at Google";
+                targetContextLabel.innerText = "Target Role"; targetContextInput.placeholder = "e.g., Senior Software Engineer at Google";
             } else {
-                targetContextLabel.innerText = "Target Program";
-                targetContextInput.placeholder = "e.g., Harvard University - Economics BA";
+                targetContextLabel.innerText = "Target Program"; targetContextInput.placeholder = "e.g., Harvard University - Economics BA";
             }
         });
 
+        // CHANGE 3: Added "I think" to dictionary
         const transitionalAlternatives = {
-            "um": "Instead of executing a vocal stall like 'um', practice using stabilizing structural bridges: 'Certainly,' or 'To break this down...'",
-            "uh": "To remove vocal hesitations like 'uh', embrace deliberate structural pauses to frame your upcoming thoughts.",
-            "like": "Instead of casual conversational indicators like 'like', use precise analytical metrics: 'specifically,' 'for instance,' or 'namely.'",
-            "you know": "Avoid relying on passive validation phrases like 'you know'. Affirm your points directly: 'As evidenced by our results...'",
-            "sort of": "Eliminate vague hedging like 'sort of'. Assert your achievements clearly: 'essentially,' 'primarily,' or 'distinctly.'",
-            "basically": "Replace informal summarizers like 'basically' with authoritative phrasing: 'fundamentally,' or 'at its core.'"
+            "um": "Instead of executing a vocal stall like 'um', practice using stabilizing structural bridges.",
+            "uh": "To remove vocal hesitations like 'uh', embrace deliberate structural pauses.",
+            "like": "Instead of casual conversational indicators like 'like', use precise analytical metrics.",
+            "you know": "Avoid relying on passive validation phrases like 'you know'.",
+            "sort of": "Eliminate vague hedging like 'sort of'. Assert your achievements clearly.",
+            "basically": "Replace informal summarizers like 'basically' with authoritative phrasing.",
+            "i think": "Instead of hedging with 'I think', state your perspective or actions confidently."
         };
 
         window.triggerFillerTipPopover = function(word, targetElem) {
             const popover = document.getElementById('fillerPopover');
             const popoverText = document.getElementById('popoverAlternativeText');
-            popoverText.innerText = transitionalAlternatives[word.toLowerCase()] || "Focus on replacing verbal hesitations with brief silent pauses to convey authority.";
+            popoverText.innerText = transitionalAlternatives[word.toLowerCase()] || "Focus on replacing verbal hesitations with silent pauses.";
             popover.classList.remove('hidden');
             const rect = targetElem.getBoundingClientRect();
             popover.style.left = `${rect.left + window.scrollX - 20}px`;
@@ -903,23 +809,14 @@
         document.addEventListener('click', () => document.getElementById('fillerPopover').classList.add('hidden'));
 
         function renderSpectrumVisualization() {
-            const canvas = document.getElementById('audioSpectrum');
-            const canvasCtx = canvas.getContext('2d');
-            const bufferLength = audioAnalyser.frequencyBinCount;
-            const dataArray = new Uint8Array(bufferLength);
-
+            const canvas = document.getElementById('audioSpectrum'); const canvasCtx = canvas.getContext('2d');
+            const bufferLength = audioAnalyser.frequencyBinCount; const dataArray = new Uint8Array(bufferLength);
             function draw() {
-                animationFrameId = requestAnimationFrame(draw);
-                audioAnalyser.getByteFrequencyData(dataArray);
-                canvasCtx.fillStyle = '#0a122c';
-                canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
-                const barWidth = (canvas.width / bufferLength) * 2.5;
-                let x = 0;
+                animationFrameId = requestAnimationFrame(draw); audioAnalyser.getByteFrequencyData(dataArray);
+                canvasCtx.fillStyle = '#0a122c'; canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
+                const barWidth = (canvas.width / bufferLength) * 2.5; let x = 0;
                 for (let i = 0; i < bufferLength; i++) {
-                    const barHeight = dataArray[i] / 3;
-                    canvasCtx.fillStyle = `rgba(212, 175, 55, ${barHeight / 80})`;
-                    canvasCtx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
-                    x += barWidth + 1;
+                    const barHeight = dataArray[i] / 3; canvasCtx.fillStyle = `rgba(212, 175, 55, ${barHeight / 80})`; canvasCtx.fillRect(x, canvas.height - barHeight, barWidth, barHeight); x += barWidth + 1;
                 }
             }
             draw();
@@ -927,25 +824,23 @@
 
         function resetFluencyDelayTicker() {
             if (pauseTrackingTimeout) clearTimeout(pauseTrackingTimeout);
+            // CHANGE 2: Timeout configured perfectly to 1.5 seconds (1500ms)
             pauseTrackingTimeout = setTimeout(() => {
-                if (isRecording) {
-                    detectedFluencyDelays++;
-                    document.getElementById('pauseCount').innerText = detectedFluencyDelays;
-                }
-            }, 1000);
+                if (isRecording) { detectedFluencyDelays++; document.getElementById('pauseCount').innerText = detectedFluencyDelays; }
+            }, 1500); 
         }
 
         function renderHighlightedTranscript(text) {
             const container = document.getElementById('interactiveTranscriptDisplay');
             if (!text || text.trim() === "") return container.innerText = "Listening...";
             
-            const fillerRegex = /\b(um|uh|like|you know|sort of|basically)\b/gi;
+            // CHANGE 3: "i think" added to the highlighting regex detection
+            const fillerRegex = /\b(um|uh|like|you know|sort of|basically|i think)\b/gi;
             container.innerHTML = text.replace(fillerRegex, match => 
                 `<span class="text-[#D4AF37] underline decoration-amber-500/60 decoration-2 font-bold cursor-pointer hover:bg-amber-500/20 px-1 rounded transition-colors" onclick="event.stopPropagation(); triggerFillerTipPopover('${match}', this)">${match}</span>`
             );
         }
 
-        // Consolidated Mic Button (Init + Record Toggle)
         document.getElementById('recordBtn').addEventListener('click', async () => {
             if (!speechEngine) return alert("Browser does not support Speech API.");
 
@@ -953,12 +848,11 @@
                 currentTrack = document.getElementById('trackSelector').value;
                 currentResume = document.getElementById('resumeInput').value;
                 currentTargetContext = document.getElementById('targetContextInput').value;
-                document.getElementById('questionDisplay').innerHTML = "<span class='animate-pulse text-[#D4AF37]'>Dynamically generating unique opening scenario...</span>";
+                document.getElementById('questionDisplay').innerHTML = "<span class='animate-pulse text-[#D4AF37]'>Analyzing profile... generating tailored opening inquiry...</span>";
 
                 try {
                     const res = await fetch('/api/session/start', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
+                        method: 'POST', headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ track: currentTrack, resume: currentResume, target_context: currentTargetContext })
                     });
                     const data = await res.json();
@@ -966,36 +860,28 @@
                         sessionHistory = data.history;
                         document.getElementById('questionDisplay').innerText = data.current_question;
                         totalWordsCount = detectedFillerHits = detectedFluencyDelays = 0;
-                        finalTranscript = "";
-                        document.getElementById('fillerCount').innerText = "0";
-                        document.getElementById('pauseCount').innerText = "0";
-                        document.getElementById('wpmValue').innerText = "0 WPM";
-                        document.getElementById('wpmGauge').style.width = "0%";
+                        finalTranscript = ""; accumulatedTranscriptForTurn = ""; 
+                        document.getElementById('fillerCount').innerText = "0"; document.getElementById('pauseCount').innerText = "0";
+                        document.getElementById('wpmValue').innerText = "0 WPM"; document.getElementById('wpmGauge').style.width = "0%";
                         document.getElementById('interactiveTranscriptDisplay').innerText = "Listening...";
                         isSessionActive = true;
                     }
-                } catch (err) {
-                    return document.getElementById('questionDisplay').innerText = "Connection Error: Failed to generate session prompt.";
-                }
+                } catch (err) { return document.getElementById('questionDisplay').innerText = "Connection Error: Failed to generate session prompt."; }
             }
 
             if (!isRecording) {
                 try {
                     mediaStream = await navigator.mediaDevices.getUserMedia({ audio: true });
                     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                    audioAnalyser = audioCtx.createAnalyser();
-                    audioSource = audioCtx.createMediaStreamSource(mediaStream);
-                    audioSource.connect(audioAnalyser);
-                    audioAnalyser.fftSize = 64;
+                    audioAnalyser = audioCtx.createAnalyser(); audioSource = audioCtx.createMediaStreamSource(mediaStream);
+                    audioSource.connect(audioAnalyser); audioAnalyser.fftSize = 64;
                     renderSpectrumVisualization();
 
-                    isRecording = true;
-                    speechStartTime = Date.now();
-                    finalTranscript = "";
+                    isRecording = true; speechStartTime = Date.now();
+                    document.getElementById('simHelperTip').innerText = "Tip: Use strong action verbs to drive your response.";
+                    
                     speechEngine.start();
-
                     const micBtn = document.getElementById('recordBtn');
-                    // Add recording visual cues to the new button while maintaining the border-glow base
                     micBtn.className = "border-glow-card w-36 h-36 rounded-full bg-amber-500/20 border-4 border-[#D4AF37] shadow-2xl shadow-[#D4AF37]/30 relative z-10 transition-all duration-300 outline-none cursor-pointer";
                     document.getElementById('recordIcon').classList.add('animate-pulse');
                     document.getElementById('avatarPulse').classList.remove('hidden');
@@ -1006,8 +892,10 @@
                 isRecording = false;
                 speechEngine.stop();
                 
+                accumulatedTranscriptForTurn = finalTranscript;
+                document.getElementById('simHelperTip').innerText = "Tip: Click Next Scenario when you are ready to proceed.";
+                
                 const micBtn = document.getElementById('recordBtn');
-                // Reset back to normal border-glow card state
                 micBtn.className = "border-glow-card w-36 h-36 rounded-full shadow-lg relative z-10 transition-all duration-300 outline-none group cursor-pointer";
                 document.getElementById('recordIcon').classList.remove('animate-pulse');
                 document.getElementById('avatarPulse').classList.add('hidden');
@@ -1029,14 +917,16 @@
         if (speechEngine) {
             speechEngine.onresult = (e) => {
                 resetFluencyDelayTicker();
-                let text = "";
-                for (let i = 0; i < e.results.length; i++) text += e.results[i][0].transcript + " ";
-                finalTranscript = text.trim();
+                let newText = "";
+                for (let i = e.resultIndex; i < e.results.length; i++) newText += e.results[i][0].transcript + " ";
+                
+                finalTranscript = (accumulatedTranscriptForTurn + " " + newText).trim();
                 
                 document.getElementById('transcriptionFallback').innerText = finalTranscript;
                 renderHighlightedTranscript(finalTranscript);
                 
-                const matches = finalTranscript.match(/\b(um|uh|like|you know|sort of|basically)\b/gi);
+                // CHANGE 3: Apply the updated "I think" regex here for hit counting too
+                const matches = finalTranscript.match(/\b(um|uh|like|you know|sort of|basically|i think)\b/gi);
                 detectedFillerHits = matches ? matches.length : 0;
                 document.getElementById('fillerCount').innerText = detectedFillerHits;
 
@@ -1055,13 +945,12 @@
             if (isRecording) document.getElementById('recordBtn').click();
             if (finalTranscript.trim()) sessionHistory.push({ role: "user", content: finalTranscript.trim() });
             
-            document.getElementById('questionDisplay').innerHTML = "<span class='animate-pulse text-slate-400'>Analyzing response and formulating follow-up scenario...</span>";
+            document.getElementById('questionDisplay').innerHTML = "<span class='animate-pulse text-slate-400'>Analyzing logic and formulating adaptive follow-up...</span>";
             document.getElementById('nextQuestionBtn').setAttribute('disabled', 'true');
 
             try {
                 const res = await fetch('/api/session/next', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ history: sessionHistory, track: currentTrack, resume: currentResume, target_context: currentTargetContext })
                 });
                 const data = await res.json();
@@ -1069,14 +958,16 @@
                     sessionHistory = data.history;
                     document.getElementById('questionDisplay').innerText = data.next_question;
                     finalTranscript = "";
+                    accumulatedTranscriptForTurn = ""; 
                     document.getElementById('interactiveTranscriptDisplay').innerText = "Previous turn recorded. Click microphone to answer...";
+                    document.getElementById('simHelperTip').innerText = "Tip: Keep answers focused and concise.";
                 }
-            } catch (err) {
-                document.getElementById('questionDisplay').innerText = "Connection Error: Failed to generate follow-up prompt.";
-            }
+            } catch (err) { document.getElementById('questionDisplay').innerText = "Connection Error: Failed to generate follow-up prompt."; }
         });
 
         document.getElementById('endSessionBtn').addEventListener('click', async () => {
+            updateActiveNavLink('navAnalysisBtn');
+
             if (isRecording) document.getElementById('recordBtn').click();
             
             let payload = [...sessionHistory];
@@ -1088,30 +979,55 @@
             
             const outBox = document.getElementById('critiqueOutput');
             document.getElementById('analysisDefaultText').classList.add('hidden');
+            document.getElementById('scoreDisplayContainer').classList.add('hidden');
             const skeleton = document.getElementById('analysisSkeleton');
             skeleton.classList.remove('hidden');
 
             try {
                 const res = await fetch('/api/session/analyze', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ history: payload, resume: currentResume, target_context: currentTargetContext })
                 });
                 const data = await res.json();
                 skeleton.classList.add('hidden');
 
                 if (data.success && data.critique) {
+                    let critiqueText = data.critique;
+                    let extractedScore = null;
                     
-                    // SAVE TO LOCAL STORAGE FOR PROGRESS TRACKING
-                    saveToProgress(data.critique);
+                    const scoreMatch = critiqueText.match(/\[SCORE:\s*(\d+)\]/i);
+                    if (scoreMatch) {
+                        extractedScore = parseInt(scoreMatch[1]);
+                        critiqueText = critiqueText.replace(scoreMatch[0], '').trim();
+                        
+                        const scoreContainer = document.getElementById('scoreDisplayContainer');
+                        const scoreCircle = document.getElementById('scoreCircle');
+                        const scoreTextValue = document.getElementById('scoreTextValue');
+                        
+                        scoreTextValue.innerText = extractedScore;
+                        scoreContainer.classList.remove('hidden');
+                        scoreContainer.classList.add('flex');
+                        
+                        if (extractedScore < 50) {
+                            scoreCircle.className = "relative flex items-center justify-center w-24 h-24 rounded-full border-4 shadow-lg bg-[#101A36] border-red-500 text-red-500 shadow-red-500/20";
+                        } else if (extractedScore < 80) {
+                            scoreCircle.className = "relative flex items-center justify-center w-24 h-24 rounded-full border-4 shadow-lg bg-[#101A36] border-yellow-500 text-yellow-500 shadow-yellow-500/20";
+                        } else {
+                            scoreCircle.className = "relative flex items-center justify-center w-24 h-24 rounded-full border-4 shadow-lg bg-[#101A36] border-green-500 text-green-500 shadow-green-500/20";
+                        }
+                    }
 
-                    let html = data.critique
-                        .replace(/^### (.*$)/gim, '<h3 class="text-[#D4AF37] font-bold text-lg uppercase tracking-wider mt-8 mb-3">$1</h3>')
-                        .replace(/^## (.*$)/gim, '<h4 class="text-[#F3E5AB] font-bold text-2xl mt-10 mb-4 border-b border-slate-800 pb-3">$1</h4>')
-                        .replace(/\*\*(.*?)\*\*/g, '<strong class="text-white font-semibold">$1</strong>')
-                        .replace(/^\* (.*$)/gim, '<li class="ml-6 list-disc text-slate-300 my-2 text-sm">$1</li>')
-                        .replace(/\n\n/g, '<br><br>');
-                    outBox.innerHTML = `<div class="text-left space-y-2 text-sm">${html}</div>`;
+                    let historyLocal = JSON.parse(localStorage.getItem('voxCoachHistory') || '[]');
+                    historyLocal.push({
+                        date: new Date().toLocaleDateString() + ' @ ' + new Date().toLocaleTimeString(),
+                        analysis: critiqueText,
+                        score: extractedScore
+                    });
+                    localStorage.setItem('voxCoachHistory', JSON.stringify(historyLocal));
+                    
+                    saveAnalysisToDB(critiqueText, extractedScore);
+
+                    outBox.innerHTML = `<div class="text-left space-y-2 text-lg">${formatAnalysisText(critiqueText)}</div>`;
                 } else {
                     outBox.innerHTML = `<span class="text-red-400">Failed to compile STAR evaluation matrix.</span>`;
                 }
@@ -1123,201 +1039,68 @@
 
         window.addEventListener('load', initAuth);
 
-        // --- BorderGlow Mouse Tracking Logic ---
         const glowBtn = document.getElementById('recordBtn');
-
         glowBtn.addEventListener('pointermove', (e) => {
             const rect = glowBtn.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-
-            const cx = rect.width / 2;
-            const cy = rect.height / 2;
-            const dx = x - cx;
-            const dy = y - cy;
-
-            // Calculate proximity to the edge of the circle
-            const maxDist = rect.width / 2;
-            const dist = Math.sqrt(dx * dx + dy * dy);
-            let edge = dist / maxDist;
-            edge = Math.min(Math.max(edge, 0), 1); // Clamp between 0 and 1
-
-            // Calculate angle for the light cone
-            let radians = Math.atan2(dy, dx);
-            let degrees = radians * (180 / Math.PI) + 90;
+            const x = e.clientX - rect.left; const y = e.clientY - rect.top;
+            const cx = rect.width / 2; const cy = rect.height / 2;
+            const dx = x - cx; const dy = y - cy;
+            const maxDist = rect.width / 2; const dist = Math.sqrt(dx * dx + dy * dy);
+            let edge = dist / maxDist; edge = Math.min(Math.max(edge, 0), 1);
+            let radians = Math.atan2(dy, dx); let degrees = radians * (180 / Math.PI) + 90;
             if (degrees < 0) degrees += 360;
-
             glowBtn.style.setProperty('--edge-proximity', `${(edge * 100).toFixed(3)}`);
             glowBtn.style.setProperty('--cursor-angle', `${degrees.toFixed(3)}deg`);
         });
+        glowBtn.addEventListener('pointerleave', () => glowBtn.style.setProperty('--edge-proximity', `0`));
 
-        // Reset the glow gracefully when the mouse leaves
-        glowBtn.addEventListener('pointerleave', () => {
-            glowBtn.style.setProperty('--edge-proximity', `0`);
-        });
-
-        // --- ShapeGrid Background Logic ---
         const sgCanvas = document.getElementById('shapeGridCanvas');
         const sgCtx = sgCanvas.getContext('2d');
-        
-        // Settings configured for a subtle background layer
-        const sgShape = 'square'; 
-        const sgSize = 40;
-        const sgSpeed = 0.2;
-        const sgDirection = 'diagonal';
-        const sgBorderColor = 'rgba(212, 175, 55, 0.1)'; // Very subtle gold
-        
+        const sgShape = 'square'; const sgSize = 40; const sgSpeed = 0.2; const sgDirection = 'diagonal'; const sgBorderColor = 'rgba(212, 175, 55, 0.1)'; 
         let sgOffset = { x: 0, y: 0 };
-        
-        function sgResize() {
-            sgCanvas.width = window.innerWidth;
-            sgCanvas.height = window.innerHeight;
-        }
-        window.addEventListener('resize', sgResize);
-        sgResize();
-        
-        // Drawing helpers adapted directly from the requested component
-        const isHex = sgShape === 'hexagon';
-        const isTri = sgShape === 'triangle';
-        const hexHoriz = sgSize * 1.5;
-        const hexVert = sgSize * Math.sqrt(3);
-        
-        function drawHex(cx, cy, size) {
-            sgCtx.beginPath();
-            for (let i = 0; i < 6; i++) {
-                const angle = (Math.PI / 3) * i;
-                const vx = cx + size * Math.cos(angle);
-                const vy = cy + size * Math.sin(angle);
-                if (i === 0) sgCtx.moveTo(vx, vy);
-                else sgCtx.lineTo(vx, vy);
-            }
-            sgCtx.closePath();
-        }
-        
-        function drawCircle(cx, cy, size) {
-            sgCtx.beginPath();
-            sgCtx.arc(cx, cy, size / 2, 0, Math.PI * 2);
-            sgCtx.closePath();
-        }
-        
-        function drawTri(cx, cy, size, flip) {
-            sgCtx.beginPath();
-            if (flip) {
-                sgCtx.moveTo(cx, cy + size / 2);
-                sgCtx.lineTo(cx + size / 2, cy - size / 2);
-                sgCtx.lineTo(cx - size / 2, cy - size / 2);
-            } else {
-                sgCtx.moveTo(cx, cy - size / 2);
-                sgCtx.lineTo(cx + size / 2, cy + size / 2);
-                sgCtx.lineTo(cx - size / 2, cy + size / 2);
-            }
-            sgCtx.closePath();
-        }
+        function sgResize() { sgCanvas.width = window.innerWidth; sgCanvas.height = window.innerHeight; }
+        window.addEventListener('resize', sgResize); sgResize();
         
         function sgDraw() {
             sgCtx.clearRect(0, 0, sgCanvas.width, sgCanvas.height);
-            
-            // Generate grid paths depending on shape (Hover logic removed entirely)
-            if (isHex) {
-                const colShift = Math.floor(sgOffset.x / hexHoriz);
-                const offsetX = ((sgOffset.x % hexHoriz) + hexHoriz) % hexHoriz;
-                const offsetY = ((sgOffset.y % hexVert) + hexVert) % hexVert;
-                const cols = Math.ceil(sgCanvas.width / hexHoriz) + 3;
-                const rows = Math.ceil(sgCanvas.height / hexVert) + 3;
-                
-                for (let col = -2; col < cols; col++) {
-                    for (let row = -2; row < rows; row++) {
-                        const cx = col * hexHoriz + offsetX;
-                        const cy = row * hexVert + ((col + colShift) % 2 !== 0 ? hexVert / 2 : 0) + offsetY;
-                        drawHex(cx, cy, sgSize);
-                        sgCtx.strokeStyle = sgBorderColor;
-                        sgCtx.stroke();
-                    }
-                }
-            } else if (isTri) {
-                const halfW = sgSize / 2;
-                const colShift = Math.floor(sgOffset.x / halfW);
-                const rowShift = Math.floor(sgOffset.y / sgSize);
-                const offsetX = ((sgOffset.x % halfW) + halfW) % halfW;
-                const offsetY = ((sgOffset.y % sgSize) + sgSize) % sgSize;
-                const cols = Math.ceil(sgCanvas.width / halfW) + 4;
-                const rows = Math.ceil(sgCanvas.height / sgSize) + 4;
-                
-                for (let col = -2; col < cols; col++) {
-                    for (let row = -2; row < rows; row++) {
-                        const cx = col * halfW + offsetX;
-                        const cy = row * sgSize + sgSize / 2 + offsetY;
-                        const flip = ((col + colShift + row + rowShift) % 2 + 2) % 2 !== 0;
-                        drawTri(cx, cy, sgSize, flip);
-                        sgCtx.strokeStyle = sgBorderColor;
-                        sgCtx.stroke();
-                    }
-                }
-            } else if (sgShape === 'circle') {
-                const offsetX = ((sgOffset.x % sgSize) + sgSize) % sgSize;
-                const offsetY = ((sgOffset.y % sgSize) + sgSize) % sgSize;
-                const cols = Math.ceil(sgCanvas.width / sgSize) + 3;
-                const rows = Math.ceil(sgCanvas.height / sgSize) + 3;
-                for (let col = -2; col < cols; col++) {
-                    for (let row = -2; row < rows; row++) {
-                        const cx = col * sgSize + sgSize / 2 + offsetX;
-                        const cy = row * sgSize + sgSize / 2 + offsetY;
-                        drawCircle(cx, cy, sgSize);
-                        sgCtx.strokeStyle = sgBorderColor;
-                        sgCtx.stroke();
-                    }
-                }
-            } else {
-                // Default Square
-                const offsetX = ((sgOffset.x % sgSize) + sgSize) % sgSize;
-                const offsetY = ((sgOffset.y % sgSize) + sgSize) % sgSize;
-                const cols = Math.ceil(sgCanvas.width / sgSize) + 3;
-                const rows = Math.ceil(sgCanvas.height / sgSize) + 3;
-                for (let col = -2; col < cols; col++) {
-                    for (let row = -2; row < rows; row++) {
-                        const sx = col * sgSize + offsetX;
-                        const sy = row * sgSize + offsetY;
-                        sgCtx.strokeStyle = sgBorderColor;
-                        sgCtx.strokeRect(sx, sy, sgSize, sgSize);
-                    }
+            const offsetX = ((sgOffset.x % sgSize) + sgSize) % sgSize;
+            const offsetY = ((sgOffset.y % sgSize) + sgSize) % sgSize;
+            const cols = Math.ceil(sgCanvas.width / sgSize) + 3; const rows = Math.ceil(sgCanvas.height / sgSize) + 3;
+            for (let col = -2; col < cols; col++) {
+                for (let row = -2; row < rows; row++) {
+                    const sx = col * sgSize + offsetX; const sy = row * sgSize + offsetY;
+                    sgCtx.strokeStyle = sgBorderColor; sgCtx.strokeRect(sx, sy, sgSize, sgSize);
                 }
             }
-            
-            // Radial gradient overlay to fade edges smoothly into the #070D1F body background
-            const gradient = sgCtx.createRadialGradient(
-                sgCanvas.width / 2, sgCanvas.height / 2, 0,
-                sgCanvas.width / 2, sgCanvas.height / 2, Math.sqrt(sgCanvas.width ** 2 + sgCanvas.height ** 2) / 1.5
-            );
-            gradient.addColorStop(0, 'rgba(7, 13, 31, 0)'); // Center transparent
-            gradient.addColorStop(1, 'rgba(7, 13, 31, 1)'); // Edges perfectly matching dark navy bg
-            
-            sgCtx.fillStyle = gradient;
-            sgCtx.fillRect(0, 0, sgCanvas.width, sgCanvas.height);
+            const gradient = sgCtx.createRadialGradient(sgCanvas.width / 2, sgCanvas.height / 2, 0, sgCanvas.width / 2, sgCanvas.height / 2, Math.sqrt(sgCanvas.width ** 2 + sgCanvas.height ** 2) / 1.5);
+            gradient.addColorStop(0, 'rgba(7, 13, 31, 0)'); gradient.addColorStop(1, 'rgba(7, 13, 31, 1)');
+            sgCtx.fillStyle = gradient; sgCtx.fillRect(0, 0, sgCanvas.width, sgCanvas.height);
         }
         
         function sgUpdate() {
-            const wrapX = isHex ? hexHoriz * 2 : sgSize;
-            const wrapY = isHex ? hexVert : (isTri ? sgSize * 2 : sgSize);
-            
-            // Handle directional math
-            if (sgDirection === 'right' || sgDirection === 'diagonal') {
-                sgOffset.x = (sgOffset.x - sgSpeed + wrapX) % wrapX;
-            } else if (sgDirection === 'left') {
-                sgOffset.x = (sgOffset.x + sgSpeed + wrapX) % wrapX;
-            }
-            
-            if (sgDirection === 'down' || sgDirection === 'diagonal') {
-                sgOffset.y = (sgOffset.y - sgSpeed + wrapY) % wrapY;
-            } else if (sgDirection === 'up') {
-                sgOffset.y = (sgOffset.y + sgSpeed + wrapY) % wrapY;
-            }
-            
-            sgDraw();
-            requestAnimationFrame(sgUpdate);
+            sgOffset.x = (sgOffset.x - sgSpeed + sgSize) % sgSize;
+            sgOffset.y = (sgOffset.y - sgSpeed + sgSize) % sgSize;
+            sgDraw(); requestAnimationFrame(sgUpdate);
         }
-        
-        // Start the animation loop
         sgUpdate();
+        
+        // Helper to move the gold glass pill to whichever tab is active
+        function updateActiveNavLink(activeButtonId) {
+            const navButtons = ['navHomeBtn', 'navSimulatorBtn', 'navAnalysisBtn', 'navProgressBtn'];
+            
+            navButtons.forEach(btnId => {
+                const btn = document.getElementById(btnId);
+                if (!btn) return;
+                
+                if (btnId === activeButtonId) {
+                    // Apply Active Gold Pill Style
+                    btn.className = "nav-link min-h-[44px] py-2.5 px-6 rounded-full text-[#d4af37] bg-[rgba(16,26,54,0.65)] backdrop-blur-md border border-[rgba(212,175,55,0.25)] hover:text-[#F3E5AB] hover:bg-[rgba(16,26,54,0.4)] hover:border-white/10 transition-all";
+                } else {
+                    // Reset to Unselected Style
+                    btn.className = "nav-link min-h-[44px] py-2.5 px-6 rounded-full text-slate-400 bg-transparent border border-transparent hover:text-[#F3E5AB] hover:bg-[rgba(16,26,54,0.4)] hover:border-white/10 transition-all";
+                }
+            });
+        }
 
     </script>
 </body>
