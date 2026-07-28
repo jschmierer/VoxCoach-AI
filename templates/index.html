@@ -9,6 +9,11 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
         
+        /* 90% Proportional Scaling for ALL UI Elements */
+        html {
+            font-size: 90%; 
+        }
+
         body {
             font-family: 'Inter', sans-serif;
             background-color: #070D1F;
@@ -266,11 +271,17 @@
     </div>
 
     <header class="border-b border-slate-800/80 bg-[#070D1F]/90 backdrop-blur-md px-8 py-4 flex items-center justify-between sticky top-0 z-40 transition-all duration-300 shadow-lg relative">
-        <div class="flex items-center space-x-5 cursor-pointer w-1/4" id="navLogoBtn">
-            <div class="h-12 w-12 rounded-xl gold-gradient-bg flex items-center justify-center text-[#070D1F] font-black text-3xl shadow-md shadow-[#D4AF37]/20">V</div>
-            <div class="flex flex-col hidden sm:flex">
+        <div class="flex items-center space-x-4 cursor-pointer w-1/4" id="navLogoBtn">
+            <img src="/static/logo.png" 
+                 alt="VoxCoach Logo" 
+                 class="h-12 w-auto object-contain drop-shadow-md flex-shrink-0" 
+                 onerror="this.onerror=null; this.style.display='none'; document.getElementById('logoFallbackBox').style.display='flex';">
+            
+            <div id="logoFallbackBox" class="h-12 w-12 rounded-xl gold-gradient-bg hidden items-center justify-center text-[#070D1F] font-black text-2xl shadow-md shadow-[#D4AF37]/20 flex-shrink-0">V</div>
+            
+            <div class="flex flex-col hidden sm:flex leading-tight">
                 <span class="text-2xl font-black tracking-wider text-white">VoxCoach <span class="text-[#D4AF37]">AI</span></span>
-                <span class="text-sm text-slate-400 tracking-widest uppercase font-bold">Analytics</span>
+                <span class="text-xs text-slate-400 tracking-widest uppercase font-bold mt-0.5">Analytics</span>
             </div>
         </div>
         
@@ -279,6 +290,7 @@
                 <button id="navHomeBtn" class="hover:text-white transition-colors">Home</button>
                 <button id="navSimulatorBtn" class="hover:text-white transition-colors">Simulator</button>
                 <button id="navAnalysisBtn" class="hover:text-white transition-colors hidden">Analysis</button>
+                <button id="navProgressBtn" class="hover:text-white transition-colors">Progress</button>
             </nav>
         </div>
 
@@ -321,27 +333,28 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-7 mt-28 w-full text-left max-w-6xl mx-auto">
-                <div class="gold-glass rounded-2xl p-7 shadow-md hover:border-[#D4AF37]/60 transition-colors duration-300">
-                    <div class="text-[#D4AF37] mb-6 bg-[#16224F] w-14 h-14 rounded-xl flex items-center justify-center border border-slate-700">
-                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 100-6 3 3 0 000 6z"></path></svg>
+                <div class="gold-glass rounded-2xl p-7 shadow-md hover:border-[#D4AF37]/60 transition-colors duration-300 overflow-visible">
+                    <div class="text-[#D4AF37] mb-6 bg-[#16224F] w-14 h-14 rounded-xl flex items-center justify-center border border-slate-700 flex-shrink-0">
+                        <svg class="w-7 h-7 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 100-6 3 3 0 000 6z"></path></svg>
                     </div>
                     <h3 class="text-white text-sm uppercase tracking-wider font-bold mb-3">Adaptive Evaluation Loops</h3>
                     <p class="text-slate-300 text-sm leading-relaxed font-normal">Generates dynamic contextual inquiries modeled perfectly around target roles or academic tracks.</p>
                 </div>
-                <div class="gold-glass rounded-2xl p-7 shadow-md hover:border-[#D4AF37]/60 transition-colors duration-300">
-                    <div class="text-[#D4AF37] mb-6 bg-[#16224F] w-14 h-14 rounded-xl flex items-center justify-center border border-slate-700">
-                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                <div class="gold-glass rounded-2xl p-7 shadow-md hover:border-[#D4AF37]/60 transition-colors duration-300 overflow-visible">
+                    <div class="text-[#D4AF37] mb-6 bg-[#16224F] w-14 h-14 rounded-xl flex items-center justify-center border border-slate-700 flex-shrink-0">
+                        <svg class="w-7 h-7 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
                     </div>
                     <h3 class="text-white text-sm uppercase tracking-wider font-bold mb-3">Structural Diagnostics</h3>
                     <p class="text-slate-300 text-sm leading-relaxed font-normal">Monitors words-per-minute pacing velocity, structural pauses, and counts verbal vulnerabilities instantly.</p>
                 </div>
-                <div class="gold-glass rounded-2xl p-7 shadow-md hover:border-[#D4AF37]/60 transition-colors duration-300">
-                    <div class="text-[#D4AF37] mb-6 bg-[#16224F] w-14 h-14 rounded-xl flex items-center justify-center border border-slate-700">
-                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477-4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                <div class="gold-glass rounded-2xl p-7 shadow-md hover:border-[#D4AF37]/60 transition-colors duration-300 overflow-visible">
+                    <div class="text-[#D4AF37] mb-6 bg-[#16224F] w-14 h-14 rounded-xl flex items-center justify-center border border-slate-700 flex-shrink-0 p-3.5">
+                        <svg class="w-full h-full flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
                     </div>
                     <h3 class="text-white text-sm uppercase tracking-wider font-bold mb-3">STAR Methodology</h3>
                     <p class="text-slate-300 text-sm leading-relaxed font-normal">Transforms dialogue history into qualitative data breakdowns mapping passive language to operational power indicators.</p>
                 </div>
+            </div>
             </div>
         </div>
 
@@ -478,6 +491,14 @@
             </div>
         </div>
 
+        <div id="progressView" class="hidden animate-fadeIn max-w-4xl mx-auto w-full">
+            <div class="gold-glass rounded-2xl p-7 md:p-10 shadow-2xl">
+                <h2 class="text-3xl font-extrabold mb-6 text-white text-center">Your Progress Over Time</h2>
+                <div id="history-container" class="space-y-6">
+                    </div>
+            </div>
+        </div>
+
     </main>
 
     <footer class="border-t border-slate-800 py-8 text-center text-xs text-slate-500 font-medium tracking-widest uppercase relative z-10 mt-10">
@@ -514,11 +535,13 @@
         const landingView = document.getElementById('landingView');
         const simulatorView = document.getElementById('simulatorView');
         const analysisView = document.getElementById('analysisView');
+        const progressView = document.getElementById('progressView'); // Added for new page
         
         const appNavigation = document.getElementById('appNavigation');
         const navHomeBtn = document.getElementById('navHomeBtn');
         const navSimulatorBtn = document.getElementById('navSimulatorBtn');
         const navAnalysisBtn = document.getElementById('navAnalysisBtn');
+        const navProgressBtn = document.getElementById('navProgressBtn'); // Added for new page
         const navLogoBtn = document.getElementById('navLogoBtn');
         const navAuthBtn = document.getElementById('navAuthBtn');
         const signInBtn = document.getElementById('signInBtn');
@@ -548,9 +571,10 @@
             landingView.classList.add('hidden');
             simulatorView.classList.add('hidden');
             analysisView.classList.add('hidden');
+            progressView.classList.add('hidden');
 
             // Reset Nav active states
-            [navHomeBtn, navSimulatorBtn, navAnalysisBtn].forEach(btn => {
+            [navHomeBtn, navSimulatorBtn, navAnalysisBtn, navProgressBtn].forEach(btn => {
                 btn.classList.remove('text-[#D4AF37]');
                 btn.classList.add('text-slate-400');
             });
@@ -568,6 +592,11 @@
                 navAnalysisBtn.classList.remove('hidden');
                 navAnalysisBtn.classList.add('text-[#D4AF37]');
                 navAnalysisBtn.classList.remove('text-slate-400');
+            } else if (viewName === 'progress') {
+                progressView.classList.remove('hidden');
+                navProgressBtn.classList.add('text-[#D4AF37]');
+                navProgressBtn.classList.remove('text-slate-400');
+                renderProgress(); // Pull fresh data from local storage
             }
         }
 
@@ -575,6 +604,7 @@
         navLogoBtn.addEventListener('click', () => switchView('landing'));
         navSimulatorBtn.addEventListener('click', () => switchView('simulator'));
         navAnalysisBtn.addEventListener('click', () => switchView('analysis'));
+        navProgressBtn.addEventListener('click', () => switchView('progress'));
         restartSimBtn.addEventListener('click', () => {
             isSessionActive = false;
             sessionHistory = [];
@@ -593,6 +623,44 @@
                 switchView('simulator');
             }
         });
+
+        // --- Local Storage Progress Tracking ---
+        function saveToProgress(newAnalysisText) {
+            let history = JSON.parse(localStorage.getItem('voxCoachHistory') || '[]');
+            history.push({
+                date: new Date().toLocaleDateString() + ' @ ' + new Date().toLocaleTimeString(),
+                analysis: newAnalysisText
+            });
+            localStorage.setItem('voxCoachHistory', JSON.stringify(history));
+        }
+
+        function renderProgress() {
+            const history = JSON.parse(localStorage.getItem('voxCoachHistory') || '[]');
+            const container = document.getElementById('history-container');
+            
+            if (!container) return;
+            
+            if (history.length === 0) {
+                container.innerHTML = '<p class="text-slate-400 text-center italic mt-10">No analyses yet. Complete a session to start tracking your progress!</p>';
+                return;
+            }
+
+            container.innerHTML = history.slice().reverse().map((item) => {
+                // Apply Markdown formatting tailored for the UI
+                let formattedHtml = item.analysis
+                    .replace(/^### (.*$)/gim, '<h3 class="text-[#D4AF37] font-bold text-lg uppercase tracking-wider mt-5 mb-2">$1</h3>')
+                    .replace(/^## (.*$)/gim, '<h4 class="text-[#F3E5AB] font-bold text-xl mt-7 mb-3 border-b border-slate-800 pb-2">$1</h4>')
+                    .replace(/\*\*(.*?)\*\*/g, '<strong class="text-white font-semibold">$1</strong>')
+                    .replace(/^\* (.*$)/gim, '<li class="ml-6 list-disc text-slate-300 my-1 text-sm">$1</li>')
+                    .replace(/\n\n/g, '<br>');
+
+                return `
+                <div class="p-6 bg-[#101A36] border border-slate-700/80 rounded-xl shadow-lg">
+                    <div class="text-xs text-[#D4AF37] mb-4 font-bold uppercase tracking-widest border-b border-slate-800 pb-3">Session Date: ${item.date}</div>
+                    <div class="text-sm text-slate-200 leading-relaxed">${formattedHtml}</div>
+                </div>
+            `}).join('');
+        }
 
         // --- Rotating Text Vanilla JS Adaptation ---
         const rotatingTexts = ['interviews', 'admissions', 'dream job', 'opportunities', 'career', 'future'];
@@ -861,7 +929,7 @@
                     detectedFluencyDelays++;
                     document.getElementById('pauseCount').innerText = detectedFluencyDelays;
                 }
-            }, 2500);
+            }, 1000);
         }
 
         function renderHighlightedTranscript(text) {
@@ -1030,6 +1098,10 @@
                 skeleton.classList.add('hidden');
 
                 if (data.success && data.critique) {
+                    
+                    // SAVE TO LOCAL STORAGE FOR PROGRESS TRACKING
+                    saveToProgress(data.critique);
+
                     let html = data.critique
                         .replace(/^### (.*$)/gim, '<h3 class="text-[#D4AF37] font-bold text-lg uppercase tracking-wider mt-8 mb-3">$1</h3>')
                         .replace(/^## (.*$)/gim, '<h4 class="text-[#F3E5AB] font-bold text-2xl mt-10 mb-4 border-b border-slate-800 pb-3">$1</h4>')

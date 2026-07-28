@@ -284,7 +284,7 @@ def next_question():
 
 @app.route('/api/session/analyze', methods=['POST'])
 def analyze_session():
-    """Performs deep STAR behavioral framework breakdown, executive vocabulary critique, and strategic action items."""
+    """Performs deep STAR behavioral framework breakdown, executive vocabulary critique, and structured insights with emojis, strengths/weaknesses, and standalone action items."""
     data = request.get_json() or {}
     history = data.get('history', [])
     resume = data.get('resume', '').strip() or "Not provided"
@@ -293,27 +293,35 @@ def analyze_session():
     if not groq_client:
         return jsonify({
             "success": True,
-            "critique": "### Evaluation Matrix Output\n"
-                        "1. **STAR Methodology Standard**: Delivery shows adequate response formulation, but missing quantified outcome metrics.\n"
-                        "2. **Pacing & Structural Flow**: Moderate cadence observed. Avoid long pauses during transitions.\n"
-                        "3. **Executive Vocabulary**: Transition from weak hedging terms ('I think', 'just') to direct command verbs ('Led', 'Architected').\n"
-                        "4. **Growth Strategy**: Quantify impacts and structure answers with clear Situation, Task, Action, Result segments."
+            "critique": "### 📊 Evaluation Matrix Output\n\n"
+                        "#### 🟢 What Went Right (Strengths)\n"
+                        "- Clear baseline conversational engagement.\n"
+                        "- Addressed core aspects of the presented prompts.\n\n"
+                        "#### 🔴 What Needs Work (Weaknesses)\n"
+                        "- Missing quantified outcome metrics in behavioral explanations.\n"
+                        "- Occasional use of hesitant or passive vocabulary.\n\n"
+                        "#### 🎯 Strategic Action Items\n"
+                        "1. **Structure with STAR**: Explicitly segment context into Situation, Task, Action, and Result.\n"
+                        "2. **Eliminate Hedging**: Replace weak qualifiers like 'I think' with command verbs.\n"
+                        "3. **Pacing Control**: Minimize filler pauses during structural transitions."
         }), 200
 
     analysis_prompt = (
         "You are an expert executive coach specializing in US professional recruitment trends and Ivy League admissions criteria. "
-        "Analyze the provided interview transcript history and generate a structured evaluation report formatted cleanly in Markdown.\n\n"
+        "Analyze the provided interview transcript history and generate a structured, highly polished evaluation report formatted cleanly in Markdown.\n\n"
         f"Declared Target Context: {target_context}\n"
         f"Candidate Background Record: {resume}\n\n"
-        "Please structure your assessment under the following exact section headers:\n"
-        "## 1. STAR Behavioral Methodology Analysis\n"
-        "Assess how effectively the candidate articulated Situation, Task, Action, and Result. Identify missing metrics or vague resume experiences.\n\n"
-        "## 2. Structural Delivery Breakdown\n"
-        "Evaluate pacing, clarity of transitions, and the logical flow of arguments across conversation turns.\n\n"
-        "## 3. Vocabulary & Executive Presence Vibe Check\n"
-        "Perform a deep vocabulary analysis. Specifically pinpoint any passive, weak, or defensive phrases used (e.g., 'I just helped', 'I think we did', 'sort of') and map out a customized selection of strong, active power verbs (e.g., 'Spearheaded', 'Architected', 'Orchestrated') to amplify delivery command.\n\n"
-        "## 4. High-Impact Strategies for Growth\n"
-        "Provide exactly three actionable, highly tailored strategies for immediate performance scaling."
+        "Please strictly format your response to include emojis in section headings and use these exact components:\n"
+        "## 📊 1. STAR Behavioral Methodology Analysis\n"
+        "Assess how effectively the candidate articulated Situation, Task, Action, and Result. Identify missing metrics or vague experiences.\n\n"
+        "## 🟢 2. What Went Right (Key Strengths)\n"
+        "Provide a clean bulleted list highlighting positive delivery indicators, technical strengths, or well-handled narrative points.\n\n"
+        "## 🔴 3. What Needs Work (Areas for Improvement)\n"
+        "Provide a clean bulleted list highlighting vulnerabilities, structural gaps, or missing details.\n\n"
+        "## 💬 4. Vocabulary & Executive Presence Vibe Check\n"
+        "Deeply analyze vocabulary choices. Point out passive phrases (e.g., 'I just helped', 'sort of') and map out strong action alternatives (e.g., 'Spearheaded', 'Architected').\n\n"
+        "## 🎯 5. Actionable Next Steps\n"
+        "Provide exactly three distinct, standalone, highly tactical steps for immediate performance scaling."
     )
 
     messages = [
@@ -326,7 +334,7 @@ def analyze_session():
             model="llama-3.3-70b-versatile",
             messages=messages,
             temperature=0.3,
-            max_tokens=1000
+            max_tokens=1200
         )
         critique = completion.choices[0].message.content.strip()
     except Exception as e:
