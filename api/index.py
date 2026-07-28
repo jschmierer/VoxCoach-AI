@@ -8,7 +8,13 @@ from supabase import create_client, Client
 # Pull local tracking keys and configurations
 load_dotenv()
 
-app = Flask(__name__, template_folder='../templates')
+import os
+
+# Explicitly point Flask to the root static and templates folders
+root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+app = Flask(__name__, 
+            template_folder=os.path.join(root_dir, 'templates'), 
+            static_folder=os.path.join(root_dir, 'static'))
 
 # Initialize Groq Engine with valid, open-weight production models
 GROQ_API_KEY = os.environ.get("GROQ_API_KEY")
