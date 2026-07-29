@@ -176,15 +176,19 @@
         </div>
 
         <div class="flex w-1/4 items-center justify-end space-x-6">
-            <div class="hidden xl:flex items-center space-x-3 bg-[#101A36] border border-slate-700 px-5 py-2.5 rounded-full shadow-inner">
-                <span class="flex h-3 w-3 rounded-full bg-amber-500 animate-pulse"></span>
-                <span class="text-sm text-slate-300 font-bold tracking-wider uppercase">US-Context Engine</span>
+            <div class="hidden xl:flex items-center justify-center space-x-2 bg-[#101A36] border border-slate-700 rounded-full shadow-inner w-[220px] h-11 px-4">
+                <span class="flex h-2.5 w-2.5 rounded-full bg-amber-500 animate-pulse flex-shrink-0"></span>
+                <span class="text-[11px] text-slate-300 font-bold tracking-wider uppercase truncate">US-Context Engine</span>
             </div>
+            
             <button id="navAuthBtn" class="text-sm text-[#D4AF37] hover:underline font-extrabold tracking-wide transition-colors">Sign In / Sign Up</button>
-            <div id="userProfileBadge" class="hidden items-center space-x-3 bg-[#101A36] border border-slate-700 px-5 py-2.5 rounded-full shadow-inner">
-                <div id="userAvatarChar" class="w-8 h-8 rounded-full gold-gradient-bg flex items-center justify-center text-[#070D1F] text-sm font-bold">U</div>
-                <span id="userEmailDisplay" class="text-sm text-slate-200 font-semibold max-w-[160px] truncate"></span>
-                <button id="signOutBtn" class="text-xs text-slate-400 hover:text-amber-400 font-bold uppercase transition-colors ml-2">Sign Out</button>
+            
+            <div id="userProfileBadge" class="hidden items-center justify-between bg-[#101A36] border border-slate-700 rounded-full shadow-inner w-[220px] h-11 px-3">
+                <div class="flex items-center space-x-2 truncate">
+                    <div id="userAvatarChar" class="w-6 h-6 rounded-full gold-gradient-bg flex items-center justify-center text-[#070D1F] text-xs font-bold flex-shrink-0">U</div>
+                    <span id="userEmailDisplay" class="text-[11px] text-slate-200 font-semibold truncate max-w-[90px]"></span>
+                </div>
+                <button id="signOutBtn" class="text-[10px] text-slate-400 hover:text-amber-400 font-bold uppercase transition-colors flex-shrink-0 ml-1">Sign Out</button>
             </div>
         </div>
     </header>
@@ -224,7 +228,7 @@
                 </div>
                 <div class="gold-glass rounded-2xl p-7 shadow-md hover:border-[#D4AF37]/60 transition-colors duration-300 overflow-visible">
                     <div class="text-[#D4AF37] mb-6 bg-[#16224F] w-14 h-14 rounded-xl flex items-center justify-center border border-slate-700 flex-shrink-0 p-3.5">
-                        <svg class="w-full h-full flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                        <svg class="w-full h-full flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477-4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
                     </div>
                     <h3 class="text-white text-sm uppercase tracking-wider font-bold mb-3">STAR Methodology</h3>
                     <p class="text-slate-300 text-sm leading-relaxed font-normal">Transforms dialogue history into qualitative data breakdowns mapping passive language to operational power indicators.</p>
@@ -342,7 +346,7 @@
                     <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mt-2">Overall Score</span>
                 </div>
 
-                <div class="text-center border-b border-slate-800 pb-10 mb-10 mr-28">
+                <div class="text-center border-b border-slate-800 pb-10 mb-10">
                     <h2 class="text-4xl font-extrabold text-white mb-4">Performance Blueprint</h2>
                     <p class="text-sm text-slate-400 font-medium">Executive behavioral mapping and structural feedback.</p>
                 </div>
@@ -391,7 +395,7 @@
 
     </main>
 
-    <footer class="border-t border-slate-800 py-8 text-center text-xs text-slate-500 font-medium tracking-widest uppercase relative z-10 mt-10">
+    <footer class="bg-[#101A36] border-t border-slate-800 py-8 text-center text-xs text-slate-500 font-medium tracking-widest uppercase relative z-10 mt-10">
         VoxCoach AI Architecture &copy; 2026. High-Fidelity Communication Engine.
     </footer>
 
@@ -602,7 +606,6 @@
                 return;
             }
 
-            // CHANGE 5: Fetch and display the AI historical summary
             try {
                 const res = await fetch('/api/progress/summary', {
                     method: 'POST', 
@@ -619,7 +622,7 @@
             }
 
             container.innerHTML = history.map((item) => {
-                let html = formatAnalysisText(item.analysis);
+                let html = formatProgressText(item.analysis);
                 let scoreBadge = item.score ? `<span class="bg-[#16224F] text-[#D4AF37] px-3 py-1 rounded-md text-sm ml-4 font-black">Score: ${item.score}</span>` : '';
                 return `
                 <div class="p-6 bg-[#101A36] border border-slate-700/80 rounded-xl shadow-lg">
@@ -631,12 +634,49 @@
             `}).join('');
         }
 
+        // Standard flat formatting for the Analysis View
         function formatAnalysisText(text) {
             return text
                 .replace(/^## (.*$)/gim, '<h3 class="text-[#D4AF37] font-bold text-2xl uppercase tracking-wider mt-8 mb-3">$1</h3>')
                 .replace(/\*\*(.*?)\*\*/g, '<strong class="text-white font-semibold">$1</strong>')
                 .replace(/^\* (.*$)/gim, '<li class="ml-6 list-disc text-slate-300 my-2 text-lg">$1</li>')
-                .replace(/\n\n/g, '<br><br>');
+                .replace(/\n\n/g, '<br><br>')
+                .replace(/\n/g, '<br>');
+        }
+
+        // Accordion formatting for the Progress View only
+        function formatProgressText(text) {
+            let parts = text.split(/^## /gm);
+            let html = '';
+            
+            if (parts[0].trim() !== '') {
+                html += formatContent(parts[0]);
+            }
+            
+            for (let i = 1; i < parts.length; i++) {
+                let lines = parts[i].split('\n');
+                let title = lines[0].trim();
+                let content = lines.slice(1).join('\n');
+                html += `
+                <details class="mb-4 bg-[#101A36] border border-slate-700/80 rounded-xl overflow-hidden group">
+                    <summary class="cursor-pointer text-[#D4AF37] font-bold text-[15px] uppercase tracking-wider p-4 bg-[#16224F]/40 hover:bg-[#16224F]/80 transition-colors list-none flex justify-between items-center [&::-webkit-details-marker]:hidden" style="list-style: none;">
+                        ${title}
+                        <svg class="w-5 h-5 transform group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </summary>
+                    <div class="p-5 border-t border-slate-700/50 text-slate-300">
+                        ${formatContent(content)}
+                    </div>
+                </details>
+                `;
+            }
+            return html;
+        }
+
+        function formatContent(text) {
+            return text
+                .replace(/\*\*(.*?)\*\*/g, '<strong class="text-white font-semibold">$1</strong>')
+                .replace(/^\* (.*$)/gim, '<li class="ml-6 list-disc text-slate-300 my-2 text-[15px]">$1</li>')
+                .replace(/\n/g, '<br>');
         }
 
         const rotatingTexts = ['interviews', 'admissions', 'dream job', 'opportunities', 'career', 'future'];
@@ -696,7 +736,7 @@
                         const userData = { id: session.user.id, email: session.user.email, token: session.access_token };
                         localStorage.setItem('voxcoach_user', JSON.stringify(userData));
                         updateUIForLoggedInUser(userData);
-                        if (window.location.hash || window.location.search.includes('code=')) window.history.replaceState(null, '', window.location.pathname);
+                        if (window.location.hash || window.location.search.includes('code=')) window.location.replaceState(null, '', window.location.pathname);
                     }
                 });
                 try {
@@ -785,7 +825,6 @@
             }
         });
 
-        // CHANGE 3: Added "I think" to dictionary
         const transitionalAlternatives = {
             "um": "Instead of executing a vocal stall like 'um', practice using stabilizing structural bridges.",
             "uh": "To remove vocal hesitations like 'uh', embrace deliberate structural pauses.",
@@ -824,7 +863,6 @@
 
         function resetFluencyDelayTicker() {
             if (pauseTrackingTimeout) clearTimeout(pauseTrackingTimeout);
-            // CHANGE 2: Timeout configured perfectly to 1.5 seconds (1500ms)
             pauseTrackingTimeout = setTimeout(() => {
                 if (isRecording) { detectedFluencyDelays++; document.getElementById('pauseCount').innerText = detectedFluencyDelays; }
             }, 1500); 
@@ -834,7 +872,6 @@
             const container = document.getElementById('interactiveTranscriptDisplay');
             if (!text || text.trim() === "") return container.innerText = "Listening...";
             
-            // CHANGE 3: "i think" added to the highlighting regex detection
             const fillerRegex = /\b(um|uh|like|you know|sort of|basically|i think)\b/gi;
             container.innerHTML = text.replace(fillerRegex, match => 
                 `<span class="text-[#D4AF37] underline decoration-amber-500/60 decoration-2 font-bold cursor-pointer hover:bg-amber-500/20 px-1 rounded transition-colors" onclick="event.stopPropagation(); triggerFillerTipPopover('${match}', this)">${match}</span>`
@@ -925,7 +962,6 @@
                 document.getElementById('transcriptionFallback').innerText = finalTranscript;
                 renderHighlightedTranscript(finalTranscript);
                 
-                // CHANGE 3: Apply the updated "I think" regex here for hit counting too
                 const matches = finalTranscript.match(/\b(um|uh|like|you know|sort of|basically|i think)\b/gi);
                 detectedFillerHits = matches ? matches.length : 0;
                 document.getElementById('fillerCount').innerText = detectedFillerHits;
@@ -993,12 +1029,24 @@
 
                 if (data.success && data.critique) {
                     let critiqueText = data.critique;
-                    let extractedScore = null;
                     
+                    let fullTranscript = payload.filter(p => !p.content.startsWith("Initialize simulation")).map(p => `**${p.role === 'user' ? 'You' : 'Interviewer'}:** ${p.content}`).join('\n\n');
+                    
+                    // We append the transcript so it's included in the history save/db 
+                    // which enables the dropdown specifically on the Progress page
+                    let critiqueWithTranscript = critiqueText;
+                    if (fullTranscript.trim() !== '') {
+                        critiqueWithTranscript += `\n\n## Show transcript:\n${fullTranscript}`;
+                    }
+                    
+                    let extractedScore = null;
                     const scoreMatch = critiqueText.match(/\[SCORE:\s*(\d+)\]/i);
                     if (scoreMatch) {
                         extractedScore = parseInt(scoreMatch[1]);
+                        
+                        // Remove the score tag so it doesn't render in the UI
                         critiqueText = critiqueText.replace(scoreMatch[0], '').trim();
+                        critiqueWithTranscript = critiqueWithTranscript.replace(scoreMatch[0], '').trim();
                         
                         const scoreContainer = document.getElementById('scoreDisplayContainer');
                         const scoreCircle = document.getElementById('scoreCircle');
@@ -1017,16 +1065,17 @@
                         }
                     }
 
+                    // Save the combined (Analysis + Transcript) version for the Progress View
                     let historyLocal = JSON.parse(localStorage.getItem('voxCoachHistory') || '[]');
                     historyLocal.push({
                         date: new Date().toLocaleDateString() + ' @ ' + new Date().toLocaleTimeString(),
-                        analysis: critiqueText,
+                        analysis: critiqueWithTranscript, 
                         score: extractedScore
                     });
                     localStorage.setItem('voxCoachHistory', JSON.stringify(historyLocal));
-                    
-                    saveAnalysisToDB(critiqueText, extractedScore);
+                    saveAnalysisToDB(critiqueWithTranscript, extractedScore);
 
+                    // Render just the basic standard layout without the transcript for the current Analysis View
                     outBox.innerHTML = `<div class="text-left space-y-2 text-lg">${formatAnalysisText(critiqueText)}</div>`;
                 } else {
                     outBox.innerHTML = `<span class="text-red-400">Failed to compile STAR evaluation matrix.</span>`;
@@ -1084,7 +1133,6 @@
         }
         sgUpdate();
         
-        // Helper to move the gold glass pill to whichever tab is active
         function updateActiveNavLink(activeButtonId) {
             const navButtons = ['navHomeBtn', 'navSimulatorBtn', 'navAnalysisBtn', 'navProgressBtn'];
             
@@ -1093,10 +1141,8 @@
                 if (!btn) return;
                 
                 if (btnId === activeButtonId) {
-                    // Apply Active Gold Pill Style
                     btn.className = "nav-link min-h-[44px] py-2.5 px-6 rounded-full text-[#d4af37] bg-[rgba(16,26,54,0.65)] backdrop-blur-md border border-[rgba(212,175,55,0.25)] hover:text-[#F3E5AB] hover:bg-[rgba(16,26,54,0.4)] hover:border-white/10 transition-all";
                 } else {
-                    // Reset to Unselected Style
                     btn.className = "nav-link min-h-[44px] py-2.5 px-6 rounded-full text-slate-400 bg-transparent border border-transparent hover:text-[#F3E5AB] hover:bg-[rgba(16,26,54,0.4)] hover:border-white/10 transition-all";
                 }
             });

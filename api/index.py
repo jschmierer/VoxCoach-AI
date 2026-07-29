@@ -310,7 +310,7 @@ def analyze_session():
         "3. The 'STAR Analysis' section MUST be written as a paragraph of roughly 4 sentences explaining how well they structured their thoughts.\n"
         "4. The 'Vocabulary and Vibe' section MUST be written as a paragraph of roughly 3 sentences focusing on tone, filler words, and confidence.\n"
         "5. The 'Strengths', 'Weaknesses', and 'How to Improve' sections MUST each be formatted as a bulleted list containing EXACTLY 3 to 5 bullet points per section.\n"
-        "6. At the very end of your response on a new line, you MUST output a final evaluation score out of 100 in exactly this format: [SCORE: XX]"
+        "6. At the very end of your response on a new line, you MUST output a final evaluation score out of 100. This score MUST be a multiple of 5 (e.g., 0, 5, 10, 15, ..., 95, 100). Format it exactly like this: [SCORE: XX]"
     )
 
     messages = [
