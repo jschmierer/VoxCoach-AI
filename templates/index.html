@@ -528,7 +528,10 @@
 
         signInBtn.addEventListener('click', () => {
             if (!localStorage.getItem('voxcoach_user')) authModal.classList.remove('hidden');
-            else switchView('simulator');
+            else {
+                switchView('simulator');
+                updateActiveNavLink('navSimulatorBtn');
+            }
         });
 
         async function loadProfile() {
