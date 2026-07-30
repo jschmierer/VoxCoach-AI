@@ -16,6 +16,18 @@ app = Flask(__name__,
             template_folder=os.path.join(root_dir, 'templates'), 
             static_folder=os.path.join(root_dir, 'static'))
 
+class VercelProxyFix:
+    """Forces Flask to route from the root instead of the Vercel mounting path."""
+    def __init__(self, app):
+        self.app = app
+
+    def __call__(self, environ, start_response):
+        environ['SCRIPT_NAME'] = ''
+        return self.app(environ, start_response)
+
+app.wsgi_app = VercelProxyFix(app.wsgi_app)
+# -------------------------------
+
 # Initialize Groq Engine with valid, open-weight production models
 GROQ_API_KEY = os.environ.get("GROQ_API_KEY")
 groq_client = Groq(api_key=GROQ_API_KEY) if GROQ_API_KEY else None
