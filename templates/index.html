@@ -12,7 +12,14 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
+        /* Fluid Root Typography for Proportional Scaling */
         html { font-size: 90%; }
+        @media (max-width: 1536px) { html { font-size: 85%; } }
+        @media (max-width: 1280px) { html { font-size: 80%; } }
+        @media (max-width: 1024px) { html { font-size: 75%; } }
+        @media (max-width: 768px) { html { font-size: 70%; } }
+        @media (max-width: 640px) { html { font-size: 65%; } }
+
         body { font-family: 'Inter', sans-serif; background-color: #070D1F; }
         
         .gold-glass {
@@ -42,6 +49,10 @@
         ::-webkit-scrollbar-track { background: #070D1F; }
         ::-webkit-scrollbar-thumb { background: rgba(212, 175, 55, 0.3); border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: rgba(212, 175, 55, 0.5); }
+
+        /* Hide horizontal scrollbars for overflow-x sections */
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
         .text-rotate-container { display: inline-flex; white-space: nowrap; position: relative; overflow: hidden; justify-content: center; vertical-align: middle; }
         .text-rotate-word { display: inline-flex; overflow: hidden; }
@@ -111,8 +122,8 @@
 
     <canvas id="shapeGridCanvas" class="fixed inset-0 w-full h-full pointer-events-none z-[-1]"></canvas>
 
-    <div class="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] rounded-full bg-blue-900/20 blur-[120px] pointer-events-none"></div>
-    <div class="absolute bottom-[-10%] right-[-10%] w-[50vw] h-[50vw] rounded-full bg-amber-900/10 blur-[150px] pointer-events-none"></div>
+    <div class="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] rounded-full bg-blue-900/20 blur-[7.5rem] pointer-events-none"></div>
+    <div class="absolute bottom-[-10%] right-[-10%] w-[50vw] h-[50vw] rounded-full bg-amber-900/10 blur-[9.375rem] pointer-events-none"></div>
 
     <div id="fillerPopover" class="hidden absolute p-5 rounded-xl border border-amber-500/40 bg-[#101A36] shadow-2xl max-w-xs z-50 text-sm text-slate-200 leading-relaxed backdrop-blur-xl">
         <div class="font-bold text-[#F3E5AB] mb-2 flex items-center gap-2 uppercase tracking-wider text-xs">
@@ -156,44 +167,45 @@
         </div>
     </div>
 
-    <header class="border-b border-slate-800/80 bg-[#070D1F]/90 backdrop-blur-md px-8 py-4 flex items-center justify-between sticky top-0 z-40 transition-all duration-300 shadow-lg relative">
-        <div class="flex items-center space-x-4 cursor-pointer w-1/4" id="navLogoBtn">
-            <img src="{{ url_for('static', filename='logo.png') }}" alt="VoxCoach Logo" class="h-12 w-auto object-contain drop-shadow-md flex-shrink-0" onerror="this.onerror=null; this.style.display='none'; document.getElementById('logoFallbackBox').style.display='flex';">
-            <div id="logoFallbackBox" class="h-12 w-12 rounded-xl gold-gradient-bg hidden items-center justify-center text-[#070D1F] font-black text-2xl shadow-md shadow-[#D4AF37]/20 flex-shrink-0">V</div>
+    <header class="border-b border-slate-800/80 bg-[#070D1F]/90 backdrop-blur-md px-4 lg:px-8 py-4 flex flex-wrap lg:flex-nowrap items-center justify-between sticky top-0 z-40 transition-all duration-300 shadow-lg relative gap-y-4">
+        
+        <div class="flex items-center space-x-2 md:space-x-4 cursor-pointer w-auto lg:w-1/4" id="navLogoBtn">
+            <img src="{{ url_for('static', filename='logo.png') }}" alt="VoxCoach Logo" class="h-10 md:h-12 w-auto object-contain drop-shadow-md flex-shrink-0" onerror="this.onerror=null; this.style.display='none'; document.getElementById('logoFallbackBox').style.display='flex';">
+            <div id="logoFallbackBox" class="h-10 w-10 md:h-12 md:w-12 rounded-xl gold-gradient-bg hidden items-center justify-center text-[#070D1F] font-black text-xl md:text-2xl shadow-md shadow-[#D4AF37]/20 flex-shrink-0">V</div>
             <div class="flex flex-col hidden sm:flex leading-tight">
-                <span class="text-2xl font-black tracking-wider text-white">VoxCoach <span class="text-[#D4AF37]">AI</span></span>
-                <span class="text-xs text-slate-400 tracking-widest uppercase font-bold mt-0.5">Analytics</span>
+                <span class="text-xl md:text-2xl font-black tracking-wider text-white">VoxCoach <span class="text-[#D4AF37]">AI</span></span>
+                <span class="text-[10px] md:text-xs text-slate-400 tracking-widest uppercase font-bold mt-0.5">Analytics</span>
             </div>
         </div>
         
-        <div class="w-2/4 flex justify-center">
-            <nav id="appNavigation" class="hidden flex items-center space-x-3 text-2xl font-medium tracking-wide">
-                <button id="navHomeBtn" class="nav-link min-h-[44px] py-2.5 px-6 rounded-full text-[#d4af37] bg-[rgba(16,26,54,0.65)] backdrop-blur-md border border-[rgba(212,175,55,0.25)] hover:text-[#F3E5AB] hover:bg-[rgba(16,26,54,0.4)] hover:border-white/10 transition-all">Home</button>
-                <button id="navSimulatorBtn" class="nav-link min-h-[44px] py-2.5 px-6 rounded-full text-slate-400 bg-transparent border border-transparent hover:text-[#F3E5AB] hover:bg-[rgba(16,26,54,0.4)] hover:border-white/10 transition-all">Simulator</button>
-                <button id="navAnalysisBtn" class="nav-link min-h-[44px] py-2.5 px-6 rounded-full text-slate-400 bg-transparent border border-transparent hover:text-[#F3E5AB] hover:bg-[rgba(16,26,54,0.4)] hover:border-white/10 transition-all">Analysis</button>
-                <button id="navProgressBtn" class="nav-link min-h-[44px] py-2.5 px-6 rounded-full text-slate-400 bg-transparent border border-transparent hover:text-[#F3E5AB] hover:bg-[rgba(16,26,54,0.4)] hover:border-white/10 transition-all">Progress</button>
+        <div class="w-full lg:w-auto xl:w-2/4 flex justify-center order-3 lg:order-none overflow-x-auto hide-scrollbar pb-2 lg:pb-0">
+            <nav id="appNavigation" class="hidden flex items-center space-x-1 md:space-x-2 xl:space-x-3 text-base md:text-lg xl:text-2xl font-medium tracking-wide">
+                <button id="navHomeBtn" class="nav-link min-h-[2.75rem] py-2 lg:py-2.5 px-4 lg:px-6 rounded-full text-[#d4af37] bg-[rgba(16,26,54,0.65)] backdrop-blur-md border border-[rgba(212,175,55,0.25)] hover:text-[#F3E5AB] hover:bg-[rgba(16,26,54,0.4)] hover:border-white/10 transition-all">Home</button>
+                <button id="navSimulatorBtn" class="nav-link min-h-[2.75rem] py-2 lg:py-2.5 px-4 lg:px-6 rounded-full text-slate-400 bg-transparent border border-transparent hover:text-[#F3E5AB] hover:bg-[rgba(16,26,54,0.4)] hover:border-white/10 transition-all">Simulator</button>
+                <button id="navAnalysisBtn" class="nav-link min-h-[2.75rem] py-2 lg:py-2.5 px-4 lg:px-6 rounded-full text-slate-400 bg-transparent border border-transparent hover:text-[#F3E5AB] hover:bg-[rgba(16,26,54,0.4)] hover:border-white/10 transition-all">Analysis</button>
+                <button id="navProgressBtn" class="nav-link min-h-[2.75rem] py-2 lg:py-2.5 px-4 lg:px-6 rounded-full text-slate-400 bg-transparent border border-transparent hover:text-[#F3E5AB] hover:bg-[rgba(16,26,54,0.4)] hover:border-white/10 transition-all">Progress</button>
             </nav>
         </div>
 
-        <div class="flex w-1/4 items-center justify-end space-x-6">
-            <div class="hidden xl:flex items-center justify-center space-x-2 bg-[#101A36] border border-slate-700 rounded-full shadow-inner w-[220px] h-11 px-4">
+        <div class="flex w-auto lg:w-1/4 items-center justify-end space-x-3 lg:space-x-6 order-2 lg:order-none">
+            <div class="hidden xl:flex items-center justify-center space-x-2 bg-[#101A36] border border-slate-700 rounded-full shadow-inner w-[13.75rem] h-11 px-4">
                 <span class="flex h-2.5 w-2.5 rounded-full bg-amber-500 animate-pulse flex-shrink-0"></span>
                 <span class="text-[11px] text-slate-300 font-bold tracking-wider uppercase truncate">US-Context Engine</span>
             </div>
             
             <button id="navAuthBtn" class="text-sm text-[#D4AF37] hover:underline font-extrabold tracking-wide transition-colors">Sign In / Sign Up</button>
             
-            <div id="userProfileBadge" class="hidden items-center justify-between bg-[#101A36] border border-slate-700 rounded-full shadow-inner w-[220px] h-11 px-3">
+            <div id="userProfileBadge" class="hidden items-center justify-between bg-[#101A36] border border-slate-700 rounded-full shadow-inner w-[13.75rem] h-11 px-3">
                 <div class="flex items-center space-x-2 truncate">
                     <div id="userAvatarChar" class="w-6 h-6 rounded-full gold-gradient-bg flex items-center justify-center text-[#070D1F] text-xs font-bold flex-shrink-0">U</div>
-                    <span id="userEmailDisplay" class="text-[11px] text-slate-200 font-semibold truncate max-w-[90px]"></span>
+                    <span id="userEmailDisplay" class="text-[11px] text-slate-200 font-semibold truncate max-w-[5.625rem]"></span>
                 </div>
                 <button id="signOutBtn" class="text-[10px] text-slate-400 hover:text-amber-400 font-bold uppercase transition-colors flex-shrink-0 ml-1">Sign Out</button>
             </div>
         </div>
     </header>
 
-    <main class="flex-1 w-full max-w-[1300px] mx-auto px-5 py-8 relative">
+    <main class="flex-1 w-full max-w-[81.25rem] mx-auto px-5 py-8 relative">
 
         <div id="landingView" class="flex flex-col justify-center items-center text-center min-h-[75vh] animate-fadeIn">
             <div class="max-w-6xl mx-auto space-y-7 flex flex-col items-center">
@@ -239,9 +251,9 @@
             </div>
         </div>
 
-        <div id="simulatorView" class="hidden grid grid-cols-1 lg:grid-cols-[1fr_1.75fr_1fr] gap-7 animate-fadeIn items-stretch">
+        <div id="simulatorView" class="hidden grid grid-cols-1 lg:grid-cols-[1fr_1.5fr_1fr] xl:grid-cols-[1fr_1.75fr_1fr] gap-5 xl:gap-7 animate-fadeIn items-stretch">
             
-            <section class="gold-glass rounded-2xl p-7 flex flex-col shadow-2xl min-h-[720px]">
+            <section class="gold-glass rounded-2xl p-5 xl:p-7 flex flex-col shadow-2xl min-h-[45rem]">
                 <h3 class="text-[#D4AF37] text-sm font-bold uppercase tracking-widest mb-6 border-b border-slate-700/80 pb-4">Simulation Parameters</h3>
                 <div class="space-y-6 flex-1 flex flex-col min-h-0">
                     <div>
@@ -257,16 +269,16 @@
                     </div>
                     <div class="flex-1 flex flex-col min-h-0">
                         <label class="block text-sm font-bold uppercase tracking-widest text-slate-300 mb-2">Background Data</label>
-                        <textarea id="resumeInput" placeholder="Paste structural background achievements, past projects, or relevant data..." class="w-full flex-1 bg-[#101A36] border border-slate-700 rounded-xl px-4 py-3 text-sm text-white gold-border-focus transition-colors resize-none placeholder-slate-500 font-medium shadow-sm outline-none min-h-[140px] mb-3"></textarea>
+                        <textarea id="resumeInput" placeholder="Paste structural background achievements, past projects, or relevant data..." class="w-full flex-1 bg-[#101A36] border border-slate-700 rounded-xl px-4 py-3 text-sm text-white gold-border-focus transition-colors resize-none placeholder-slate-500 font-medium shadow-sm outline-none min-h-[8.75rem] mb-3"></textarea>
                         <button id="saveResumeBtn" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-600 rounded-lg py-2 text-xs font-bold uppercase tracking-widest transition-colors">Save to Cloud Profile</button>
                     </div>
                 </div>
             </section>
 
-            <section class="gold-glass rounded-2xl p-7 flex flex-col justify-between items-center shadow-2xl min-h-[720px] relative">
+            <section class="gold-glass rounded-2xl p-5 xl:p-7 flex flex-col justify-between items-center shadow-2xl min-h-[45rem] relative">
                 
                 <div class="w-full text-center mb-6">
-                    <p id="questionDisplay" class="text-white text-lg md:text-2xl leading-relaxed font-medium tracking-wide min-h-[120px] flex items-center justify-center break-words">
+                    <p id="questionDisplay" class="text-white text-lg md:text-2xl leading-relaxed font-medium tracking-wide min-h-[7.5rem] flex items-center justify-center break-words">
                         Configure parameters on the left, then click the microphone to generate your opening scenario.
                     </p>
                 </div>
@@ -305,7 +317,7 @@
                 </div>
             </section>
 
-            <section class="flex flex-col space-y-6 min-h-[720px]">
+            <section class="flex flex-col space-y-6 min-h-[45rem]">
                 <div class="grid grid-cols-2 gap-4">
                     <div class="gold-glass rounded-2xl p-5 text-center col-span-2">
                         <span class="block text-xs font-bold uppercase tracking-widest text-slate-400 mb-2">Cadence / Pace</span>
@@ -640,7 +652,6 @@
             `}).join('');
         }
 
-        // Standard flat formatting for the Analysis View
         function formatAnalysisText(text) {
             return text
                 .replace(/^## (.*$)/gim, '<h3 class="text-[#D4AF37] font-bold text-2xl uppercase tracking-wider mt-8 mb-3">$1</h3>')
@@ -650,7 +661,6 @@
                 .replace(/\n/g, '<br>');
         }
 
-        // Accordion formatting for the Progress View only
         function formatProgressText(text) {
             let parts = text.split(/^## /gm);
             let html = '';
@@ -1038,8 +1048,6 @@
                     
                     let fullTranscript = payload.filter(p => !p.content.startsWith("Initialize simulation")).map(p => `**${p.role === 'user' ? 'You' : 'Interviewer'}:** ${p.content}`).join('\n\n');
                     
-                    // We append the transcript so it's included in the history save/db 
-                    // which enables the dropdown specifically on the Progress page
                     let critiqueWithTranscript = critiqueText;
                     if (fullTranscript.trim() !== '') {
                         critiqueWithTranscript += `\n\n## Show transcript:\n${fullTranscript}`;
@@ -1050,7 +1058,6 @@
                     if (scoreMatch) {
                         extractedScore = parseInt(scoreMatch[1]);
                         
-                        // Remove the score tag so it doesn't render in the UI
                         critiqueText = critiqueText.replace(scoreMatch[0], '').trim();
                         critiqueWithTranscript = critiqueWithTranscript.replace(scoreMatch[0], '').trim();
                         
@@ -1071,7 +1078,6 @@
                         }
                     }
 
-                    // Save the combined (Analysis + Transcript) version for the Progress View
                     let historyLocal = JSON.parse(localStorage.getItem('voxCoachHistory') || '[]');
                     historyLocal.push({
                         date: new Date().toLocaleDateString() + ' @ ' + new Date().toLocaleTimeString(),
@@ -1081,7 +1087,6 @@
                     localStorage.setItem('voxCoachHistory', JSON.stringify(historyLocal));
                     saveAnalysisToDB(critiqueWithTranscript, extractedScore);
 
-                    // Render just the basic standard layout without the transcript for the current Analysis View
                     outBox.innerHTML = `<div class="text-left space-y-2 text-lg">${formatAnalysisText(critiqueText)}</div>`;
                 } else {
                     outBox.innerHTML = `<span class="text-red-400">Failed to compile STAR evaluation matrix.</span>`;
@@ -1146,10 +1151,11 @@
                 const btn = document.getElementById(btnId);
                 if (!btn) return;
                 
+                // Use the updated `rem`-based responsive classes
                 if (btnId === activeButtonId) {
-                    btn.className = "nav-link min-h-[44px] py-2.5 px-6 rounded-full text-[#d4af37] bg-[rgba(16,26,54,0.65)] backdrop-blur-md border border-[rgba(212,175,55,0.25)] hover:text-[#F3E5AB] hover:bg-[rgba(16,26,54,0.4)] hover:border-white/10 transition-all";
+                    btn.className = "nav-link min-h-[2.75rem] py-2 lg:py-2.5 px-4 lg:px-6 rounded-full text-[#d4af37] bg-[rgba(16,26,54,0.65)] backdrop-blur-md border border-[rgba(212,175,55,0.25)] hover:text-[#F3E5AB] hover:bg-[rgba(16,26,54,0.4)] hover:border-white/10 transition-all";
                 } else {
-                    btn.className = "nav-link min-h-[44px] py-2.5 px-6 rounded-full text-slate-400 bg-transparent border border-transparent hover:text-[#F3E5AB] hover:bg-[rgba(16,26,54,0.4)] hover:border-white/10 transition-all";
+                    btn.className = "nav-link min-h-[2.75rem] py-2 lg:py-2.5 px-4 lg:px-6 rounded-full text-slate-400 bg-transparent border border-transparent hover:text-[#F3E5AB] hover:bg-[rgba(16,26,54,0.4)] hover:border-white/10 transition-all";
                 }
             });
         }
