@@ -169,9 +169,15 @@ def start_session():
     """Dynamically generates a completely unique opening interview prompt based on the selected US track context, user resume, and target profile."""
     data = request.get_json() or {}
     track = data.get('track', 'General Corporate Interview')
-    resume = data.get('resume', '').strip() or "Not provided"
+    resume = data.get('resume', '').strip()
     target_context = data.get('target_context', '').strip() or "General Targets"
     is_college = "college" in track.lower() or "admission" in track.lower()
+
+    if not resume:
+        return jsonify({
+            "success": False,
+            "error": "Please enter something in background data"
+        }), 400
 
     if not groq_client:
         initial_question = random.choice(FALLBACK_COLLEGE_QUESTIONS) if is_college else random.choice(FALLBACK_CORPORATE_QUESTIONS)
@@ -306,7 +312,7 @@ def analyze_session():
         f"Declared Target Context: {target_context}\n"
         f"Candidate Background Record: {resume}\n\n"
         "CRITICAL RULES FOR FORMATTING:\n"
-        "1. When giving your response, don't use words like \"the candidate\", rather use \"\"you\"\".\n"
+        "1. When giving your response, don't use words like \"the candidate\", rather use \"you\".\n"
         "2. DO NOT use numbered lists for the main sections. Use EXACTLY these Markdown headings:\n"
         "## STAR Analysis\n"
         "## Vocabulary and Vibe\n"

@@ -905,8 +905,14 @@
 
             if (!isSessionActive) {
                 currentTrack = document.getElementById('trackSelector').value;
-                currentResume = document.getElementById('resumeInput').value;
+                currentResume = document.getElementById('resumeInput').value.trim();
                 currentTargetContext = document.getElementById('targetContextInput').value;
+
+                if (!currentResume) {
+                    document.getElementById('questionDisplay').innerText = "Please enter something in background data";
+                    return;
+                }
+
                 document.getElementById('questionDisplay').innerHTML = "<span class='animate-pulse text-[#D4AF37]'>Analyzing profile... generating tailored opening inquiry...</span>";
 
                 try {
@@ -924,6 +930,8 @@
                         document.getElementById('wpmValue').innerText = "0 WPM"; document.getElementById('wpmGauge').style.width = "0%";
                         document.getElementById('interactiveTranscriptDisplay').innerText = "Listening...";
                         isSessionActive = true;
+                    } else if (data.error) {
+                        return document.getElementById('questionDisplay').innerText = data.error;
                     }
                 } catch (err) { return document.getElementById('questionDisplay').innerText = "Connection Error: Failed to generate session prompt."; }
             }
