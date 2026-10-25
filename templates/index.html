@@ -50,7 +50,6 @@
         ::-webkit-scrollbar-thumb { background: rgba(212, 175, 55, 0.3); border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: rgba(212, 175, 55, 0.5); }
 
-        /* Hide horizontal scrollbars for overflow-x sections */
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
@@ -259,13 +258,13 @@
                     <div>
                         <label class="block text-sm font-bold uppercase tracking-widest text-slate-300 mb-2">Track Target</label>
                         <select id="trackSelector" class="w-full bg-[#101A36] border border-slate-700 rounded-xl px-4 py-3 text-sm text-white gold-border-focus transition-colors cursor-pointer font-medium shadow-sm outline-none">
-                            <option value="General Corporate Interview">Corporate Recruitment</option>
                             <option value="General College Admissions">Elite Admissions</option>
+                            <option value="General Corporate Interview">Corporate Recruitment</option>
                         </select>
                     </div>
                     <div>
-                        <label id="targetContextLabel" class="block text-sm font-bold uppercase tracking-widest text-slate-300 mb-2">Target Role</label>
-                        <input id="targetContextInput" type="text" placeholder="e.g., Senior Software Engineer at Google" class="w-full bg-[#101A36] border border-slate-700 rounded-xl px-4 py-3 text-sm text-white gold-border-focus transition-colors placeholder-slate-500 font-medium shadow-sm outline-none">
+                        <label id="targetContextLabel" class="block text-sm font-bold uppercase tracking-widest text-slate-300 mb-2">Target Program</label>
+                        <input id="targetContextInput" type="text" placeholder="e.g., Harvard University - Economics BA" class="w-full bg-[#101A36] border border-slate-700 rounded-xl px-4 py-3 text-sm text-white gold-border-focus transition-colors placeholder-slate-500 font-medium shadow-sm outline-none">
                     </div>
                     <div class="flex-1 flex flex-col min-h-0">
                         <label class="block text-sm font-bold uppercase tracking-widest text-slate-300 mb-2">Background Data</label>
@@ -425,14 +424,16 @@
         }
 
         let sessionHistory = [];
-        let currentTrack = "General Corporate Interview";
+        let currentTrack = "General College Admissions";
         let currentResume = "";
         let currentTargetContext = "";
         let isSessionActive = false;
         let isRecording = false;
         
         let finalTranscript = "";
-        let accumulatedTranscriptForTurn = ""; 
+        let accumulatedTranscriptForTurn = "";
+        let interimTranscriptForTurn = "";
+        let lastRecognitionFinalText = "";
 
         let speechStartTime = 0;
         let totalWordsCount = 0;
@@ -589,7 +590,7 @@
             await supabaseClient.from('analyses').insert({
                 user_id: user.id,
                 analysis_content: analysisText,
-                score: scoreVal || null
+                score: scoreVal ?? null
             });
         }
 
@@ -632,7 +633,7 @@
                 });
                 const data = await res.json();
                 if(data.success) {
-                    let html = data.summary.replace(/\*\*(.*?)\*\*/g, '<strong class="text-[#D4AF37] text-lg block mt-3 mb-1">$1</strong>').replace(/\n/g, '<br>');
+                    let html = escapeHtml(data.summary).replace(/\*\*(.*?)\*\*/g, '<strong class="text-[#D4AF37] text-lg block mt-3 mb-1">$1</strong>').replace(/\n/g, '<br>');
                     summaryContainer.innerHTML = html;
                 }
             } catch(e) {
@@ -641,7 +642,7 @@
 
             container.innerHTML = history.map((item) => {
                 let html = formatProgressText(item.analysis);
-                let scoreBadge = item.score ? `<span class="bg-[#16224F] text-[#D4AF37] px-3 py-1 rounded-md text-sm ml-4 font-black">Score: ${item.score}</span>` : '';
+                let scoreBadge = item.score !== null && item.score !== undefined ? `<span class="bg-[#16224F] text-[#D4AF37] px-3 py-1 rounded-md text-sm ml-4 font-black">Score: ${item.score}</span>` : '';
                 return `
                 <div class="p-6 bg-[#101A36] border border-slate-700/80 rounded-xl shadow-lg">
                     <div class="flex items-center text-xs text-[#D4AF37] mb-4 font-bold uppercase tracking-widest border-b border-slate-800 pb-3">
@@ -652,8 +653,12 @@
             `}).join('');
         }
 
+        function escapeHtml(text) {
+            return String(text).replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+        }
+
         function formatAnalysisText(text) {
-            return text
+            return escapeHtml(text)
                 .replace(/^## (.*$)/gim, '<h3 class="text-[#D4AF37] font-bold text-2xl uppercase tracking-wider mt-8 mb-3">$1</h3>')
                 .replace(/\*\*(.*?)\*\*/g, '<strong class="text-white font-semibold">$1</strong>')
                 .replace(/^\* (.*$)/gim, '<li class="ml-6 list-disc text-slate-300 my-2 text-lg">$1</li>')
@@ -676,7 +681,7 @@
                 html += `
                 <details class="mb-4 bg-[#101A36] border border-slate-700/80 rounded-xl overflow-hidden group">
                     <summary class="cursor-pointer text-[#D4AF37] font-bold text-[15px] uppercase tracking-wider p-4 bg-[#16224F]/40 hover:bg-[#16224F]/80 transition-colors list-none flex justify-between items-center [&::-webkit-details-marker]:hidden" style="list-style: none;">
-                        ${title}
+                        ${escapeHtml(title)}
                         <svg class="w-5 h-5 transform group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                     </summary>
                     <div class="p-5 border-t border-slate-700/50 text-slate-300">
@@ -689,7 +694,7 @@
         }
 
         function formatContent(text) {
-            return text
+            return escapeHtml(text)
                 .replace(/\*\*(.*?)\*\*/g, '<strong class="text-white font-semibold">$1</strong>')
                 .replace(/^\* (.*$)/gim, '<li class="ml-6 list-disc text-slate-300 my-2 text-[15px]">$1</li>')
                 .replace(/\n/g, '<br>');
@@ -752,7 +757,7 @@
                         const userData = { id: session.user.id, email: session.user.email, token: session.access_token };
                         localStorage.setItem('voxcoach_user', JSON.stringify(userData));
                         updateUIForLoggedInUser(userData);
-                        if (window.location.hash || window.location.search.includes('code=')) window.location.replaceState(null, '', window.location.pathname);
+                        if (window.location.hash || window.location.search.includes('code=')) window.history.replaceState(null, '', window.location.pathname);
                     }
                 });
                 try {
@@ -781,7 +786,7 @@
 
         authForm.addEventListener('submit', async (e) => {
             e.preventDefault(); clearAuthMsgs();
-            const email = authEmail.value.trim(); const password = authPassword.value.trim();
+            const email = authEmail.value.trim(); const password = authPassword.value;
             if (!email || !password) return showAuthError("Please fill in all fields.");
             const endpoint = authMode === 'signup' ? '/api/auth/signup' : '/api/auth/signin';
             try {
@@ -889,7 +894,8 @@
             if (!text || text.trim() === "") return container.innerText = "Listening...";
             
             const fillerRegex = /\b(um|uh|like|you know|sort of|basically|i think)\b/gi;
-            container.innerHTML = text.replace(fillerRegex, match => 
+            const safeText = escapeHtml(text);
+            container.innerHTML = safeText.replace(fillerRegex, match => 
                 `<span class="text-[#D4AF37] underline decoration-amber-500/60 decoration-2 font-bold cursor-pointer hover:bg-amber-500/20 px-1 rounded transition-colors" onclick="event.stopPropagation(); triggerFillerTipPopover('${match}', this)">${match}</span>`
             );
         }
@@ -913,7 +919,7 @@
                         sessionHistory = data.history;
                         document.getElementById('questionDisplay').innerText = data.current_question;
                         totalWordsCount = detectedFillerHits = detectedFluencyDelays = 0;
-                        finalTranscript = ""; accumulatedTranscriptForTurn = ""; 
+                        finalTranscript = ""; accumulatedTranscriptForTurn = ""; interimTranscriptForTurn = ""; lastRecognitionFinalText = "";
                         document.getElementById('fillerCount').innerText = "0"; document.getElementById('pauseCount').innerText = "0";
                         document.getElementById('wpmValue').innerText = "0 WPM"; document.getElementById('wpmGauge').style.width = "0%";
                         document.getElementById('interactiveTranscriptDisplay').innerText = "Listening...";
@@ -933,7 +939,10 @@
                     isRecording = true; speechStartTime = Date.now();
                     document.getElementById('simHelperTip').innerText = "Tip: Use strong action verbs to drive your response.";
                     
-                    speechEngine.start();
+                    try {
+                        speechEngine.start();
+                    } catch (e) {}
+
                     const micBtn = document.getElementById('recordBtn');
                     micBtn.className = "border-glow-card w-36 h-36 rounded-full bg-amber-500/20 border-4 border-[#D4AF37] shadow-2xl shadow-[#D4AF37]/30 relative z-10 transition-all duration-300 outline-none cursor-pointer";
                     document.getElementById('recordIcon').classList.add('animate-pulse');
@@ -943,9 +952,10 @@
                 } catch (err) { alert("Microphone access denied."); }
             } else {
                 isRecording = false;
-                speechEngine.stop();
+                try {
+                    speechEngine.stop();
+                } catch (e) {}
                 
-                accumulatedTranscriptForTurn = finalTranscript;
                 document.getElementById('simHelperTip').innerText = "Tip: Click Next Scenario when you are ready to proceed.";
                 
                 const micBtn = document.getElementById('recordBtn');
@@ -970,10 +980,21 @@
         if (speechEngine) {
             speechEngine.onresult = (e) => {
                 resetFluencyDelayTicker();
-                let newText = "";
-                for (let i = e.resultIndex; i < e.results.length; i++) newText += e.results[i][0].transcript + " ";
-                
-                finalTranscript = (accumulatedTranscriptForTurn + " " + newText).trim();
+                let newFinalText = "";
+                let newInterimText = "";
+                for (let i = e.resultIndex; i < e.results.length; i++) {
+                    if (e.results[i].isFinal) newFinalText += e.results[i][0].transcript + " ";
+                    else newInterimText += e.results[i][0].transcript + " ";
+                }
+
+                newFinalText = newFinalText.trim();
+                newInterimText = newInterimText.trim();
+                if (newFinalText && newFinalText !== lastRecognitionFinalText) {
+                    accumulatedTranscriptForTurn = (accumulatedTranscriptForTurn + " " + newFinalText).trim();
+                    lastRecognitionFinalText = newFinalText;
+                }
+                interimTranscriptForTurn = newInterimText;
+                finalTranscript = (accumulatedTranscriptForTurn + " " + interimTranscriptForTurn).trim();
                 
                 document.getElementById('transcriptionFallback').innerText = finalTranscript;
                 renderHighlightedTranscript(finalTranscript);
@@ -990,6 +1011,7 @@
                     document.getElementById('wpmGauge').style.width = `${Math.min((wpm/200)*100, 100)}%`;
                 }
             };
+            speechEngine.onerror = (e) => { console.warn("Speech recognition error:", e.error); };
             speechEngine.onend = () => { if (isRecording) try { speechEngine.start(); } catch(e){} };
         }
 
@@ -1010,7 +1032,9 @@
                     sessionHistory = data.history;
                     document.getElementById('questionDisplay').innerText = data.next_question;
                     finalTranscript = "";
-                    accumulatedTranscriptForTurn = ""; 
+                    accumulatedTranscriptForTurn = "";
+                    interimTranscriptForTurn = "";
+                    lastRecognitionFinalText = "";
                     document.getElementById('interactiveTranscriptDisplay').innerText = "Previous turn recorded. Click microphone to answer...";
                     document.getElementById('simHelperTip').innerText = "Tip: Keep answers focused and concise.";
                 }
@@ -1151,7 +1175,6 @@
                 const btn = document.getElementById(btnId);
                 if (!btn) return;
                 
-                // Use the updated `rem`-based responsive classes
                 if (btnId === activeButtonId) {
                     btn.className = "nav-link min-h-[2.75rem] py-2 lg:py-2.5 px-4 lg:px-6 rounded-full text-[#d4af37] bg-[rgba(16,26,54,0.65)] backdrop-blur-md border border-[rgba(212,175,55,0.25)] hover:text-[#F3E5AB] hover:bg-[rgba(16,26,54,0.4)] hover:border-white/10 transition-all";
                 } else {

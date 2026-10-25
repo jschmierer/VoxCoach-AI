@@ -58,7 +58,7 @@ def auth_signup():
     """Handles email/password account creation using Supabase Auth."""
     data = request.get_json() or {}
     email = data.get('email', '').strip()
-    password = data.get('password', '').strip()
+    password = data.get('password', '')
 
     if not email or not password:
         return jsonify({"success": False, "error": "Email and password are required."}), 400
@@ -87,7 +87,7 @@ def auth_signin():
     """Handles email/password authentication using Supabase Auth."""
     data = request.get_json() or {}
     email = data.get('email', '').strip()
-    password = data.get('password', '').strip()
+    password = data.get('password', '')
 
     if not email or not password:
         return jsonify({"success": False, "error": "Email and password are required."}), 400
@@ -190,14 +190,14 @@ def start_session():
             "You are an elite US University Admissions Officer. "
             f"Target Institution/Program: {target_context}\n"
             f"Applicant Resume: {resume}\n"
-            "CRITICAL RULES: DO NOT ask about their entire background. Pick exactly ONE specific extracurricular or academic detail from their resume and ask a single, highly concise opening question about it. Do not output greetings, prefaces, or extra text. Output only the short question."
+            "CRITICAL RULES: Ask a single, ultra-short question (maximum 1 sentence, under 25 words). Pick ONE specific extracurricular or academic detail from their resume. Do not output greetings, prefaces, or extra text. Output only the short question."
         )
     else:
         system_instruction = (
             "You are a principal corporate recruiter. "
             f"Target Position: {target_context}\n"
             f"Candidate Resume: {resume}\n"
-            "CRITICAL RULES: DO NOT ask a broad question about their entire resume. Pick exactly ONE specific project, role, or skill listed in their background and ask a single, concise behavioral question about it. Keep it brief. Do not output greetings, prefaces, or extra text. Output only the short question."
+            "CRITICAL RULES: Ask a single, ultra-short behavioral question (maximum 1 sentence, under 25 words). Pick ONE specific project, role, or skill. Do not output greetings, prefaces, or extra text. Output only the short question."
         )
 
     messages = [
@@ -207,12 +207,15 @@ def start_session():
 
     try:
         completion = groq_client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
+            model="openai/gpt-oss-120b",
             messages=messages,
             temperature=0.7,
-            max_tokens=100
+            reasoning_effort="low",
+            max_completion_tokens=150
         )
         initial_question = completion.choices[0].message.content.strip()
+        if not initial_question:
+            raise ValueError("Groq returned an empty opening question.")
     except Exception:
         initial_question = random.choice(FALLBACK_COLLEGE_QUESTIONS) if is_college else random.choice(FALLBACK_CORPORATE_QUESTIONS)
 
@@ -247,29 +250,32 @@ def next_question():
 
     if is_college:
         context_guideline = (
-            "You are an elite US University Admissions Officer. Review the conversation history to see what has already been discussed.\n"
+            "You are an elite US University Admissions Officer. Review conversation history.\n"
             f"Target Context: {target_context}\n"
             f"Resume: {resume}\n"
-            "CRITICAL RULES: Ask exactly ONE short, direct follow-up question. Either challenge their last response or pivot to a completely NEW, unexplored specific detail from their resume. Keep the question brief. Do not offer encouragement, feedback, or commentary. Output only the single question."
+            "CRITICAL RULES: Ask exactly ONE ultra-short, direct follow-up question (maximum 1 sentence, under 25 words). Do not offer encouragement, feedback, or commentary. Output only the single short question."
         )
     else:
         context_guideline = (
-            "You are an expert technical recruiter. Review the conversation history to see what has already been discussed.\n"
+            "You are an expert technical recruiter. Review conversation history.\n"
             f"Target Context: {target_context}\n"
             f"Resume: {resume}\n"
-            "CRITICAL RULES: Ask exactly ONE short, direct follow-up question. Either dig deeper into their last answer or pivot to a NEW, unexplored specific project/skill from their resume. Keep the question brief. Do not offer encouragement, feedback, or commentary. Output only the single question."
+            "CRITICAL RULES: Ask exactly ONE ultra-short, direct follow-up question (maximum 1 sentence, under 25 words). Do not offer encouragement, feedback, or commentary. Output only the single short question."
         )
 
     messages = [{"role": "system", "content": context_guideline}] + history
 
     try:
         completion = groq_client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
+            model="openai/gpt-oss-120b",
             messages=messages,
             temperature=0.6,
-            max_tokens=100
+            reasoning_effort="low",
+            max_completion_tokens=150
         )
         next_q = completion.choices[0].message.content.strip()
+        if not next_q:
+            raise ValueError("Groq returned an empty follow-up question.")
     except Exception:
         next_q = random.choice(FALLBACK_COLLEGE_QUESTIONS) if is_college else random.choice(FALLBACK_CORPORATE_QUESTIONS)
 
@@ -300,7 +306,7 @@ def analyze_session():
         f"Declared Target Context: {target_context}\n"
         f"Candidate Background Record: {resume}\n\n"
         "CRITICAL RULES FOR FORMATTING:\n"
-        "1. When giving your response, don't use words like \"the candidate\", rather use \"you\"."
+        "1. When giving your response, don't use words like \"the candidate\", rather use \"\"you\"\".\n"
         "2. DO NOT use numbered lists for the main sections. Use EXACTLY these Markdown headings:\n"
         "## STAR Analysis\n"
         "## Vocabulary and Vibe\n"
@@ -320,12 +326,15 @@ def analyze_session():
 
     try:
         completion = groq_client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
+            model="openai/gpt-oss-120b",
             messages=messages,
             temperature=0.3,
-            max_tokens=900
+            reasoning_effort="low",
+            max_completion_tokens=4096
         )
         critique = completion.choices[0].message.content.strip()
+        if not critique:
+            raise ValueError("Groq returned an empty evaluation.")
     except Exception as e:
         return jsonify({"success": False, "error": f"API Evaluation failed: {str(e)}"}), 500
 
@@ -343,7 +352,6 @@ def progress_summary():
     if not history_texts or not groq_client:
         return jsonify({"success": True, "summary": "Complete more sessions to generate an overall historical trend summary."}), 200
     
-    # Concatenate past analyses (limit characters to avoid token limits on long histories)
     combined = "\n\n".join(history_texts)[:6000] 
     
     prompt = (
@@ -356,15 +364,19 @@ def progress_summary():
     
     try:
         completion = groq_client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
+            model="openai/gpt-oss-120b",
             messages=[
                 {"role": "system", "content": prompt},
                 {"role": "user", "content": f"Past Evaluations Data:\n{combined}"}
             ],
-            temperature=0.3, 
-            max_tokens=400
+            temperature=0.3,
+            reasoning_effort="low",
+            max_completion_tokens=800
         )
-        return jsonify({"success": True, "summary": completion.choices[0].message.content.strip()}), 200
+        summary = completion.choices[0].message.content.strip()
+        if not summary:
+            raise ValueError("Groq returned an empty historical summary.")
+        return jsonify({"success": True, "summary": summary}), 200
     except Exception:
         return jsonify({"success": False, "summary": "Failed to generate overall historical summary."}), 500
 
